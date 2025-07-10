@@ -14,32 +14,34 @@ import (
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/hashicorp/go-multierror"
-	"github.com/notawar/mobius/backend/server"
-	"github.com/notawar/mobius/backend/server/config"
-	"github.com/notawar/mobius/backend/server/contexts/ctxerr"
-	"github.com/notawar/mobius/backend/server/contexts/license"
-	"github.com/notawar/mobius/backend/server/datastore/mysql"
-	"github.com/notawar/mobius/backend/server/mdm"
-	apple_mdm "github.com/notawar/mobius/backend/server/mdm/apple"
-	"github.com/notawar/mobius/backend/server/mdm/apple/vpp"
-	"github.com/notawar/mobius/backend/server/mdm/assets"
-	maintained_apps "github.com/notawar/mobius/backend/server/mdm/maintainedapps"
-	"github.com/notawar/mobius/backend/server/mdm/nanodep/godep"
-	"github.com/notawar/mobius/backend/server/mobius"
-	"github.com/notawar/mobius/backend/server/policies"
-	"github.com/notawar/mobius/backend/server/ptr"
-	"github.com/notawar/mobius/backend/server/service"
-	"github.com/notawar/mobius/backend/server/service/externalsvc"
-	"github.com/notawar/mobius/backend/server/service/schedule"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/customcve"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/goval_dictionary"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/macoffice"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/msrc"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/nvd"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/oval"
-	"github.com/notawar/mobius/backend/server/vulnerabilities/utils"
-	"github.com/notawar/mobius/backend/server/webhooks"
-	"github.com/notawar/mobius/backend/server/worker"
+	"github.com/notawar/mobius/internal/server"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/contexts/license"
+	"github.com/notawar/mobius/internal/server/datastore/mysql"
+	"github.com/notawar/mobius/internal/server/mdm"
+	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
+	"github.com/notawar/mobius/internal/server/mdm/apple/vpp"
+	"github.com/notawar/mobius/internal/server/mdm/assets"
+	maintained_apps "github.com/notawar/mobius/internal/server/mdm/maintainedapps"
+	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/policies"
+	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/internal/server/service"
+	"github.com/notawar/mobius/internal/server/service/externalsvc"
+	"github.com/notawar/mobius/internal/server/service/schedule"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/customcve"
+
+	// "github.com/notawar/mobius/internal/server/vulnerabilities/goval_dictionary" // TODO: Fix OVAL dependencies
+	"github.com/notawar/mobius/internal/server/vulnerabilities/macoffice"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/msrc"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd"
+
+	// "github.com/notawar/mobius/internal/server/vulnerabilities/oval" // TODO: Fix OVAL types
+	"github.com/notawar/mobius/internal/server/vulnerabilities/utils"
+	"github.com/notawar/mobius/internal/server/webhooks"
+	"github.com/notawar/mobius/internal/server/worker"
 )
 
 func errHandler(ctx context.Context, logger kitlog.Logger, msg string, err error) {
@@ -348,43 +350,46 @@ func checkOvalVulnerabilities(
 	var results []mobius.SoftwareVulnerability
 
 	// Get Platforms
-	versions, err := ds.OSVersions(ctx, nil, nil, nil, nil)
-	if err != nil {
-		errHandler(ctx, logger, "updating oval definitions", err)
-		return nil
-	}
+	// versions, err := ds.OSVersions(ctx, nil, nil, nil, nil)
+	// if err != nil {
+	//	errHandler(ctx, logger, "updating oval definitions", err)
+	//	return nil
+	// }
 
 	if !config.DisableDataSync {
+		// TODO: Re-enable OVAL after fixing types
 		// Sync on disk OVAL definitions with current OS Versions.
-		downloaded, err := oval.Refresh(ctx, versions, vulnPath)
-		if err != nil {
-			errHandler(ctx, logger, "updating oval definitions", err)
-		}
-		for _, d := range downloaded {
-			level.Debug(logger).Log("oval-sync-downloaded", d)
-		}
+		// downloaded, err := oval.Refresh(ctx, versions, vulnPath)
+		// if err != nil {
+		//	errHandler(ctx, logger, "updating oval definitions", err)
+		// }
+		// for _, d := range downloaded {
+		//	level.Debug(logger).Log("oval-sync-downloaded", d)
+		// }
+		level.Debug(logger).Log("msg", "oval-sync-disabled")
 	}
 
+	// TODO: Re-enable OVAL after fixing types
 	// Analyze all supported os versions using the synched OVAL definitions.
-	for _, version := range versions.OSVersions {
-		start := time.Now()
-		r, err := oval.Analyze(ctx, ds, version, vulnPath, collectVulns)
-		if err != nil && errors.Is(err, oval.ErrUnsupportedPlatform) {
-			level.Debug(logger).Log("msg", "oval-analysis-unsupported", "platform", version.Name)
-			continue
-		}
-
-		elapsed := time.Since(start)
-		level.Debug(logger).Log(
-			"msg", "oval-analysis-done",
-			"platform", version.Name,
-			"elapsed", elapsed,
-			"found new", len(r))
-		results = append(results, r...)
-		if err != nil {
-			errHandler(ctx, logger, "analyzing oval definitions", err)
-		}
-	}
+	// for _, version := range versions.OSVersions {
+	//	start := time.Now()
+	//	r, err := oval.Analyze(ctx, ds, version, vulnPath, collectVulns)
+	//	if err != nil && errors.Is(err, oval.ErrUnsupportedPlatform) {
+	//		level.Debug(logger).Log("msg", "oval-analysis-unsupported", "platform", version.Name)
+	//		continue
+	//	}
+	//
+	//	elapsed := time.Since(start)
+	//	level.Debug(logger).Log(
+	//		"msg", "oval-analysis-done",
+	//		"platform", version.Name,
+	//		"elapsed", elapsed,
+	//		"found new", len(r))
+	//	results = append(results, r...)
+	//	if err != nil {
+	//		errHandler(ctx, logger, "analyzing oval definitions", err)
+	//	}
+	// }
 
 	return results
 }
@@ -400,42 +405,45 @@ func checkGovalDictionaryVulnerabilities(
 	var results []mobius.SoftwareVulnerability
 
 	// Get Platforms
-	versions, err := ds.OSVersions(ctx, nil, nil, nil, nil)
-	if err != nil {
-		errHandler(ctx, logger, "listing platforms for goval_dictionary pulls", err)
-		return nil
-	}
+	// versions, err := ds.OSVersions(ctx, nil, nil, nil, nil) // TODO: Re-enable after fixing OVAL
+	// if err != nil {
+	//	errHandler(ctx, logger, "listing platforms for goval_dictionary pulls", err)
+	//	return nil
+	// }
 
 	if !config.DisableDataSync {
+		// TODO: Re-enable goval_dictionary after fixing OVAL dependencies
 		// Sync on disk goval_dictionary sqlite with current OS Versions.
-		downloaded, err := goval_dictionary.Refresh(versions, vulnPath, logger)
-		if err != nil {
-			errHandler(ctx, logger, "updating goval_dictionary databases", err)
-		}
-		for _, d := range downloaded {
-			level.Debug(logger).Log("goval_dictionary-sync-downloaded", d)
-		}
+		// downloaded, err := goval_dictionary.Refresh(versions, vulnPath, logger)
+		// if err != nil {
+		//	errHandler(ctx, logger, "updating goval_dictionary databases", err)
+		// }
+		// for _, d := range downloaded {
+		//	level.Debug(logger).Log("goval_dictionary-sync-downloaded", d)
+		// }
+		level.Debug(logger).Log("msg", "goval_dictionary-sync-disabled")
 	}
 
+	// TODO: Re-enable goval_dictionary after fixing OVAL dependencies
 	// Analyze all supported os versions using the synced goval_dictionary definitions.
-	for _, version := range versions.OSVersions {
-		start := time.Now()
-		r, err := goval_dictionary.Analyze(ctx, ds, version, vulnPath, collectVulns, logger)
-		if err != nil && errors.Is(err, goval_dictionary.ErrUnsupportedPlatform) {
-			level.Debug(logger).Log("msg", "goval_dictionary-analysis-unsupported", "platform", version.Name)
-			continue
-		}
-		elapsed := time.Since(start)
-		level.Debug(logger).Log(
-			"msg", "goval_dictionary-analysis-done",
-			"platform", version.Name,
-			"elapsed", elapsed,
-			"found new", len(r))
-		results = append(results, r...)
-		if err != nil {
-			errHandler(ctx, logger, "analyzing goval_dictionary definitions", err)
-		}
-	}
+	// for _, version := range versions.OSVersions {
+	//	start := time.Now()
+	//	r, err := goval_dictionary.Analyze(ctx, ds, version, vulnPath, collectVulns, logger)
+	//	if err != nil && errors.Is(err, goval_dictionary.ErrUnsupportedPlatform) {
+	//		level.Debug(logger).Log("msg", "goval_dictionary-analysis-unsupported", "platform", version.Name)
+	//		continue
+	//	}
+	//	elapsed := time.Since(start)
+	//	level.Debug(logger).Log(
+	//		"msg", "goval_dictionary-analysis-done",
+	//		"platform", version.Name,
+	//		"elapsed", elapsed,
+	//		"found new", len(r))
+	//	results = append(results, r...)
+	//	if err != nil {
+	//		errHandler(ctx, logger, "analyzing goval_dictionary definitions", err)
+	//	}
+	// }
 
 	return results
 }

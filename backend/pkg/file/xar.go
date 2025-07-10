@@ -32,7 +32,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/notawar/mobius/backend/server/mobius"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 const (

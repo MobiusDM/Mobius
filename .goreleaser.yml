@@ -7,9 +7,7 @@ monorepo:
   dir: .
 
 before:
-  hooks:
-  - make deps
-  - make generate
+  hooks: []
 
 # gomod:
 #   proxy: true

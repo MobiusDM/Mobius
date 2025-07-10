@@ -42,25 +42,22 @@ if [ ! -f "inventory" ]; then
 fi
 cd ..
 
-# Step 5: Install Node.js dependencies
-echo "📦 Installing Node.js dependencies..."
-if command -v npm &> /dev/null; then
-    npm install
+# Step 5: Build the backend application
+echo "� Building Mobius MDM backend..."
+cd backend
+if command -v go &> /dev/null; then
+    echo "Building mobius server..."
+    go build -o ../build/mobius ./cmd/mobius
+    echo "Building mobiuscli..."
+    go build -o ../build/mobiuscli ./cmd/mobiuscli
+    echo "✅ Backend build complete"
 else
-    echo "❌ Please install Node.js: https://nodejs.org/"
+    echo "❌ Please install Go: https://golang.org/"
     exit 1
 fi
+cd ..
 
-# Step 6: Build the application
-echo "🔨 Building Mobius MDM..."
-if command -v make &> /dev/null; then
-    make build
-else
-    echo "❌ Make is required for building. Please install make."
-    exit 1
-fi
-
-# Step 7: Database setup instructions
+# Step 6: Database setup instructions
 echo "🗄️  Database setup required..."
 echo "Please run the following commands to set up your database:"
 echo "1. Start your database: docker compose up -d"
@@ -73,7 +70,7 @@ echo "1. 📝 Edit .env with your configuration"
 echo "2. 📋 Edit ansible-mdm/inventory with your devices (Ubuntu and Pop!_OS support included)"
 echo "3. 🗄️  Set up your database (see instructions above)"
 echo "4. 🚀 Start Mobius server: ./build/mobius serve --dev"
-echo "5. 🌐 Access dashboard at: http://localhost:8080"
+echo "5. 🌐 Access API at: http://localhost:8080/api"
 echo "6. ⚙️  Run Ansible playbook: cd ansible-mdm && ansible-playbook -i inventory site.yml"
 echo ""
 echo "📚 For detailed documentation, see: docs/"

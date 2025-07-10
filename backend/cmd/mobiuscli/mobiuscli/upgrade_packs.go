@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/backend/server/mobius"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/ghodss/yaml"
 	"github.com/urfave/cli/v2"
 )

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/notawar/mobius/backend/server/version"
+	"github.com/notawar/mobius/internal/server/version"
 	"github.com/urfave/cli/v2"
 )
 
@@ -50,11 +50,9 @@ func CreateApp(
 		convertCommand(),
 		goqueryCommand(),
 		userCommand(),
-		debugCommand(),
 		previewCommand(),
 		hostsCommand(),
 		vulnerabilityDataStreamCommand(),
-		packageCommand(),
 		generateCommand(),
 		{
 			// It's become common for folks to unintentionally install mobiuscli when they actually

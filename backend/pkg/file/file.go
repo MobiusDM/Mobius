@@ -16,9 +16,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/notawar/mobius/backend/orbit/pkg/constant"
-	"github.com/notawar/mobius/backend/pkg/secure"
-	"github.com/notawar/mobius/backend/server/mobius"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/pkg/secure"
 )
 
 var ErrUnsupportedType = errors.New("unsupported file type")
@@ -240,7 +239,7 @@ func ExtractTarGz(path string, destDir string, maxFileSize int64) error {
 
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.MkdirAll(targetPath, constant.DefaultDirMode); err != nil {
+			if err := os.MkdirAll(targetPath, 0755); err != nil {
 				return fmt.Errorf("mkdir %q: %w", header.Name, err)
 			}
 		case tar.TypeReg:

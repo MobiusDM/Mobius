@@ -13,22 +13,17 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/google/go-github/v37/github"
-	"github.com/mitchellh/go-ps"
-	"github.com/notawar/mobius/backend/orbit/pkg/constant"
-	"github.com/notawar/mobius/backend/orbit/pkg/packaging"
-	"github.com/notawar/mobius/backend/orbit/pkg/update"
-	"github.com/notawar/mobius/backend/pkg/mobiushttp"
-	"github.com/notawar/mobius/backend/pkg/open"
-	"github.com/notawar/mobius/backend/pkg/spec"
-	"github.com/notawar/mobius/backend/server/contexts/ctxerr"
-	"github.com/notawar/mobius/backend/server/mobius"
-	"github.com/notawar/mobius/backend/server/service"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service"
+	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/notawar/mobius/pkg/open"
+	"github.com/notawar/mobius/pkg/spec"
 	"github.com/urfave/cli/v2"
 )
 
@@ -40,10 +35,6 @@ const (
 	tagFlagName               = "tag"
 	previewConfigFlagName     = "preview-config"
 	noHostsFlagName           = "no-hosts"
-	orbitChannel              = "orbit-channel"
-	osquerydChannel           = "osqueryd-channel"
-	updateURL                 = "update-url"
-	updateRootKeys            = "update-roots"
 	stdQueryLibFilePath       = "std-query-lib-file-path"
 	previewConfigPathFlagName = "preview-config-path"
 	disableOpenBrowser        = "disable-open-browser"
@@ -122,26 +113,6 @@ Use the stop and reset subcommands to manage the server and dependencies once st
 				Name:  noHostsFlagName,
 				Usage: "Start the server without adding any hosts",
 				Value: false,
-			},
-			&cli.StringFlag{
-				Name:  orbitChannel,
-				Usage: "Use a custom orbit channel",
-				Value: "stable",
-			},
-			&cli.StringFlag{
-				Name:  osquerydChannel,
-				Usage: "Use a custom osqueryd channel",
-				Value: "stable",
-			},
-			&cli.StringFlag{
-				Name:  updateURL,
-				Usage: "Use a custom update TUF URL",
-				Value: "",
-			},
-			&cli.StringFlag{
-				Name:  updateRootKeys,
-				Usage: "Use custom update TUF root keys",
-				Value: "",
 			},
 			&cli.StringFlag{
 				Name:  stdQueryLibFilePath,
@@ -432,25 +403,6 @@ Use the stop and reset subcommands to manage the server and dependencies once st
 			fmt.Println("Password:", password)
 
 			if !c.Bool(noHostsFlagName) {
-				fmt.Println("Enrolling local host...")
-
-				orbitDir := filepath.Join(previewDir, "orbit")
-				if err := downloadOrbitAndStart(orbitDir, secrets.Secrets[0].Secret, address, c.String(orbitChannel), c.String(osquerydChannel), c.String(updateURL), c.String(updateRootKeys)); err != nil {
-					return fmt.Errorf("downloading orbit and osqueryd: %w", err)
-				}
-
-				// Give it a bit of time so the current device is the one with id 1
-				fmt.Println("Waiting for host to enroll...")
-				if err := waitFirstHost(client); err != nil {
-					return fmt.Errorf("wait for current host: %w", err)
-				}
-
-				if !c.Bool(disableOpenBrowser) {
-					if err := open.Browser("http://localhost:1337/previewlogin"); err != nil {
-						fmt.Println("Automatic browser open failed. Please navigate to http://localhost:1337/previewlogin.")
-					}
-				}
-
 				fmt.Println("Starting simulated Linux hosts...")
 				cmd = compose.Command("up", "-d", "--remove-orphans")
 				cmd.Dir = filepath.Join(previewDir, "osquery")
@@ -463,7 +415,9 @@ Use the stop and reset subcommands to manage the server and dependencies once st
 					fmt.Println(string(out))
 					return fmt.Errorf("Failed to run %s", compose)
 				}
-			} else if !c.Bool(disableOpenBrowser) {
+			}
+
+			if !c.Bool(disableOpenBrowser) {
 				if err := open.Browser("http://localhost:1337/previewlogin"); err != nil {
 					fmt.Println("Automatic browser open failed. Please navigate to http://localhost:1337/previewlogin.")
 				}
@@ -696,11 +650,6 @@ func previewStopCommand() *cli.Command {
 				return fmt.Errorf("Failed to run %d stop for simulated hosts", compose)
 			}
 
-			orbitDir := filepath.Join(previewDir, "orbit")
-			if err := stopOrbit(orbitDir); err != nil {
-				return fmt.Errorf("Failed to stop orbit: %w", err)
-			}
-
 			fmt.Println("Mobius preview server and dependencies stopped. Start again with mobiuscli preview.")
 
 			return nil
@@ -755,178 +704,9 @@ func previewResetCommand() *cli.Command {
 				return fmt.Errorf("Failed to run %s rm -sf for simulated hosts.", compose)
 			}
 
-			orbitDir := filepath.Join(previewDir, "orbit")
-			if err := stopOrbit(orbitDir); err != nil {
-				return fmt.Errorf("Failed to stop orbit: %w", err)
-			}
-
-			if err := os.RemoveAll(filepath.Join(orbitDir, update.MetadataFileName)); err != nil {
-				return fmt.Errorf("failed to remove preview update metadata file: %w", err)
-			}
-			if err := os.RemoveAll(filepath.Join(orbitDir, "bin")); err != nil {
-				return fmt.Errorf("failed to remove preview bin directory: %w", err)
-			}
-
 			fmt.Println("Mobius preview server and dependencies reset. Start again with mobiuscli preview.")
 
 			return nil
 		},
 	}
-}
-
-func storePidFile(destDir string, pid int) error {
-	pidFilePath := filepath.Join(destDir, "orbit.pid")
-	err := os.WriteFile(pidFilePath, []byte(fmt.Sprint(pid)), os.FileMode(0o644))
-	if err != nil {
-		return fmt.Errorf("error writing pidfile %s: %s", pidFilePath, err)
-	}
-	return nil
-}
-
-func readPidFromFile(destDir string, what string) (int, error) {
-	pidFilePath := filepath.Join(destDir, what)
-	data, err := os.ReadFile(pidFilePath)
-	if err != nil {
-		return 0, fmt.Errorf("error reading pidfile %s: %w", pidFilePath, err)
-	}
-	return strconv.Atoi(strings.TrimSpace(string(data)))
-}
-
-// processNameMatches returns whether the process running with the given pid matches
-// the executable name (case insensitive).
-//
-// If there's no process running with the given pid then (false, nil) is returned.
-func processNameMatches(pid int, expectedPrefix string) (bool, error) {
-	process, err := ps.FindProcess(pid)
-	if err != nil {
-		return false, fmt.Errorf("find process: %d: %w", pid, err)
-	}
-	if process == nil {
-		return false, nil
-	}
-	return strings.HasPrefix(strings.ToLower(process.Executable()), strings.ToLower(expectedPrefix)), nil
-}
-
-func downloadOrbitAndStart(destDir, enrollSecret, address, orbitChannel, osquerydChannel, updateURL, updateRoots string) error {
-	if err := os.MkdirAll(destDir, constant.DefaultDirMode); err != nil {
-		return fmt.Errorf("create orbit directory %q: %w", destDir, err)
-	}
-
-	// Stop any current intance of orbit running, otherwise the configured enroll secret
-	// won't match the generated in the preview run.
-	if err := stopOrbit(destDir); err != nil {
-		fmt.Println("Failed to stop an existing instance of orbit running: ", err)
-		return err
-	}
-
-	fmt.Println("Trying to clear orbit and osquery directories...")
-	if err := os.RemoveAll(filepath.Join(destDir, "osquery.db")); err != nil {
-		fmt.Println("Warning: clearing osquery db dir:", err)
-	}
-	if err := os.RemoveAll(filepath.Join(destDir, "secret-orbit-node-key.txt")); err != nil {
-		fmt.Println("Warning: clearing orbit db dir:", err)
-	}
-	if err := cleanUpSocketFiles(destDir); err != nil {
-		fmt.Println("Warning: cleaning up socket files:", err)
-	}
-
-	updateOpt := update.DefaultOptions
-
-	// Override default channels with the provided values.
-	updateOpt.Targets.SetTargetChannel(constant.OrbitTUFTargetName, orbitChannel)
-	updateOpt.Targets.SetTargetChannel(constant.OsqueryTUFTargetName, osquerydChannel)
-
-	updateOpt.RootDirectory = destDir
-
-	if updateURL != "" {
-		updateOpt.ServerURL = updateURL
-	}
-	if updateRoots != "" {
-		updateOpt.RootKeys = updateRoots
-	}
-
-	if _, err := packaging.InitializeUpdates(updateOpt); err != nil {
-		return fmt.Errorf("initialize updates: %w", err)
-	}
-
-	orbitPath, err := update.NewDisabled(updateOpt).ExecutableLocalPath(constant.OrbitTUFTargetName)
-	if err != nil {
-		return fmt.Errorf("failed to locate executable for %s: %w", constant.OrbitTUFTargetName, err)
-	}
-
-	cmd := exec.Command(orbitPath,
-		"--root-dir", destDir,
-		"--mobius-url", address,
-		"--insecure",
-		"--debug",
-		"--enroll-secret", enrollSecret,
-		"--orbit-channel", orbitChannel,
-		"--osqueryd-channel", osquerydChannel,
-		"--log-file", filepath.Join(destDir, "orbit.log"),
-	)
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("starting orbit: %w", err)
-	}
-	if err := storePidFile(destDir, cmd.Process.Pid); err != nil {
-		return fmt.Errorf("saving pid file: %w", err)
-	}
-
-	return nil
-}
-
-// cleanUpSocketFiles cleans up mobius-osqueryd's socket file
-// ("orbit-osquery.em") and osquery extension socket files
-// ("orbit-osquery.em.*").
-func cleanUpSocketFiles(path string) error {
-	entries, err := os.ReadDir(path)
-	if err != nil {
-		return fmt.Errorf("read dir: %w", err)
-	}
-	for _, entry := range entries {
-		if !strings.HasPrefix(entry.Name(), "orbit-osquery.em") {
-			continue
-		}
-		entryPath := filepath.Join(path, entry.Name())
-		if err := os.Remove(entryPath); err != nil {
-			return fmt.Errorf("remove %q: %w", entryPath, err)
-		}
-	}
-	return nil
-}
-
-func stopOrbit(destDir string) error {
-	err := killFromPIDFile(destDir, "osquery.pid", "osqueryd")
-	if err != nil {
-		return err
-	}
-	err = killFromPIDFile(destDir, "orbit.pid", "orbit")
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func killFromPIDFile(destDir string, pidFileName string, expectedExecName string) error {
-	pid, err := readPidFromFile(destDir, pidFileName)
-	switch {
-	case err == nil:
-		// OK
-	case errors.Is(err, os.ErrNotExist):
-		return nil // we assume it's not running
-	default:
-		return fmt.Errorf("reading pid from: %s: %w", destDir, err)
-	}
-	matches, err := processNameMatches(pid, expectedExecName)
-	if err != nil {
-		return fmt.Errorf("inspecting process %d: %w", pid, err)
-	}
-	if !matches {
-		// Nothing to do, another process may be running with this pid
-		// (e.g. could happen after a restart).
-		return nil
-	}
-	if err := killPID(pid); err != nil {
-		return fmt.Errorf("killing %d: %w", pid, err)
-	}
-	return nil
 }

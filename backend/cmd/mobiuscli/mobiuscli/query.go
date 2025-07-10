@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/notawar/mobius/backend/server/mobius"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/urfave/cli/v2"
 )
 

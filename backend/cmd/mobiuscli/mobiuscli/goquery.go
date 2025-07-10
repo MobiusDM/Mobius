@@ -9,8 +9,8 @@ import (
 	gqconfig "github.com/AbGuthrie/goquery/v2/config"
 	gqhosts "github.com/AbGuthrie/goquery/v2/hosts"
 	gqmodels "github.com/AbGuthrie/goquery/v2/models"
-	"github.com/notawar/mobius/backend/server/mobius"
-	"github.com/notawar/mobius/backend/server/service"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service"
 	"github.com/urfave/cli/v2"
 )
 

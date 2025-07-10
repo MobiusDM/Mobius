@@ -13,10 +13,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/notawar/mobius/backend/pkg/mobiushttp"
-	"github.com/notawar/mobius/backend/server/mobius"
-	"github.com/notawar/mobius/backend/server/service"
-	"github.com/notawar/mobius/backend/server/version"
+	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service"
+	"github.com/notawar/mobius/internal/server/version"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/urfave/cli/v2"
 )

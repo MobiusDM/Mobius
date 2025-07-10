@@ -1,112 +1,147 @@
 # Mobius Backend
 
-This directory contains all the Go backend components for the Mobius device management platform.
+A modern, API-first Mobile Device Management (MDM) platform built in Go.
 
-## Directory Structure
-
-```
-backend/
-├── cmd/           # CLI applications and entry points
-│   ├── mobius/    # Main Mobius server application
-│   ├── mobiuscli/ # Command-line interface
-│   └── ...        # Other CLI tools
-├── server/        # Core server logic and services
-│   ├── mobius/    # Core Mobius service
-│   ├── mdm/       # Mobile Device Management
-│   ├── sso/       # Single Sign-On
-│   └── ...        # Other server components
-├── pkg/           # Shared packages and utilities
-│   ├── certificate/   # Certificate management
-│   ├── mobiushttp/    # HTTP utilities
-│   └── ...            # Other shared packages
-├── orbit/         # Agent code for managed devices
-│   ├── cmd/       # Agent entry points
-│   └── pkg/       # Agent packages
-├── tools/         # Development and utility tools
-├── go.mod         # Go module definition
-└── go.sum         # Go module checksums
-```
-
-## Development
+## Quick Start
 
 ### Prerequisites
 
 - Go 1.24.4 or later
-- Make
+- MySQL 8.0 or later
+- Redis 6.0 or later
+
+### Running Locally
+
+1. **Start Dependencies**:
+
+   ```bash
+   docker-compose up -d mysql redis
+   ```
+
+2. **Configure Environment**:
+
+   ```bash
+   cp mobius.yml.example mobius.yml
+   # Edit mobius.yml with your configuration
+   ```
+
+3. **Initialize Database**:
+
+   ```bash
+   go run ./cmd/mobius prepare db
+   ```
+
+4. **Start Server**:
+
+   ```bash
+   go run ./cmd/mobius serve
+   ```
+
+5. **Use CLI**:
+
+   ```bash
+   go run ./cmd/mobiuscli --help
+   ```
+
+## Architecture
+
+This codebase follows Go best practices with a clear separation between:
+
+- **Public APIs** (`pkg/`): Reusable libraries
+- **Internal Logic** (`internal/`): Application-specific code  
+- **Applications** (`cmd/`): Server and CLI entry points
+- **Deployment** (`deployments/`): Infrastructure as code
+
+See [docs/architecture.md](docs/architecture.md) for detailed information.
+
+## API-First Design
+
+All functionality is exposed through REST APIs:
+
+- **Server** (`cmd/mobius`): Provides REST APIs for all MDM operations
+- **CLI** (`cmd/mobiuscli`): Interacts with server exclusively via APIs
+- **No Direct DB Access**: All clients use APIs, ensuring consistency
+
+### Example API Usage
+
+```bash
+# Authenticate
+mobiuscli login --server https://mobius.example.com
+
+# List devices  
+mobiuscli get devices
+
+# Apply policy
+mobiuscli apply -f policy.yaml
+```
+
+## Development
+
+### Project Structure
+
+```text
+cmd/           # Applications and tools
+├── mobius/    # Main server
+├── mobiuscli/ # CLI tool  
+└── tools/     # Utilities
+
+pkg/           # Public libraries
+internal/      # Private application code
+api/           # API definitions
+deployments/   # Infrastructure configs
+```
 
 ### Building
 
-From the root directory:
-
 ```bash
-# Build main server
-make build
+# Build server
+go build -o bin/mobius ./cmd/mobius
 
 # Build CLI
-make mobiuscli
+go build -o bin/mobiuscli ./cmd/mobiuscli
 
-# Run tests
-make test
+# Build all tools
+go build -o bin/ ./cmd/tools/...
 ```
 
-From the backend directory:
+### Testing
 
 ```bash
-cd backend
-
-# Build main server
-go build -o ../build/mobius ./cmd/mobius
-
-# Build CLI
-go build -o ../build/mobiuscli ./cmd/mobiuscli
-
-# Run tests
+# Run unit tests
 go test ./...
+
+# Run integration tests
+go test -tags=integration ./...
 ```
 
-### Import Paths
+## Deployment
 
-All imports now use the `backend/` prefix:
+### Docker
 
-```go
-import (
-    "github.com/notawar/mobius/backend/server/mobius"
-    "github.com/notawar/mobius/backend/pkg/certificate"
-    "github.com/notawar/mobius/backend/orbit/pkg/constant"
-)
+```bash
+docker build -t mobius .
+docker run -p 8080:8080 mobius
 ```
 
-## Components
+### Kubernetes
 
-### Main Applications (`cmd/`)
+```bash
+helm install mobius ./deployments/charts/mobius
+```
 
-- **mobius**: Main Mobius server
-- **mobiuscli**: Command-line interface for Mobius management
+### Ansible
 
-### Core Services (`server/`)
+```bash
+ansible-playbook ./deployments/ansible-mdm/site.yml
+```
 
-- **mobius**: Core platform services
-- **mdm**: Mobile Device Management functionality
-- **sso**: Single Sign-On integration
-- **datastore**: Database abstraction layer
-- **vulnerabilities**: Security vulnerability management
+## Contributing
 
-### Shared Libraries (`pkg/`)
+1. Follow Go best practices
+2. All functionality must be API-accessible
+3. Update documentation for user-facing changes
+4. Add tests for new features
 
-- **certificate**: X.509 certificate utilities
-- **mobiushttp**: HTTP client/server utilities
-- **file**: File processing and validation
-- **secure**: Security utilities
+## License
 
-### Agent Code (`orbit/`)
-
-- Device agent that runs on managed endpoints
-- Handles communication with Mobius server
-- Executes queries and collects system information
-
-### Development Tools (`tools/`)
-
-- Various utilities for development and operations
-- Database management tools
-- Testing utilities
-- Build and deployment helpers
+See [OPEN_SOURCE_CREDITS.md](../OPEN_SOURCE_CREDITS.md) for third-party licenses.

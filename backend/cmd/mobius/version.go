@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/notawar/mobius/backend/server/config"
-	"github.com/notawar/mobius/backend/server/version"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/version"
 	"github.com/spf13/cobra"
 )
 

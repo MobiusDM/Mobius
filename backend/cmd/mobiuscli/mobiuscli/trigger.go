@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/notawar/mobius/backend/server/contexts/ctxerr"
-	"github.com/notawar/mobius/backend/server/service"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/service"
 	"github.com/urfave/cli/v2"
 )
 

@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/notawar/mobius/backend/server/config"
-	"github.com/notawar/mobius/backend/server/shellquote"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/shellquote"
 	"github.com/spf13/cobra"
 )
 

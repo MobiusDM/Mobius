@@ -19,9 +19,6 @@
       "pattern": "/server/datastore/mysql/migrations/"
     },
     {
-      "pattern": "linkedin.com/company/mobiusmdm"
-    },
-    {
       "pattern": "github.com/notawar/confidential"
     },
     {

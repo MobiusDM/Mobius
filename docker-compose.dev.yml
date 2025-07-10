@@ -42,36 +42,5 @@ services:
       - .:/app
       - ./build:/app/build
 
-  # Frontend Development
-  mobius-frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-      # For production, use: image: ghcr.io/yourusername/mobius-frontend:latest
-    depends_on:
-      - mobius-server
-    environment:
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_DEV_MODE=true
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-
-  # Optional Services (for full profile)
-  mobius-website:
-    build:
-      context: ./website
-      dockerfile: Dockerfile.dev
-      # For production, use: image: ghcr.io/yourusername/mobius-website:latest
-    profiles:
-      - full
-    ports:
-      - "1337:1337"
-    volumes:
-      - ./website:/app
-      - /app/node_modules
-
 volumes:
   mysql_data:

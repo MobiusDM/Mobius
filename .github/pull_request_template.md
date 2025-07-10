@@ -8,7 +8,7 @@ If some of the following don't apply, delete the relevant line.
   See [Changes files](https://github.com/notawar/mobius/blob/main/docs/Contributing/guides/committing-changes.md#changes-files) for more information.
 - [ ] Input data is properly validated, `SELECT *` is avoided, SQL injection is prevented (using placeholders for values in statements)
 - [ ] Added support on mobius's osquery simulator `cmd/osquery-perf` for new osquery data ingestion features.
-- [ ] If paths of existing endpoints are modified without backwards compatibility, checked the frontend/CLI for any necessary changes
+- [ ] If paths of existing endpoints are modified without backwards compatibility, checked the CLI for any necessary changes
 - [ ] If database migrations are included, checked table schema to confirm autoupdate
 - For new Mobius configuration settings
   - [ ] Verified that the setting can be managed via GitOps, or confirmed that the setting is explicitly being excluded from GitOps.  If managing via Gitops:

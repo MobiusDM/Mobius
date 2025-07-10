@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/backend/pkg/mobiushttp"
-	"github.com/notawar/mobius/backend/server/ptr"
+	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/google/go-github/v37/github"
 	"golang.org/x/mod/semver"
 )

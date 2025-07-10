@@ -14,7 +14,7 @@ import (
 	"strings"
 
 	"github.com/boltdb/bolt"
-	scepdepot "github.com/notawar/mobius/backend/server/mdm/scep/depot/bolt"
+	scepdepot "github.com/notawar/mobius/internal/server/mdm/scep/depot/bolt"
 	apnsbuiltin "github.com/micromdm/micromdm/platform/apns/builtin"
 	"github.com/micromdm/micromdm/platform/device"
 	devicebuiltin "github.com/micromdm/micromdm/platform/device/builtin"

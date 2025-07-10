@@ -15,10 +15,10 @@ import (
 	"os"
 
 	"github.com/WatchBeam/clock"
-	"github.com/notawar/mobius/backend/pkg/mobiushttp"
-	"github.com/notawar/mobius/backend/server/config"
-	"github.com/notawar/mobius/backend/server/datastore/mysql"
-	"github.com/notawar/mobius/backend/server/mdm/nanodep/godep"
+	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/datastore/mysql"
+	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
 	kitlog "github.com/go-kit/log"
 )
 

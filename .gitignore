@@ -4,11 +4,6 @@
 # output directories
 /build
 vendor
-node_modules
-dist
-
-
-# typescript generated test files
 tmp/
 
 # operating system artifacts
@@ -27,10 +22,6 @@ charts/mobius/charts
 
 # Mobius local development DB backups
 backup.sql.gz
-
-# Common mistake for new developers to run npm install and then end up
-# committing a package-lock.json. Mobius app uses Yarn with yarn.lock.
-package-lock.json
 
 # infra
 .terraform
@@ -72,11 +63,6 @@ osquery_worker_*.jpg
 
 # Residual files when building mobiusdaemon_tables extension.
 mobiusdaemon_tables_*
-
-# Location of test extensions executables
-tools/test_extensions/hello_world/macos
-tools/test_extensions/hello_world/windows
-tools/test_extensions/hello_world/linux
 
 # Residual files when building mobius_tables extension.
 mobius_tables_*.ext

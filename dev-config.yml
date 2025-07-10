@@ -11,9 +11,6 @@ github:
   # GitHub Releases for distribution
   use_github_releases: true
 
-  # GitHub Pages for documentation
-  use_github_pages: true
-
 deployment:
   # Remove external registries - use GitHub only
   skip_docker_hub: true

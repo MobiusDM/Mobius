@@ -23,8 +23,8 @@ func createHttpClient(m dsl.Matcher) {
 }
 
 func txCheck(m dsl.Matcher) {
-	m.Import("github.com/notawar/mobius/backend/server/datastore/mysql")
-	m.Import("github.com/notawar/mobius/backend/server/mdm/android/mysql")
+	m.Import("github.com/notawar/mobius/internal/server/datastore/mysql")
+	m.Import("github.com/notawar/mobius/internal/server/mdm/android/mysql")
 	m.Import("github.com/jmoiron/sqlx")
 
 	isDatastoreType := func(v dsl.Var) bool {

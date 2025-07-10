@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/notawar/mobius/backend/orbit/pkg/platform"
 	"github.com/rs/zerolog/log"
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 func browser(url string) error {
@@ -41,24 +41,34 @@ func browser(url string) error {
 // getXWaylandAuthority retrieves the X authority file path from
 // the running XWayland process environment.
 func getXWaylandAuthority() (xAuthorityPath string, err error) {
-	xWaylandProcess, err := platform.GetProcessesByName("Xwayland")
+	processes, err := process.Processes()
 	if err != nil {
-		return "", fmt.Errorf("get process by name: %w", err)
+		return "", fmt.Errorf("get processes: %w", err)
 	}
-	executablePath, err := xWaylandProcess[0].Exe()
-	if err != nil {
-		return "", fmt.Errorf("get executable path: %w", err)
-	}
-	if executablePath != "/usr/bin/Xwayland" {
-		return "", fmt.Errorf("invalid Xwayland path: %q", executablePath)
-	}
-	envs, err := xWaylandProcess[0].Environ()
-	if err != nil {
-		return "", fmt.Errorf("get environment: %w", err)
-	}
-	for _, env := range envs {
-		if strings.HasPrefix(env, "XAUTHORITY=") {
-			return strings.TrimPrefix(env, "XAUTHORITY="), nil
+
+	for _, p := range processes {
+		name, err := p.Name()
+		if err != nil {
+			continue
+		}
+		if name == "Xwayland" {
+			executablePath, err := p.Exe()
+			if err != nil {
+				return "", fmt.Errorf("get executable path: %w", err)
+			}
+			if executablePath != "/usr/bin/Xwayland" {
+				return "", fmt.Errorf("invalid Xwayland path: %q", executablePath)
+			}
+			envs, err := p.Environ()
+			if err != nil {
+				return "", fmt.Errorf("get environment: %w", err)
+			}
+			for _, env := range envs {
+				if strings.HasPrefix(env, "XAUTHORITY=") {
+					return strings.TrimPrefix(env, "XAUTHORITY="), nil
+				}
+			}
+			break
 		}
 	}
 	return "", errors.New("XAUTHORITY not found")

@@ -1,6 +1,6 @@
 package mobiusdbase
 
-import "github.com/notawar/mobius/backend/pkg/mobiusdaemonbase"
+import "github.com/notawar/mobius/pkg/mobiusdaemonbase"
 
 // Deprecated: use mobiusdaemonbase instead.
 type Metadata = mobiusdaemonbase.Metadata

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/notawar/mobius/backend/pkg/secure"
+	"github.com/notawar/mobius/pkg/secure"
 	"github.com/ghodss/yaml"
 	"github.com/urfave/cli/v2"
 )
