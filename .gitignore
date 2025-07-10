@@ -7,24 +7,6 @@ vendor
 node_modules
 dist
 
-# generated artifacts
-assets/bundle*.*
-assets/*@*.svg
-assets/*@*.png
-assets/*@*.gif
-assets/*@*.eot
-assets/*@*.woff
-assets/*@*.woff2
-assets/*@*.ttf
-frontend/templates/react.tmpl
-bindata.go
-server/bindata/generated.go
-*.cover
-*.test
-*.log
-coverage.txt
-storybook-static
-frontend/coverage
 
 # typescript generated test files
 tmp/
@@ -68,8 +50,6 @@ cmd/cpe/etagenv
 cmd/cpe/cpe*.sqlite
 cmd/cpe/cpe*.sqlite.gz
 
-# Testing TUF server
-test_tuf
 
 # Residual files when running the msrc generate command
 msrc_in/
@@ -86,12 +66,6 @@ macoffice_rel_notes/
 # IDE
 .vscode
 .cursor
-
-# residual files when running the build-windows tool
-orbit/cmd/desktop/manifest.xml
-orbit/cmd/desktop/resource_windows.syso
-orbit/cmd/orbit/manifest.xml
-orbit/cmd/orbit/resource_windows.syso
 
 # Residual files from osqueryd loadtests.
 osquery_worker_*.jpg

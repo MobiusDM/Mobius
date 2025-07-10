@@ -1,2 +1,0 @@
-Mode: command
-Option roms not allowed

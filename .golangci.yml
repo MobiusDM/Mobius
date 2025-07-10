@@ -81,7 +81,7 @@ issues:
   - path: server/datastore/mysql/migrations/[^/]+/[^/]+\.go
     linters:
     - depguard
-  # cmd gosec exclusions https://github.com/notawar/mobius/issues/4451
+  # backend/cmd gosec exclusions https://github.com/notawar/mobius/issues/4451
   - path: cmd/osquery-perf/agent.go
     linters:
     - gosec
@@ -97,7 +97,7 @@ issues:
   - path: cmd/mobiuscli/mobiuscli/preview.go
     linters:
     - gosec
-  # Orbit gosec exclusions https://github.com/notawar/mobius/issues/4452
+  # backend/orbit gosec exclusions https://github.com/notawar/mobius/issues/4452
   - path: orbit/pkg/update/update.go
     linters:
     - gosec
@@ -117,7 +117,7 @@ issues:
   - path: orbit/pkg/insecure/proxy.go
     linters:
     - gosec
-  # pkg gosec exclusions https://github.com/notawar/mobius/issues/4453
+  # backend/pkg gosec exclusions https://github.com/notawar/mobius/issues/4453
   # Test file which triggers many TLS warnings by design
   - path: pkg/mobiushttp/mobiushttp_test.go
     linters:
@@ -128,7 +128,7 @@ issues:
   - path: pkg/download/download.go
     linters:
     - gosec
-  # server gosec exclusions https://github.com/notawar/mobius/issues/4455
+  # backend/server gosec exclusions https://github.com/notawar/mobius/issues/4455
   - path: server/mail/mail.go
     linters:
     - gosec
@@ -210,7 +210,7 @@ issues:
   - path: server/datastore/mysql/software_test.go
     linters:
     - gosec
-  # tools gosec exclusions https://github.com/notawar/mobius/issues/4456
+  # backend/tools gosec exclusions https://github.com/notawar/mobius/issues/4456
   - path: tools/dbutils/schema_generator.go
     linters:
     - gosec

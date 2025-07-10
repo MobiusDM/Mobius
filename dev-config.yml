@@ -34,7 +34,6 @@ profiles:
     - mysql
     - redis
     - mobius-server
-    - mobius-frontend
     features:
     - device_management
     - osquery_integration
@@ -51,9 +50,6 @@ profiles:
     - mysql
     - redis
     - mobius-server
-    - mobius-frontend
-    - mobius-website
-    - chrome-extension
     features:
     - all
     deployment:
@@ -67,11 +63,10 @@ profiles:
     - mysql
     - redis
     - mobius-server
-    - mobius-frontend
     features:
     - all_mdm_features
     - sso_integrations
-    - enterprise_logging
+    - logging
     - vulnerability_scanning
     - advanced_policies
     deployment:

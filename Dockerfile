@@ -66,7 +66,7 @@ RUN go run github.com/kevinburke/go-bindata/go-bindata -pkg=bindata -tags full \
     -o=server/bindata/generated.go \
     frontend/templates/ assets/... server/mail/templates
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o mobius ./cmd/mobius
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o mobius ./backend/cmd/mobius
 
 # Production stage
 FROM alpine:latest

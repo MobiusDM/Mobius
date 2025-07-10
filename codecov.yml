@@ -17,11 +17,4 @@ flag_management:
     - cmd/
     - pkg/
     - server/
-    - orbit/
-  - name: frontend
-    paths:
-    - frontend/
 
-ignore:
-- "server/mock"
-- "server/mobius/activities.go" # mostly contains code for documentation -- not interesting for tests

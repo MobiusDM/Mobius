@@ -1,2 +1,0 @@
-CID is not set. Use falconctl to set the CID
-ERROR: failed to process the option --cid
