@@ -1,5 +1,0 @@
-package nodependency
-
-func SomeGreatOne() {
-
-}

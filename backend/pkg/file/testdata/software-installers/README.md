@@ -1,1 +1,0 @@
-- `hello-world-installer.exe` is an installer with a text file. It was created using [Inno Setup](https://jrsoftware.org/isinfo.php) on Windows.

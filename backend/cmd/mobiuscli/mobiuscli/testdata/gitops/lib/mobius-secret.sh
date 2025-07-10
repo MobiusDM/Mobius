@@ -1,1 +1,0 @@
-echo "$MOBIUS_SECRET_NAME"
