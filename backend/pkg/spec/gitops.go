@@ -12,10 +12,10 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/ghodss/yaml"
 	"github.com/hashicorp/go-multierror"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -25,12 +25,12 @@ type BaseItem struct {
 
 type GitOpsControls struct {
 	BaseItem
-	MacOSUpdates   interface{}       `json:"macos_updates"`
-	IOSUpdates     interface{}       `json:"ios_updates"`
-	IPadOSUpdates  interface{}       `json:"ipados_updates"`
-	MacOSSettings  interface{}       `json:"macos_settings"`
+	MacOSUpdates   interface{}        `json:"macos_updates"`
+	IOSUpdates     interface{}        `json:"ios_updates"`
+	IPadOSUpdates  interface{}        `json:"ipados_updates"`
+	MacOSSettings  interface{}        `json:"macos_settings"`
 	MacOSSetup     *mobius.MacOSSetup `json:"macos_setup"`
-	MacOSMigration interface{}       `json:"macos_migration"`
+	MacOSMigration interface{}        `json:"macos_migration"`
 
 	WindowsUpdates              interface{} `json:"windows_updates"`
 	WindowsSettings             interface{} `json:"windows_settings"`
@@ -95,8 +95,8 @@ type SoftwarePackage struct {
 }
 
 type Software struct {
-	Packages            []SoftwarePackage               `json:"packages"`
-	AppStoreApps        []mobius.TeamSpecAppStoreApp     `json:"app_store_apps"`
+	Packages             []SoftwarePackage                 `json:"packages"`
+	AppStoreApps         []mobius.TeamSpecAppStoreApp      `json:"app_store_apps"`
 	MobiusMaintainedApps []mobius.MobiusMaintainedAppsSpec `json:"mobius_maintained_apps"`
 }
 
@@ -117,8 +117,8 @@ type GitOps struct {
 }
 
 type GitOpsSoftware struct {
-	Packages            []*mobius.SoftwarePackageSpec
-	AppStoreApps        []*mobius.TeamSpecAppStoreApp
+	Packages             []*mobius.SoftwarePackageSpec
+	AppStoreApps         []*mobius.TeamSpecAppStoreApp
 	MobiusMaintainedApps []*mobius.MobiusMaintainedAppsSpec
 }
 

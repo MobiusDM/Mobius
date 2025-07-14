@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) NewJob(ctx context.Context, job *mobius.Job) (*mobius.Job, error) {

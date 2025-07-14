@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 )
 
 func (ds *Datastore) PendingEmailChange(ctx context.Context, uid uint, newEmail, token string) error {

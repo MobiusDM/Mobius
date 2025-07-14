@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/maintainedapps"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type addMobiusMaintainedAppRequest struct {
@@ -70,8 +70,8 @@ type listMobiusMaintainedAppsRequest struct {
 
 type listMobiusMaintainedAppsResponse struct {
 	MobiusMaintainedApps []mobius.MaintainedApp     `json:"mobius_maintained_apps"`
-	Meta                *mobius.PaginationMetadata `json:"meta"`
-	Err                 error                     `json:"error,omitempty"`
+	Meta                 *mobius.PaginationMetadata `json:"meta"`
+	Err                  error                      `json:"error,omitempty"`
 }
 
 func (r listMobiusMaintainedAppsResponse) Error() error { return r.Err }
@@ -86,7 +86,7 @@ func listMobiusMaintainedAppsEndpoint(ctx context.Context, request any, svc mobi
 
 	listResp := listMobiusMaintainedAppsResponse{
 		MobiusMaintainedApps: apps,
-		Meta:                meta,
+		Meta:                 meta,
 	}
 
 	return listResp, nil
@@ -107,7 +107,7 @@ type getMobiusMaintainedAppRequest struct {
 
 type getMobiusMaintainedAppResponse struct {
 	MobiusMaintainedApp *mobius.MaintainedApp `json:"mobius_maintained_app"`
-	Err                error                `json:"error,omitempty"`
+	Err                 error                 `json:"error,omitempty"`
 }
 
 func (r getMobiusMaintainedAppResponse) Error() error { return r.Err }

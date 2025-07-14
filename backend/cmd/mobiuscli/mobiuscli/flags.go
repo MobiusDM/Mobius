@@ -3,10 +3,10 @@ package mobiuscli
 import "github.com/urfave/cli/v2"
 
 const (
-	outfileFlagName          = "outfile"
-	debugFlagName            = "debug"
+	outfileFlagName           = "outfile"
+	debugFlagName             = "debug"
 	mobiusCertificateFlagName = "mobius-certificate"
-	stdoutFlagName           = "stdout"
+	stdoutFlagName            = "stdout"
 )
 
 func outfileFlag() cli.Flag {
@@ -34,17 +34,9 @@ func getDebug(c *cli.Context) bool {
 	return c.Bool(debugFlagName)
 }
 
-func mobiusCertificateFlag() cli.Flag {
-	return &cli.StringFlag{
-		Name:    mobiusCertificateFlagName,
-		EnvVars: []string{"MOBIUS_CERTIFICATE"},
-		Usage:   "Path of the TLS mobius certificate, can be used to provide additional connection debugging information",
-	}
-}
 
-func getMobiusCertificate(c *cli.Context) string {
-	return c.String(mobiusCertificateFlagName)
-}
+
+
 
 func stdoutFlag() cli.Flag {
 	return &cli.BoolFlag{
@@ -54,9 +46,7 @@ func stdoutFlag() cli.Flag {
 	}
 }
 
-func getStdout(c *cli.Context) bool {
-	return c.Bool(stdoutFlagName)
-}
+
 
 func byHostIdentifier() cli.Flag {
 	return &cli.StringFlag{

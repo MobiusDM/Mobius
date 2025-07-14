@@ -17,13 +17,13 @@ import (
 	"golang.org/x/text/unicode/norm"
 	"gopkg.in/yaml.v2"
 
+	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/notawar/mobius/pkg/spec"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm"
-	"github.com/notawar/mobius/internal/server/ptr"
-	kithttp "github.com/go-kit/kit/transport/http"
 )
 
 const batchSize = 100
@@ -794,7 +794,7 @@ func (c *Client) ApplyGroup(
 		if len(specs.Teams) == 1 && len(teamIDsByName) == 1 {
 			for key := range teamIDsByName {
 				if key != extractTeamName(specs.Teams[0]) {
-					getTeamName = func(teamName string) string {
+					getTeamName = func(_ string) string {
 						return key
 					}
 				}

@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/notawar/mobius/internal/server/contexts/host"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/getsentry/sentry-go"
 	"go.elastic.co/apm/v2"
 )
 

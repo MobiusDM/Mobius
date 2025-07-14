@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/google/go-github/v37/github"
+	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 	"golang.org/x/mod/semver"
 )
 
@@ -44,7 +44,7 @@ func main() {
 				break
 			}
 			for _, release := range releases {
-				if strings.HasPrefix(*release.Name, "orbit-") {
+				if strings.HasPrefix(*release.Name, "agent-") || strings.HasPrefix(*release.Name, "orbit-") {
 					continue
 				}
 				if strings.HasPrefix(*release.Name, "mobius-") {

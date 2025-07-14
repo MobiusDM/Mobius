@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/download"
 	"github.com/google/go-github/v37/github"
+	"github.com/notawar/mobius/pkg/download"
 )
 
 // ReleaseLister interface around github.NewClient(...).Repositories.

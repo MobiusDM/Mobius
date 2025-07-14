@@ -17,7 +17,6 @@ type RpmInfoTest struct {
 
 type RpmVerifyFileTestXML struct {
 	ID             string `xml:"id,attr"`
-	Id             string `xml:"id,attr"` // Alternative field name used in mappers
 	Comment        string `xml:"comment,attr"`
 	CheckExistence string `xml:"check_existence,attr"`
 	Check          string `xml:"check,attr"`
@@ -26,7 +25,6 @@ type RpmVerifyFileTestXML struct {
 
 type RpmInfoTestXML struct {
 	ID             string `xml:"id,attr"`
-	Id             string `xml:"id,attr"` // Alternative field name used in mappers
 	Comment        string `xml:"comment,attr"`
 	CheckExistence string `xml:"check_existence,attr"`
 	Check          string `xml:"check,attr"`

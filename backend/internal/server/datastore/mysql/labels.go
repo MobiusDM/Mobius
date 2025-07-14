@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func (ds *Datastore) ApplyLabelSpecs(ctx context.Context, specs []*mobius.LabelSpec) (err error) {

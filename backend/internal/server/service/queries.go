@@ -24,7 +24,7 @@ type getQueryRequest struct {
 
 type getQueryResponse struct {
 	Query *mobius.Query `json:"query,omitempty"`
-	Err   error        `json:"error,omitempty"`
+	Err   error         `json:"error,omitempty"`
 }
 
 func (r getQueryResponse) Error() error { return r.Err }
@@ -66,9 +66,9 @@ type listQueriesRequest struct {
 
 type listQueriesResponse struct {
 	Queries []mobius.Query             `json:"queries"`
-	Count   int                       `json:"count"`
+	Count   int                        `json:"count"`
 	Meta    *mobius.PaginationMetadata `json:"meta"`
-	Err     error                     `json:"error,omitempty"`
+	Err     error                      `json:"error,omitempty"`
 }
 
 func (r listQueriesResponse) Error() error { return r.Err }
@@ -156,10 +156,10 @@ type getQueryReportRequest struct {
 }
 
 type getQueryReportResponse struct {
-	QueryID       uint                       `json:"query_id"`
+	QueryID       uint                        `json:"query_id"`
 	Results       []mobius.HostQueryResultRow `json:"results"`
-	ReportClipped bool                       `json:"report_clipped"`
-	Err           error                      `json:"error,omitempty"`
+	ReportClipped bool                        `json:"report_clipped"`
+	Err           error                       `json:"error,omitempty"`
 }
 
 func (r getQueryReportResponse) Error() error { return r.Err }
@@ -249,7 +249,7 @@ type createQueryRequest struct {
 
 type createQueryResponse struct {
 	Query *mobius.Query `json:"query,omitempty"`
-	Err   error        `json:"error,omitempty"`
+	Err   error         `json:"error,omitempty"`
 }
 
 func (r createQueryResponse) Error() error { return r.Err }
@@ -364,7 +364,7 @@ type modifyQueryRequest struct {
 
 type modifyQueryResponse struct {
 	Query *mobius.Query `json:"query,omitempty"`
-	Err   error        `json:"error,omitempty"`
+	Err   error         `json:"error,omitempty"`
 }
 
 func (r modifyQueryResponse) Error() error { return r.Err }
@@ -792,7 +792,7 @@ func (svc *Service) queryFromSpec(ctx context.Context, spec *mobius.QuerySpec) (
 
 type getQuerySpecsResponse struct {
 	Specs []*mobius.QuerySpec `json:"specs"`
-	Err   error              `json:"error,omitempty"`
+	Err   error               `json:"error,omitempty"`
 }
 
 type getQuerySpecsRequest struct {
@@ -868,7 +868,7 @@ func (svc *Service) specFromQuery(ctx context.Context, query *mobius.Query) (*mo
 
 type getQuerySpecResponse struct {
 	Spec *mobius.QuerySpec `json:"specs,omitempty"`
-	Err  error            `json:"error,omitempty"`
+	Err  error             `json:"error,omitempty"`
 }
 
 type getQuerySpecRequest struct {

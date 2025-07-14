@@ -25,7 +25,7 @@ type listTeamsRequest struct {
 
 type listTeamsResponse struct {
 	Teams []mobius.Team `json:"teams"`
-	Err   error        `json:"error,omitempty"`
+	Err   error         `json:"error,omitempty"`
 }
 
 func (r listTeamsResponse) Error() error { return r.Err }
@@ -62,7 +62,7 @@ type getTeamRequest struct {
 
 type getTeamResponse struct {
 	Team *mobius.Team `json:"team"`
-	Err  error       `json:"error,omitempty"`
+	Err  error        `json:"error,omitempty"`
 }
 
 func (r getTeamResponse) Error() error { return r.Err }
@@ -94,7 +94,7 @@ type createTeamRequest struct {
 
 type teamResponse struct {
 	Team *mobius.Team `json:"team,omitempty"`
-	Err  error       `json:"error,omitempty"`
+	Err  error        `json:"error,omitempty"`
 }
 
 func (r teamResponse) Error() error { return r.Err }
@@ -179,8 +179,8 @@ func (svc *Service) DeleteTeam(ctx context.Context, tid uint) error {
 ////////////////////////////////////////////////////////////////////////////////
 
 type applyTeamSpecsRequest struct {
-	Force             bool                              `json:"-" query:"force,optional"`   // if true, bypass strict incoming json validation
-	DryRun            bool                              `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
+	Force             bool                               `json:"-" query:"force,optional"`   // if true, bypass strict incoming json validation
+	DryRun            bool                               `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
 	DryRunAssumptions *mobius.TeamSpecsDryRunAssumptions `json:"dry_run_assumptions,omitempty"`
 	Specs             []*mobius.TeamSpec                 `json:"specs"`
 }
@@ -299,7 +299,7 @@ func (svc *Service) ModifyTeamAgentOptions(ctx context.Context, id uint, teamOpt
 ////////////////////////////////////////////////////////////////////////////////
 
 type listTeamUsersRequest struct {
-	TeamID      uint              `url:"id"`
+	TeamID      uint               `url:"id"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 
@@ -381,7 +381,7 @@ type teamEnrollSecretsRequest struct {
 
 type teamEnrollSecretsResponse struct {
 	Secrets []*mobius.EnrollSecret `json:"secrets"`
-	Err     error                 `json:"error,omitempty"`
+	Err     error                  `json:"error,omitempty"`
 }
 
 func (r teamEnrollSecretsResponse) Error() error { return r.Err }
@@ -409,7 +409,7 @@ func (svc *Service) TeamEnrollSecrets(ctx context.Context, teamID uint) ([]*mobi
 ////////////////////////////////////////////////////////////////////////////////
 
 type modifyTeamEnrollSecretsRequest struct {
-	TeamID  uint                 `url:"team_id"`
+	TeamID  uint                  `url:"team_id"`
 	Secrets []mobius.EnrollSecret `json:"secrets"`
 }
 

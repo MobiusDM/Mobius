@@ -18,7 +18,7 @@ type getGlobalScheduleRequest struct {
 
 type getGlobalScheduleResponse struct {
 	GlobalSchedule []*mobius.ScheduledQuery `json:"global_schedule"`
-	Err            error                   `json:"error,omitempty"`
+	Err            error                    `json:"error,omitempty"`
 }
 
 func (r getGlobalScheduleResponse) Error() error { return r.Err }
@@ -64,7 +64,7 @@ type globalScheduleQueryRequest struct {
 
 type globalScheduleQueryResponse struct {
 	Scheduled *mobius.ScheduledQuery `json:"scheduled,omitempty"`
-	Err       error                 `json:"error,omitempty"`
+	Err       error                  `json:"error,omitempty"`
 }
 
 func (r globalScheduleQueryResponse) Error() error { return r.Err }
@@ -116,7 +116,7 @@ type modifyGlobalScheduleRequest struct {
 
 type modifyGlobalScheduleResponse struct {
 	Scheduled *mobius.ScheduledQuery `json:"scheduled,omitempty"`
-	Err       error                 `json:"error,omitempty"`
+	Err       error                  `json:"error,omitempty"`
 }
 
 func (r modifyGlobalScheduleResponse) Error() error { return r.Err }

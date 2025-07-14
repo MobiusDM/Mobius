@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
+	redigo "github.com/gomodule/redigo/redis"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/redis"
 	"github.com/notawar/mobius/internal/server/mobius"
-	redigo "github.com/gomodule/redigo/redis"
 )
 
 // This package implements a distributed lock using Redis. The lock can be used

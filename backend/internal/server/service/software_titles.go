@@ -22,10 +22,10 @@ type listSoftwareTitlesRequest struct {
 
 type listSoftwareTitlesResponse struct {
 	Meta            *mobius.PaginationMetadata       `json:"meta"`
-	Count           int                             `json:"count"`
-	CountsUpdatedAt *time.Time                      `json:"counts_updated_at"`
+	Count           int                              `json:"count"`
+	CountsUpdatedAt *time.Time                       `json:"counts_updated_at"`
 	SoftwareTitles  []mobius.SoftwareTitleListResult `json:"software_titles"`
-	Err             error                           `json:"error,omitempty"`
+	Err             error                            `json:"error,omitempty"`
 }
 
 func (r listSoftwareTitlesResponse) Error() error { return r.Err }
@@ -121,7 +121,7 @@ type getSoftwareTitleRequest struct {
 
 type getSoftwareTitleResponse struct {
 	SoftwareTitle *mobius.SoftwareTitle `json:"software_title,omitempty"`
-	Err           error                `json:"error,omitempty"`
+	Err           error                 `json:"error,omitempty"`
 }
 
 func (r getSoftwareTitleResponse) Error() error { return r.Err }

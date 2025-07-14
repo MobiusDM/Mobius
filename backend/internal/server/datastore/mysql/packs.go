@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) ApplyPackSpecs(ctx context.Context, specs []*mobius.PackSpec) (err error) {
@@ -444,9 +444,7 @@ func packDB(ctx context.Context, q sqlx.QueryerContext, pid uint) (*mobius.Pack,
 	return pack, nil
 }
 
-func teamScheduleName(team *mobius.Team) string {
-	return fmt.Sprintf("Team: %s", team.Name)
-}
+
 
 // ListPacks returns all mobius.Pack records limited and sorted by mobius.ListOptions
 func (ds *Datastore) ListPacks(ctx context.Context, opt mobius.PackListOptions) ([]*mobius.Pack, error) {

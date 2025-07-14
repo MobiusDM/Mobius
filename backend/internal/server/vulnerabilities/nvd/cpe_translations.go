@@ -10,10 +10,10 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/google/go-github/v37/github"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/pkg/download"
 	"github.com/notawar/mobius/pkg/mobiushttp"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/google/go-github/v37/github"
 )
 
 const cpeTranslationsFilename = "cpe_translations.json"

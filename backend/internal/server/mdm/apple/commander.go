@@ -8,14 +8,14 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/micromdm/plist"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/apple/appmanifest"
 	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
 	mdmcrypto "github.com/notawar/mobius/internal/server/mdm/crypto"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	nanomdm_push "github.com/notawar/mobius/internal/server/mdm/nanomdm/push"
-	"github.com/micromdm/plist"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // commandPayload is the common structure all MDM commands use

@@ -18,14 +18,14 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 
 type createDistributedQueryCampaignRequest struct {
-	QuerySQL string            `json:"query"`
-	QueryID  *uint             `json:"query_id"`
+	QuerySQL string             `json:"query"`
+	QueryID  *uint              `json:"query_id"`
 	Selected mobius.HostTargets `json:"selected"`
 }
 
 type createDistributedQueryCampaignResponse struct {
 	Campaign *mobius.DistributedQueryCampaign `json:"campaign,omitempty"`
-	Err      error                           `json:"error,omitempty"`
+	Err      error                            `json:"error,omitempty"`
 }
 
 func (r createDistributedQueryCampaignResponse) Error() error { return r.Err }

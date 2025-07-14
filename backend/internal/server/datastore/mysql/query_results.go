@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 // OverwriteQueryResultRows overwrites the query result rows for a given query and host

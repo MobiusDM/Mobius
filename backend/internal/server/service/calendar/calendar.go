@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 const (

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxdb"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 	"github.com/patrickmn/go-cache"
 )
 

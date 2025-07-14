@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/optjson"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -161,7 +161,7 @@ func (t *Team) UnmarshalJSON(b []byte) error {
 }
 
 type TeamConfig struct {
-	// AgentOptions is the options for osquery and Orbit.
+	// AgentOptions is the options for osquery and the agent.
 	AgentOptions       *json.RawMessage      `json:"agent_options,omitempty"`
 	HostExpirySettings HostExpirySettings    `json:"host_expiry_settings"`
 	WebhookSettings    TeamWebhookSettings   `json:"webhook_settings"`

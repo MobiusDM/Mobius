@@ -22,7 +22,6 @@ import (
 
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
-	"github.com/notawar/mobius/pkg/mobiusdbase"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
@@ -31,6 +30,7 @@ import (
 	"github.com/notawar/mobius/internal/server/mdm/microsoft/syncml"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/mobiusdbase"
 
 	"github.com/google/uuid"
 	mdm_types "github.com/notawar/mobius/internal/server/mobius"
@@ -499,13 +499,14 @@ func NewSoapResponse(payload interface{}, relatesTo string) (mobius.SoapResponse
 
 		// Setting the target action
 	case *mdm_types.SoapFault:
-		if msg.OriginalMessageType == mdm_types.MDEDiscovery { //nolint:gocritic // ignore ifElseChain
+		switch msg.OriginalMessageType {
+case mdm_types.MDEDiscovery: //nolint:gocritic // ignore ifElseChain
 			action = urlDiscovery
-		} else if msg.OriginalMessageType == mdm_types.MDEPolicy {
+		case mdm_types.MDEPolicy:
 			action = urlPolicy
-		} else if msg.OriginalMessageType == mdm_types.MDEEnrollment {
+		case mdm_types.MDEEnrollment:
 			action = urlEnroll
-		} else {
+		default:
 			action = urlDiag
 		}
 		uuid := uuid.New().String()
@@ -626,14 +627,6 @@ func isEligibleForWindowsMDMEnrollment(host *mobius.Host, mdmInfo *mobius.HostMD
 	return host.MobiusPlatform() == "windows" &&
 		host.IsOsqueryEnrolled() &&
 		(mdmInfo == nil || (!mdmInfo.IsServer && !mdmInfo.Enrolled))
-}
-
-// isEligibleForWindowsMDMMigration returns true if the host can be migrated to
-// Mobius's Windows MDM (if it was enabled).
-func isEligibleForWindowsMDMMigration(host *mobius.Host, mdmInfo *mobius.HostMDM) bool {
-	return host.MobiusPlatform() == "windows" &&
-		host.IsOsqueryEnrolled() &&
-		(mdmInfo != nil && !mdmInfo.IsServer && mdmInfo.Enrolled && mdmInfo.Name != mobius.WellKnownMDMMobius)
 }
 
 // NewApplicationProvisioningData returns a new ApplicationProvisioningData Characteristic
@@ -948,7 +941,7 @@ func mdmMicrosoftTOSEndpoint(ctx context.Context, request interface{}, svc mobiu
 }
 
 // authBinarySecurityToken checks if the provided token is valid. For programmatic enrollment, it
-// returns the orbit node key and host uuid. For automatic enrollment, it returns only the UPN (the
+// returns the node key and host uuid. For automatic enrollment, it returns only the UPN (the
 // host uuid will be an empty string).
 func (svc *Service) authBinarySecurityToken(ctx context.Context, authToken *mobius.HeaderBinarySecurityToken) (claim string, hostUUID string, err error) {
 	if authToken == nil {
@@ -977,7 +970,8 @@ func (svc *Service) authBinarySecurityToken(ctx context.Context, authToken *mobi
 
 		// Validating the Binary Security Token Type used on Programmatic Enrollments
 		if binSecToken.Type == mdm_types.WindowsMDMProgrammaticEnrollmentType {
-			host, err := svc.ds.LoadHostByOrbitNodeKey(ctx, binSecToken.Payload.OrbitNodeKey)
+			// Note: Using LoadHostByNodeKey instead of LoadHostByOrbitNodeKey since agent support was removed
+			host, err := svc.ds.LoadHostByNodeKey(ctx, binSecToken.Payload.NodeKey)
 			if err != nil {
 				return "", "", fmt.Errorf("host data cannot be found %v", err)
 			}
@@ -993,7 +987,7 @@ func (svc *Service) authBinarySecurityToken(ctx context.Context, authToken *mobi
 			}
 
 			// No errors, token is authorized
-			return binSecToken.Payload.OrbitNodeKey, host.UUID, nil
+			return binSecToken.Payload.NodeKey, host.UUID, nil
 		}
 
 		// Validating the Binary Security Token Type used on Automatic Enrollments (returned by STS Auth Endpoint)
@@ -1309,13 +1303,8 @@ func (svc *Service) isMobiusdPresentOnDevice(ctx context.Context, deviceID strin
 				return false, ctxerr.Wrap(ctx, err, "get host lite by identifier")
 			}
 			if host != nil {
-				orbitInfo, err := svc.ds.GetHostOrbitInfo(ctx, host.ID)
-				if err != nil && !mobius.IsNotFound(err) {
-					return false, ctxerr.Wrap(ctx, err, "get host orbit info")
-				}
-				if orbitInfo != nil {
-					isPresent = orbitInfo.Version != ""
-				}
+				// Orbit support has been removed - orbit is never present
+				isPresent = false
 			}
 		}
 		return isPresent, nil
@@ -1431,7 +1420,7 @@ func (svc *Service) enqueueInstallMobiusdCommand(ctx context.Context, deviceID s
 
 // New session Alert Handler
 // This handler will return an protocol command to install an MSI on a new session from unenrolled device
-func (svc *Service) processNewSessionAlert(ctx context.Context, messageID string, deviceID string, cmd mdm_types.ProtoCmdOperation) error {
+func (svc *Service) processNewSessionAlert(ctx context.Context, _ string, deviceID string, _ mdm_types.ProtoCmdOperation) error {
 	// Checking if mobiusdaemon is present on the device
 	mobiusdPresent, err := svc.isMobiusdPresentOnDevice(ctx, deviceID)
 	if err != nil {
@@ -1447,7 +1436,7 @@ func (svc *Service) processNewSessionAlert(ctx context.Context, messageID string
 
 // Generic Alert Handlers
 // This handler will check for generic alerts. Device unenrollment is handled here
-func (svc *Service) processGenericAlert(ctx context.Context, messageID string, deviceID string, cmd mdm_types.ProtoCmdOperation) error {
+func (svc *Service) processGenericAlert(ctx context.Context, _ string, deviceID string, cmd mdm_types.ProtoCmdOperation) error {
 	// Checking user-initiated unenrollment request
 	if len(cmd.Cmd.Items) > 0 {
 		for _, item := range cmd.Cmd.Items {

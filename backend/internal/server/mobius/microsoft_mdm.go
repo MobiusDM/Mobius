@@ -717,8 +717,8 @@ type WindowsMDMAccessTokenPayload struct {
 	// Type is the enrollment type, such as "programmatic".
 	Type    WindowsMDMEnrollmentType `json:"type"`
 	Payload struct {
-		OrbitNodeKey string `json:"orbit_node_key"`
-		AuthToken    string `json:"auth_token"`
+		NodeKey   string `json:"orbit_node_key"` // JSON field kept for API compatibility
+		AuthToken string `json:"auth_token"`
 	} `json:"payload"`
 }
 
@@ -737,7 +737,7 @@ func (t *WindowsMDMAccessTokenPayload) IsValidToken() error {
 		return errors.New("invalid binary security payload type")
 	}
 
-	if t.Type == WindowsMDMProgrammaticEnrollmentType && len(t.Payload.OrbitNodeKey) == 0 {
+	if t.Type == WindowsMDMProgrammaticEnrollmentType && len(t.Payload.NodeKey) == 0 {
 		return errors.New("invalid binary security payload content")
 	}
 
@@ -965,7 +965,7 @@ type ProtoCmdOperation struct {
 // CmdID struct holds the value of a CmdID and a flag to determine whether
 // to include a comment when marshaling to XML.
 type CmdID struct {
-	Value               string
+	Value                string
 	IncludeMobiusComment bool
 }
 
@@ -1449,7 +1449,7 @@ func GetEncodedBinarySecurityToken(typeID WindowsMDMEnrollmentType, payload stri
 
 	switch typeID {
 	case WindowsMDMProgrammaticEnrollmentType:
-		pld.Payload.OrbitNodeKey = payload
+		pld.Payload.NodeKey = payload
 	case WindowsMDMAutomaticEnrollmentType:
 		pld.Payload.AuthToken = payload
 	default:

@@ -174,7 +174,7 @@ func (r SetupExperienceScriptResult) SetupExperienceStatus() SetupExperienceStat
 	return SetupExperienceStatusFailure
 }
 
-// SetupExperienceStatusPayload is the payload we send to Orbit to tell it what the current status
+// SetupExperienceStatusPayload is the payload we send to the agent to tell it what the current status
 // of the setup experience is for that host.
 type SetupExperienceStatusPayload struct {
 	Script                *SetupExperienceStatusResult                 `json:"script,omitempty"`

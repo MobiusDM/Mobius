@@ -17,10 +17,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/mdm/microsoft/syncml"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/cryptoutil"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/smallstep/pkcs7"
 )
 

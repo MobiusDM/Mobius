@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func upsertCarveDB(ctx context.Context, writer sqlx.ExecerContext, metadata *mobius.CarveMetadata) (int64, error) {

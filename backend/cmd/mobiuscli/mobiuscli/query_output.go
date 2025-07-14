@@ -6,8 +6,8 @@ import (
 	"os"
 	"sort"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/gosuri/uilive"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/olekukonko/tablewriter"
 )
 

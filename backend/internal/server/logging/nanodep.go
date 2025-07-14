@@ -1,9 +1,9 @@
 package logging
 
 import (
-	nanodep_log "github.com/notawar/mobius/internal/server/mdm/nanodep/log"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	nanodep_log "github.com/notawar/mobius/internal/server/mdm/nanodep/log"
 )
 
 // NanoDEPLogger is a logger adapter for nanodep.

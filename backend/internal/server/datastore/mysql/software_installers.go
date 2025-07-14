@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/automatic_policy"
+	"github.com/go-kit/log/level"
+	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/go-kit/log/level"
-	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/pkg/automatic_policy"
 )
 
 func (ds *Datastore) ListPendingSoftwareInstalls(ctx context.Context, hostID uint) ([]string, error) {

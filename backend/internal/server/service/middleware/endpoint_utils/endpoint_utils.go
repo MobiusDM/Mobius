@@ -15,18 +15,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/contexts/license"
-	"github.com/notawar/mobius/internal/server/contexts/logging"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/android"
-	"github.com/notawar/mobius/internal/server/service/middleware/authzcheck"
-	"github.com/notawar/mobius/internal/server/service/middleware/ratelimit"
 	"github.com/go-kit/kit/endpoint"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/gorilla/mux"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/contexts/license"
+	"github.com/notawar/mobius/internal/server/contexts/logging"
+	"github.com/notawar/mobius/internal/server/mdm/android"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service/middleware/authzcheck"
+	"github.com/notawar/mobius/internal/server/service/middleware/ratelimit"
 )
 
 type HandlerRoutesFunc func(r *mux.Router, opts []kithttp.ServerOption)
@@ -516,7 +516,7 @@ type CommonEndpointer[H HandlerFunc | AndroidFunc] struct {
 	EncodeFn         kithttp.EncodeResponseFunc
 	Opts             []kithttp.ServerOption
 	AuthFunc         func(svc mobius.Service, next endpoint.Endpoint) endpoint.Endpoint
-	MobiusService     mobius.Service
+	MobiusService    mobius.Service
 	Router           *mux.Router
 	CustomMiddleware []endpoint.Middleware
 	Versions         []string

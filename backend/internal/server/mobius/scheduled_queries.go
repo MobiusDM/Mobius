@@ -191,13 +191,14 @@ func ScheduledQueryFromQuery(query *Query) *ScheduledQuery {
 		snapshot *bool
 		removed  *bool
 	)
-	if query.Logging == "" || query.Logging == "snapshot" { //nolint:gocritic // ignore ifElseChain
+	switch query.Logging {
+case "", "snapshot": //nolint:gocritic // ignore ifElseChain
 		snapshot = ptr.Bool(true)
 		removed = ptr.Bool(false)
-	} else if query.Logging == "differential" {
+	case "differential":
 		snapshot = ptr.Bool(false)
 		removed = ptr.Bool(true)
-	} else { // query.Logging == "differential_ignore_removals"
+	default: // query.Logging == "differential_ignore_removals"
 		snapshot = ptr.Bool(false)
 		removed = ptr.Bool(false)
 	}

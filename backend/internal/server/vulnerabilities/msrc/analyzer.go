@@ -7,14 +7,14 @@ import (
 	"strings"
 	"time"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/io"
 	msrc "github.com/notawar/mobius/internal/server/vulnerabilities/msrc/parsed"
 	utils "github.com/notawar/mobius/internal/server/vulnerabilities/utils"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 const (

@@ -6,11 +6,12 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"math"
+
 	"github.com/docker/go-units"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
-	"math"
 )
 
 //////////////////////////////////////////////////////////////////////////////
@@ -23,7 +24,7 @@ type getAppStoreAppsRequest struct {
 
 type getAppStoreAppsResponse struct {
 	AppStoreApps []*mobius.VPPApp `json:"app_store_apps"`
-	Err          error           `json:"error,omitempty"`
+	Err          error            `json:"error,omitempty"`
 }
 
 func (r getAppStoreAppsResponse) Error() error { return r.Err }
@@ -51,14 +52,14 @@ func (svc *Service) GetAppStoreApps(ctx context.Context, teamID *uint) ([]*mobiu
 //////////////////////////////////////////////////////////////////////////////
 
 type addAppStoreAppRequest struct {
-	TeamID           *uint                     `json:"team_id"`
-	AppStoreID       string                    `json:"app_store_id"`
+	TeamID           *uint                      `json:"team_id"`
+	AppStoreID       string                     `json:"app_store_id"`
 	Platform         mobius.AppleDevicePlatform `json:"platform"`
-	SelfService      bool                      `json:"self_service"`
-	AutomaticInstall bool                      `json:"automatic_install"`
-	LabelsIncludeAny []string                  `json:"labels_include_any"`
-	LabelsExcludeAny []string                  `json:"labels_exclude_any"`
-	Categories       []string                  `json:"categories"`
+	SelfService      bool                       `json:"self_service"`
+	AutomaticInstall bool                       `json:"automatic_install"`
+	LabelsIncludeAny []string                   `json:"labels_include_any"`
+	LabelsExcludeAny []string                   `json:"labels_exclude_any"`
+	Categories       []string                   `json:"categories"`
 }
 
 type addAppStoreAppResponse struct {
@@ -108,7 +109,7 @@ type updateAppStoreAppRequest struct {
 
 type updateAppStoreAppResponse struct {
 	AppStoreApp *mobius.VPPAppStoreApp `json:"app_store_app,omitempty"`
-	Err         error                 `json:"error,omitempty"`
+	Err         error                  `json:"error,omitempty"`
 }
 
 func (r updateAppStoreAppResponse) Error() error { return r.Err }
@@ -151,7 +152,7 @@ func (uploadVPPTokenRequest) DecodeRequest(ctx context.Context, r *http.Request)
 		}
 	}
 
-	if r.MultipartForm.File["token"] == nil || len(r.MultipartForm.File["token"]) == 0 {
+	if len(r.MultipartForm.File["token"]) == 0 {
 		return nil, &mobius.BadRequestError{
 			Message:     "token multipart field is required",
 			InternalErr: err,
@@ -164,7 +165,7 @@ func (uploadVPPTokenRequest) DecodeRequest(ctx context.Context, r *http.Request)
 }
 
 type uploadVPPTokenResponse struct {
-	Err   error             `json:"error,omitempty"`
+	Err   error              `json:"error,omitempty"`
 	Token *mobius.VPPTokenDB `json:"token,omitempty"`
 }
 
@@ -218,7 +219,7 @@ func (patchVPPTokenRenewRequest) DecodeRequest(ctx context.Context, r *http.Requ
 		}
 	}
 
-	if r.MultipartForm.File["token"] == nil || len(r.MultipartForm.File["token"]) == 0 {
+	if len(r.MultipartForm.File["token"]) == 0 {
 		return nil, &mobius.BadRequestError{
 			Message:     "token multipart field is required",
 			InternalErr: err,
@@ -245,7 +246,7 @@ func (patchVPPTokenRenewRequest) DecodeRequest(ctx context.Context, r *http.Requ
 }
 
 type patchVPPTokenRenewResponse struct {
-	Err   error             `json:"error,omitempty"`
+	Err   error              `json:"error,omitempty"`
 	Token *mobius.VPPTokenDB `json:"token,omitempty"`
 }
 
@@ -290,7 +291,7 @@ type patchVPPTokensTeamsRequest struct {
 
 type patchVPPTokensTeamsResponse struct {
 	Token *mobius.VPPTokenDB `json:"token,omitempty"`
-	Err   error             `json:"error,omitempty"`
+	Err   error              `json:"error,omitempty"`
 }
 
 func (r patchVPPTokensTeamsResponse) Error() error { return r.Err }
@@ -321,7 +322,7 @@ type getVPPTokensRequest struct{}
 
 type getVPPTokensResponse struct {
 	Tokens []*mobius.VPPTokenDB `json:"vpp_tokens"`
-	Err    error               `json:"error,omitempty"`
+	Err    error                `json:"error,omitempty"`
 }
 
 func (r getVPPTokensResponse) Error() error { return r.Err }

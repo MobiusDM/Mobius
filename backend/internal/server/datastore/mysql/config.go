@@ -3,10 +3,10 @@ package mysql
 import (
 	"time"
 
-	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/go-kit/log"
 	"github.com/ngrok/sqlmw"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 )
 
 const (

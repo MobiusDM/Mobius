@@ -413,7 +413,7 @@ type MDMAppleBootstrapPackageSummary struct {
 // MDMAppleMobiusdConfig contains the fields used to configure
 // `mobiusdaemon` in macOS devices via a configuration profile.
 type MDMAppleMobiusdConfig struct {
-	MobiusURL      string
+	MobiusURL     string
 	EnrollSecret  string
 	EnableScripts bool
 }

@@ -3,19 +3,18 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/contexts/logging"
-	"github.com/notawar/mobius/internal/server/mobius"
-	middleware_log "github.com/notawar/mobius/internal/server/service/middleware/log"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/logging"
+	"github.com/notawar/mobius/internal/server/mobius"
+	middleware_log "github.com/notawar/mobius/internal/server/service/middleware/log"
 
+	"github.com/go-kit/kit/endpoint"
 	authz_ctx "github.com/notawar/mobius/internal/server/contexts/authz"
 	hostctx "github.com/notawar/mobius/internal/server/contexts/host"
-	"github.com/go-kit/kit/endpoint"
 )
 
 func logJSON(logger log.Logger, v interface{}, key string) {
@@ -125,49 +124,7 @@ func authenticatedHost(svc mobius.Service, logger log.Logger, next endpoint.Endp
 	return middleware_log.Logged(authHostFunc)
 }
 
-func authenticatedOrbitHost(svc mobius.Service, logger log.Logger, next endpoint.Endpoint) endpoint.Endpoint {
-	authHostFunc := func(ctx context.Context, request interface{}) (interface{}, error) {
-		nodeKey, err := getOrbitNodeKey(request)
-		if err != nil {
-			return nil, err
-		}
 
-		host, debug, err := svc.AuthenticateOrbitHost(ctx, nodeKey)
-		if err != nil {
-			logging.WithErr(ctx, err)
-			return nil, err
-		}
-
-		hlogger := log.With(logger, "host_id", host.ID)
-		if debug {
-			logJSON(hlogger, request, "request")
-		}
-
-		ctx = hostctx.NewContext(ctx, host)
-		instrumentHostLogger(ctx, host.ID)
-		if ac, ok := authz_ctx.FromContext(ctx); ok {
-			ac.SetAuthnMethod(authz_ctx.AuthnOrbitToken)
-		}
-
-		resp, err := next(ctx, request)
-		if err != nil {
-			return nil, err
-		}
-
-		if debug {
-			logJSON(hlogger, resp, "response")
-		}
-		return resp, nil
-	}
-	return middleware_log.Logged(authHostFunc)
-}
-
-func getOrbitNodeKey(r interface{}) (string, error) {
-	if onk, err := r.(interface{ orbitHostNodeKey() string }); err {
-		return onk.orbitHostNodeKey(), nil
-	}
-	return "", errors.New("error getting orbit node key")
-}
 
 func getNodeKey(r interface{}) (string, error) {
 	if hnk, ok := r.(interface{ hostNodeKey() string }); ok {

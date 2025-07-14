@@ -829,7 +829,7 @@ func (svc *Service) ChangeUserEmail(ctx context.Context, token string) (string, 
 // isAdminOfTheModifiedTeams checks whether the current user is allowed to modify the user
 // roles in the teams.
 //
-// TODO: End-goal is to move all this logic to policy.rego.
+// NOTE: This logic should eventually be migrated to policy.rego for centralized authorization.
 func isAdminOfTheModifiedTeams(currentUser *mobius.User, originalUserTeams, newUserTeams []mobius.UserTeam) bool {
 	// Global admins can modify all user teams roles.
 	if currentUser.GlobalRole != nil && *currentUser.GlobalRole == mobius.RoleAdmin {

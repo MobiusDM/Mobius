@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/notawar/mobius/internal/server"
 	"github.com/go-kit/kit/log/level"
 	"github.com/go-kit/log"
+	"github.com/notawar/mobius/internal/server"
 )
 
 type webhookLogWriter struct {

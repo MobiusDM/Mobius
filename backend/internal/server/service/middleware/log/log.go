@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/go-kit/kit/endpoint"
 	kitlog "github.com/go-kit/log"
+	"github.com/notawar/mobius/internal/server/contexts/logging"
 )
 
 // Logged wraps an endpoint and adds the error if the context supports it

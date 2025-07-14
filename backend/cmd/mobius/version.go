@@ -7,6 +7,7 @@ import (
 )
 
 func createVersionCmd(configManager config.Manager) *cobra.Command {
+	_ = configManager // parameter reserved for future use
 	// flags
 	var (
 		fFull bool

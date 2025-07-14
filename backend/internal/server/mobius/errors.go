@@ -604,17 +604,6 @@ func (fe MobiusdError) ToMap() map[string]any {
 	}
 }
 
-// OrbitError is used for orbit endpoints, to return an error message along
-// with a failed request's response.
-type OrbitError struct {
-	Message string
-}
-
-// Error implements the error interface for the OrbitError.
-func (e OrbitError) Error() string {
-	return e.Message
-}
-
 // Message that may surfaced by the server or the mobiuscli client.
 const (
 	// Hosts, general
@@ -630,7 +619,7 @@ const (
 	RunScriptHostTimeoutErrMsg             = "Mobius didn't hear back from the host in under 5 minutes (timeout for live scripts). Mobius doesn't know if the script ran because it didn't receive the result. Go to Mobius and check Host details > Activities to see script results."
 	RunScriptScriptsDisabledGloballyErrMsg = "Running scripts is disabled in organization settings."
 	RunScriptDisabledErrMsg                = "Scripts are disabled for this host. To run scripts, deploy the mobiusdaemon agent with scripts enabled."
-	RunScriptsOrbitDisabledErrMsg          = "Couldn't run script. To run a script, deploy the mobiusdaemon agent with --enable-scripts."
+	RunScriptsDisabledErrMsg               = "Couldn't run script. To run a script, deploy the mobiusdaemon agent with --enable-scripts."
 	RunScriptAsyncScriptEnqueuedMsg        = "Script is running or will run when the host comes online."
 	RunScripSavedMaxLenErrMsg              = "Script is too large. It's limited to 500,000 characters (approximately 10,000 lines)."
 	RunScripUnsavedMaxLenErrMsg            = "Script is too large. It's limited to 10,000 characters (approximately 125 lines)."

@@ -9,13 +9,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/go-kit/log/level"
 )
 
 type runLiveQueryRequest struct {
@@ -53,11 +53,11 @@ type runLiveQueryResponse struct {
 func (r runLiveQueryResponse) Error() error { return r.Err }
 
 type runOneLiveQueryResponse struct {
-	QueryID            uint                `json:"query_id"`
-	TargetedHostCount  int                 `json:"targeted_host_count"`
-	RespondedHostCount int                 `json:"responded_host_count"`
+	QueryID            uint                 `json:"query_id"`
+	TargetedHostCount  int                  `json:"targeted_host_count"`
+	RespondedHostCount int                  `json:"responded_host_count"`
 	Results            []mobius.QueryResult `json:"results"`
-	Err                error               `json:"error,omitempty"`
+	Err                error                `json:"error,omitempty"`
 }
 
 func (r runOneLiveQueryResponse) Error() error { return r.Err }
@@ -66,7 +66,7 @@ type runLiveQueryOnHostResponse struct {
 	HostID uint                `json:"host_id"`
 	Rows   []map[string]string `json:"rows"`
 	Query  string              `json:"query"`
-	Status mobius.HostStatus    `json:"status"`
+	Status mobius.HostStatus   `json:"status"`
 	Err    string              `json:"error,omitempty"`
 }
 

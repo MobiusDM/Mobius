@@ -8,10 +8,10 @@ import (
 
 	"golang.org/x/text/unicode/norm"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/go-kit/log/level"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 const (

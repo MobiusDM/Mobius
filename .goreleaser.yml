@@ -2,10 +2,6 @@ version: 2
 
 project_name: mobius
 
-monorepo:
-  tag_prefix: mobius-
-  dir: .
-
 before:
   hooks: []
 
@@ -27,12 +23,12 @@ builds:
   - -trimpath
   ldflags:
   - -extldflags "-static"
-  - -X github.com/notawar/mobius/backend/server/version.appName={{ .ArtifactName }}
-  - -X github.com/notawar/mobius/backend/server/version.version={{ .Version }}
-  - -X github.com/notawar/mobius/backend/server/version.branch={{ .Branch }}
-  - -X github.com/notawar/mobius/backend/server/version.revision={{ .FullCommit }}
-  - -X github.com/notawar/mobius/backend/server/version.buildDate={{ time "2006-01-02" }}
-  - -X github.com/notawar/mobius/backend/server/version.buildUser={{ .Env.USER }}
+  - -X github.com/notawar/mobius/internal/server/version.appName={{ .ArtifactName }}
+  - -X github.com/notawar/mobius/internal/server/version.version={{ .Version }}
+  - -X github.com/notawar/mobius/internal/server/version.branch={{ .Branch }}
+  - -X github.com/notawar/mobius/internal/server/version.revision={{ .FullCommit }}
+  - -X github.com/notawar/mobius/internal/server/version.buildDate={{ time "2006-01-02" }}
+  - -X github.com/notawar/mobius/internal/server/version.buildUser={{ .Env.USER }}
 
 - id: mobiuscli
   dir: ./cmd/mobiuscli/
@@ -48,12 +44,12 @@ builds:
   flags:
   - -trimpath
   ldflags:
-  - -X github.com/notawar/mobius/backend/server/version.appName={{ .ArtifactName }}
-  - -X github.com/notawar/mobius/backend/server/version.version={{ .Version }}
-  - -X github.com/notawar/mobius/backend/server/version.branch={{ .Branch }}
-  - -X github.com/notawar/mobius/backend/server/version.revision={{ .FullCommit }}
-  - -X github.com/notawar/mobius/backend/server/version.buildDate={{ time "2006-01-02" }}
-  - -X github.com/notawar/mobius/backend/server/version.buildUser={{ .Env.USER }}
+  - -X github.com/notawar/mobius/internal/server/version.appName={{ .ArtifactName }}
+  - -X github.com/notawar/mobius/internal/server/version.version={{ .Version }}
+  - -X github.com/notawar/mobius/internal/server/version.branch={{ .Branch }}
+  - -X github.com/notawar/mobius/internal/server/version.revision={{ .FullCommit }}
+  - -X github.com/notawar/mobius/internal/server/version.buildDate={{ time "2006-01-02" }}
+  - -X github.com/notawar/mobius/internal/server/version.buildUser={{ .Env.USER }}
 
 - id: mobiuscli-macos
   dir: ./cmd/mobiuscli/
@@ -68,12 +64,12 @@ builds:
   flags:
   - -trimpath
   ldflags:
-  - -X github.com/notawar/mobius/backend/server/version.appName={{ .ArtifactName }}
-  - -X github.com/notawar/mobius/backend/server/version.version={{ .Version }}
-  - -X github.com/notawar/mobius/backend/server/version.branch={{ .Branch }}
-  - -X github.com/notawar/mobius/backend/server/version.revision={{ .FullCommit }}
-  - -X github.com/notawar/mobius/backend/server/version.buildDate={{ time "2006-01-02" }}
-  - -X github.com/notawar/mobius/backend/server/version.buildUser={{ .Env.USER }}
+  - -X github.com/notawar/mobius/internal/server/version.appName={{ .ArtifactName }}
+  - -X github.com/notawar/mobius/internal/server/version.version={{ .Version }}
+  - -X github.com/notawar/mobius/internal/server/version.branch={{ .Branch }}
+  - -X github.com/notawar/mobius/internal/server/version.revision={{ .FullCommit }}
+  - -X github.com/notawar/mobius/internal/server/version.buildDate={{ time "2006-01-02" }}
+  - -X github.com/notawar/mobius/internal/server/version.buildUser={{ .Env.USER }}
 
 universal_binaries:
 - id: mobiuscli # resulting binary id

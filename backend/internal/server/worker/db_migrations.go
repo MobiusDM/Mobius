@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
+	kitlog "github.com/go-kit/log"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	kitlog "github.com/go-kit/log"
 )
 
 // Name of the DB migration job as registered in the worker. Note that although

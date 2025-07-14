@@ -5,14 +5,14 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/android"
-	"github.com/notawar/mobius/internal/server/service/middleware/auth"
-	eu "github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/go-json-experiment/json"
 	"github.com/go-json-experiment/json/jsontext"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
+	"github.com/notawar/mobius/internal/server/mdm/android"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service/middleware/auth"
+	eu "github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 )
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
@@ -55,7 +55,7 @@ func newUserAuthenticatedEndpointer(mobiusSvc mobius.Service, svc android.Servic
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      auth.AuthenticatedUser,
-		MobiusService:  mobiusSvc,
+		MobiusService: mobiusSvc,
 		Router:        r,
 		Versions:      versions,
 	}
@@ -71,7 +71,7 @@ func newNoAuthEndpointer(mobiusSvc mobius.Service, svc android.Service, opts []k
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      auth.UnauthenticatedRequest,
-		MobiusService:  mobiusSvc,
+		MobiusService: mobiusSvc,
 		Router:        r,
 		Versions:      versions,
 	}

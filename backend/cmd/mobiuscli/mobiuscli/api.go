@@ -13,11 +13,11 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service"
 	"github.com/notawar/mobius/internal/server/version"
-	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/urfave/cli/v2"
 )
 
@@ -142,11 +142,13 @@ func unauthenticatedClientFromConfig(cc Context, debug bool, outputWriter io.Wri
 	return mobius, nil
 }
 
-// returns an HTTP client and the parsed URL for the configured server's
+// rawHTTPClientFromConfig is kept for potential future use in mobiuscli.
+// It returns an HTTP client and the parsed URL for the configured server's
 // address. The reason why this exists instead of using
 // unauthenticatedClientFromConfig is because this doesn't apply the same rules
 // around TLS config - in particular, it only sets a root CA if one is
 // explicitly configured.
+// nolint:unused
 func rawHTTPClientFromConfig(cc Context) (*http.Client, *url.URL, error) {
 	if flag.Lookup("test.v") != nil {
 		cc.Address = os.Getenv("MOBIUS_SERVER_ADDRESS")

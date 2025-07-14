@@ -340,12 +340,12 @@ func checkWinVulnerabilities(
 }
 
 func checkOvalVulnerabilities(
-	ctx context.Context,
-	ds mobius.Datastore,
+	_ context.Context,
+	_ mobius.Datastore,
 	logger kitlog.Logger,
-	vulnPath string,
+	_ string,
 	config *config.VulnerabilitiesConfig,
-	collectVulns bool,
+	_ bool,
 ) []mobius.SoftwareVulnerability {
 	var results []mobius.SoftwareVulnerability
 
@@ -395,12 +395,12 @@ func checkOvalVulnerabilities(
 }
 
 func checkGovalDictionaryVulnerabilities(
-	ctx context.Context,
-	ds mobius.Datastore,
+	_ context.Context,
+	_ mobius.Datastore,
 	logger kitlog.Logger,
-	vulnPath string,
+	_ string,
 	config *config.VulnerabilitiesConfig,
-	collectVulns bool,
+	_ bool,
 ) []mobius.SoftwareVulnerability {
 	var results []mobius.SoftwareVulnerability
 
@@ -1118,7 +1118,7 @@ func verifyDiskEncryptionKeys(
 	return nil
 }
 
-func newUsageStatisticsSchedule(ctx context.Context, instanceID string, ds mobius.Datastore, config config.MobiusConfig, license *mobius.LicenseInfo, logger kitlog.Logger) (*schedule.Schedule, error) {
+func newUsageStatisticsSchedule(ctx context.Context, instanceID string, ds mobius.Datastore, config config.MobiusConfig, _ *mobius.LicenseInfo, logger kitlog.Logger) (*schedule.Schedule, error) {
 	const (
 		name            = string(mobius.CronUsageStatistics)
 		defaultInterval = 1 * time.Hour
@@ -1480,7 +1480,7 @@ func cronUninstallSoftwareMigration(
 	ctx context.Context,
 	instanceID string,
 	ds mobius.Datastore,
-	softwareInstallStore mobius.SoftwareInstallerStore,
+	_ mobius.SoftwareInstallerStore,
 	logger kitlog.Logger,
 ) (*schedule.Schedule, error) {
 	const (

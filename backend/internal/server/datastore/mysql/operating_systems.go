@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) ListOperatingSystems(ctx context.Context) ([]mobius.OperatingSystem, error) {
@@ -185,16 +185,7 @@ func upsertHostOperatingSystemDB(ctx context.Context, tx sqlx.ExtContext, hostID
 	return err
 }
 
-// getIDHostOperatingSystemDB queries the `host_operating_system` table and returns the
-// operating system ID for the given host ID.
-func getIDHostOperatingSystemDB(ctx context.Context, tx sqlx.ExtContext, hostID uint) (uint, error) {
-	var id uint
-	stmt := "SELECT os_id FROM host_operating_system WHERE host_id = ?"
-	if err := sqlx.GetContext(ctx, tx, &id, stmt, hostID); err != nil {
-		return 0, err
-	}
-	return id, nil
-}
+
 
 // getIDHostOperatingSystemDB queries the `operating_systems` table and returns the
 // operating system record associated with the given host ID based on a subquery

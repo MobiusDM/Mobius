@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) CountHostsInTargets(ctx context.Context, filter mobius.TeamFilter, targets mobius.HostTargets, now time.Time) (mobius.TargetMetrics, error) {

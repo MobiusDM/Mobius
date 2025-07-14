@@ -16,7 +16,7 @@ void run(void) {
         }
     
         [application getDeviceInformationWithParameters:nil
-                                        completionBlock:^(MSALDeviceInformation * _Nullable deviceInformation, __unused NSError * _Nullable error) {
+                                        completionBlock:^(MSALDeviceInformation * _Nullable deviceInformation, NSError * _Nullable error) {
             NSString *deviceId = deviceInformation.extraDeviceInformation[MSAL_PRIMARY_REGISTRATION_DEVICE_ID];
             NSString *upn = deviceInformation.extraDeviceInformation[MSAL_PRIMARY_REGISTRATION_UPN];
             

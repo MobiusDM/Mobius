@@ -9,14 +9,14 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/notawar/mobius/internal/server/contexts/capabilities"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/service/middleware/auth"
-	eu "github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/go-kit/kit/endpoint"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-kit/log"
 	"github.com/gorilla/mux"
+	"github.com/notawar/mobius/internal/server/contexts/capabilities"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service/middleware/auth"
+	eu "github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 )
 
 func makeDecoder(iface interface{}) kithttp.DecodeRequestFunc {
@@ -113,7 +113,7 @@ func newUserAuthenticatedEndpointer(svc mobius.Service, opts []kithttp.ServerOpt
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      auth.AuthenticatedUser,
-		MobiusService:  svc,
+		MobiusService: svc,
 		Router:        r,
 		Versions:      versions,
 	}
@@ -129,7 +129,7 @@ func newNoAuthEndpointer(svc mobius.Service, opts []kithttp.ServerOption, r *mux
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      auth.UnauthenticatedRequest,
-		MobiusService:  svc,
+		MobiusService: svc,
 		Router:        r,
 		Versions:      versions,
 	}
@@ -158,7 +158,7 @@ func newDeviceAuthenticatedEndpointer(svc mobius.Service, logger log.Logger, opt
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      authFunc,
-		MobiusService:  svc,
+		MobiusService: svc,
 		Router:        r,
 		Versions:      versions,
 	}
@@ -178,32 +178,7 @@ func newHostAuthenticatedEndpointer(svc mobius.Service, logger log.Logger, opts 
 		EncodeFn:      encodeResponse,
 		Opts:          opts,
 		AuthFunc:      authFunc,
-		MobiusService:  svc,
-		Router:        r,
-		Versions:      versions,
-	}
-}
-
-func newOrbitAuthenticatedEndpointer(svc mobius.Service, logger log.Logger, opts []kithttp.ServerOption, r *mux.Router,
-	versions ...string) *eu.CommonEndpointer[eu.HandlerFunc] {
-	authFunc := func(svc mobius.Service, next endpoint.Endpoint) endpoint.Endpoint {
-		return authenticatedOrbitHost(svc, logger, next)
-	}
-
-	// Inject the mobius.Capabilities header to the response for Orbit hosts
-	opts = append(opts, capabilitiesResponseFunc(mobius.GetServerOrbitCapabilities()))
-	// Add the capabilities reported by Orbit to the request context
-	opts = append(opts, capabilitiesContextFunc())
-
-	return &eu.CommonEndpointer[eu.HandlerFunc]{
-		EP: &endpointer{
-			svc: svc,
-		},
-		MakeDecoderFn: makeDecoder,
-		EncodeFn:      encodeResponse,
-		Opts:          opts,
-		AuthFunc:      authFunc,
-		MobiusService:  svc,
+		MobiusService: svc,
 		Router:        r,
 		Versions:      versions,
 	}

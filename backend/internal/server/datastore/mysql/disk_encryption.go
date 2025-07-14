@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
 	"github.com/go-kit/log/level"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type encryptionKey struct {

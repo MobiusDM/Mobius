@@ -10,8 +10,8 @@ import (
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mail"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 )
 

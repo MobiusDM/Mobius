@@ -128,7 +128,7 @@ func (hs *HostScriptDetail) setLastExecution(executionID *string, executedAt *ti
 		hs.LastExecution = newHSE
 		return true
 	}
-	if newHSE.ExecutedAt == hs.LastExecution.ExecutedAt && newHSE.HSRID > hs.LastExecution.HSRID {
+	if newHSE.ExecutedAt.Equal(hs.LastExecution.ExecutedAt) && newHSE.HSRID > hs.LastExecution.HSRID {
 		// same execution time, but new execution has a higher ID, use it
 		hs.LastExecution = newHSE
 		return true
@@ -402,7 +402,7 @@ type SoftwareInstallerPayload struct {
 	UninstallScript    string   `json:"uninstall_script"`
 	PostInstallScript  string   `json:"post_install_script"`
 	SelfService        bool     `json:"self_service"`
-	MobiusMaintained    bool     `json:"-"`
+	MobiusMaintained   bool     `json:"-"`
 	Filename           string   `json:"-"`
 	InstallDuringSetup *bool    `json:"install_during_setup"` // if nil, do not change saved value, otherwise set it
 	LabelsIncludeAny   []string `json:"labels_include_any"`
@@ -567,7 +567,7 @@ func (s HostLockWipeStatus) IsWiped() bool {
 
 var (
 	BatchExecuteIncompatiblePlatform = "incompatible-platform"
-	BatchExecuteIncompatibleMobiusd   = "incompatible-mobiusdaemon"
+	BatchExecuteIncompatibleMobiusd  = "incompatible-mobiusdaemon"
 )
 
 type BatchExecutionSummary struct {

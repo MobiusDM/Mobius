@@ -14,12 +14,12 @@ import (
 	"log"
 	"os"
 
+	kitlog "github.com/go-kit/log"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mock"
 	"github.com/notawar/mobius/internal/server/service/externalsvc"
 	"github.com/notawar/mobius/internal/server/worker"
-	kitlog "github.com/go-kit/log"
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 		zendeskURL          = flag.String("zendesk-url", "", "The Zendesk instance URL")
 		zendeskEmail        = flag.String("zendesk-email", "", "The Zendesk email")
 		zendeskGroupID      = flag.Int64("zendesk-group-id", 0, "The Zendesk group id")
-		mobiusURL            = flag.String("mobius-url", "https://localhost:8080", "The Mobius server URL")
+		mobiusURL           = flag.String("mobius-url", "https://localhost:8080", "The Mobius server URL")
 		cve                 = flag.String("cve", "", "The CVE to create a Zendesk issue for")
 		epssProbability     = flag.Float64("epss-probability", 0, "The EPSS Probability score of the CVE")
 		cvssScore           = flag.Float64("cvss-score", 0, "The CVSS score of the CVE")
@@ -132,7 +132,7 @@ func main() {
 	ctx := license.NewContext(context.Background(), lic)
 
 	zendesk := &worker.Zendesk{
-		MobiusURL:  *mobiusURL,
+		MobiusURL: *mobiusURL,
 		Datastore: ds,
 		Log:       logger,
 		NewClientFunc: func(opts *externalsvc.ZendeskOptions) (worker.ZendeskClient, error) {

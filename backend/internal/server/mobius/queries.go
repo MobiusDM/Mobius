@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/ghodss/yaml"
+	"github.com/notawar/mobius/internal/server/ptr"
 )
 
 // QueryPayload is the payload used to create and modify queries.

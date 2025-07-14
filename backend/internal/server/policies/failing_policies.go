@@ -7,10 +7,10 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // FailingPolicyAutomationType is the type of automations supported for

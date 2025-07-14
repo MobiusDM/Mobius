@@ -37,10 +37,10 @@ type listVulnerabilitiesRequest struct {
 
 type listVulnerabilitiesResponse struct {
 	Vulnerabilities []mobius.VulnerabilityWithMetadata `json:"vulnerabilities"`
-	Count           uint                              `json:"count"`
-	CountsUpdatedAt time.Time                         `json:"counts_updated_at"`
+	Count           uint                               `json:"count"`
+	CountsUpdatedAt time.Time                          `json:"counts_updated_at"`
 	Meta            *mobius.PaginationMetadata         `json:"meta,omitempty"`
-	Err             error                             `json:"error,omitempty"`
+	Err             error                              `json:"error,omitempty"`
 }
 
 // Allow formats like: CVE-2017-12345, cve-2017-12345
@@ -129,7 +129,7 @@ type getVulnerabilityResponse struct {
 	Vulnerability *mobius.VulnerabilityWithMetadata `json:"vulnerability"`
 	OSVersions    []*mobius.VulnerableOS            `json:"os_versions"`
 	Software      []*mobius.VulnerableSoftware      `json:"software"`
-	Err           error                            `json:"error,omitempty"`
+	Err           error                             `json:"error,omitempty"`
 	statusCode    int
 }
 

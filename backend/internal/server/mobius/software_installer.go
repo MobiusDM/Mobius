@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/optjson"
 )
 
 // MaxSoftwareInstallerSize is the maximum size allowed for software
@@ -361,28 +361,28 @@ func (s *HostSoftwareInstallerResultAuthz) AuthzType() string {
 }
 
 type UploadSoftwareInstallerPayload struct {
-	TeamID               *uint
-	InstallScript        string
-	PreInstallQuery      string
-	PostInstallScript    string
-	InstallerFile        *TempFileReader // TODO: maybe pull this out of the payload and only pass it to methods that need it (e.g., won't be needed when storing metadata in the database)
-	StorageID            string
-	Filename             string
-	Title                string
-	Version              string
-	Source               string
-	Platform             string
-	BundleIdentifier     string
-	SelfService          bool
-	UserID               uint
-	URL                  string
+	TeamID                *uint
+	InstallScript         string
+	PreInstallQuery       string
+	PostInstallScript     string
+	InstallerFile         *TempFileReader // TODO: maybe pull this out of the payload and only pass it to methods that need it (e.g., won't be needed when storing metadata in the database)
+	StorageID             string
+	Filename              string
+	Title                 string
+	Version               string
+	Source                string
+	Platform              string
+	BundleIdentifier      string
+	SelfService           bool
+	UserID                uint
+	URL                   string
 	MobiusMaintainedAppID *uint
-	PackageIDs           []string
-	UninstallScript      string
-	Extension            string
-	InstallDuringSetup   *bool    // keep saved value if nil, otherwise set as indicated
-	LabelsIncludeAny     []string // names of "include any" labels
-	LabelsExcludeAny     []string // names of "exclude any" labels
+	PackageIDs            []string
+	UninstallScript       string
+	Extension             string
+	InstallDuringSetup    *bool    // keep saved value if nil, otherwise set as indicated
+	LabelsIncludeAny      []string // names of "include any" labels
+	LabelsExcludeAny      []string // names of "exclude any" labels
 	// ValidatedLabels is a struct that contains the validated labels for the software installer. It
 	// is nil if the labels have not been validated.
 	ValidatedLabels       *LabelIdentsWithScope
@@ -536,9 +536,9 @@ type SoftwarePackageOrApp struct {
 	PackageURL    *string                `json:"package_url"`
 	// InstallDuringSetup is a boolean that indicates if the package
 	// will be installed during the macos setup experience.
-	InstallDuringSetup   *bool    `json:"install_during_setup,omitempty" db:"install_during_setup"`
+	InstallDuringSetup    *bool    `json:"install_during_setup,omitempty" db:"install_during_setup"`
 	MobiusMaintainedAppID *uint    `json:"mobius_maintained_app_id,omitempty" db:"mobius_maintained_app_id"`
-	Categories           []string `json:"categories,omitempty"`
+	Categories            []string `json:"categories,omitempty"`
 }
 
 type SoftwarePackageSpec struct {
@@ -578,9 +578,9 @@ type MobiusMaintainedAppsSpec struct {
 }
 
 type SoftwareSpec struct {
-	Packages            optjson.Slice[SoftwarePackageSpec]     `json:"packages,omitempty"`
+	Packages             optjson.Slice[SoftwarePackageSpec]      `json:"packages,omitempty"`
 	MobiusMaintainedApps optjson.Slice[MobiusMaintainedAppsSpec] `json:"mobius_maintained_apps,omitempty"`
-	AppStoreApps        optjson.Slice[TeamSpecAppStoreApp]     `json:"app_store_apps,omitempty"`
+	AppStoreApps         optjson.Slice[TeamSpecAppStoreApp]      `json:"app_store_apps,omitempty"`
 }
 
 // HostSoftwareInstall represents installation of software on a host from a

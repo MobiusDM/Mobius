@@ -1,8 +1,8 @@
 config:
   decorators:
     load:
-      - SELECT uuid AS host_uuid FROM system_info;
-      - SELECT hostname AS hostname FROM system_info;
+    - SELECT uuid AS host_uuid FROM system_info;
+    - SELECT hostname AS hostname FROM system_info;
   options:
     disable_distributed: false
     distributed_interval: 10
@@ -15,5 +15,5 @@ update_channels:
   # We want to use these hosts to stick to stable releases
   # to perform smoke tests after promoting edge to stable.
   osqueryd: stable
-  orbit: stable
+  # orbit: stable  # REMOVED: Orbit not supported in API-first architecture
   desktop: stable

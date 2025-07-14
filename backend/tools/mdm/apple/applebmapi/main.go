@@ -15,11 +15,11 @@ import (
 	"os"
 
 	"github.com/WatchBeam/clock"
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	kitlog "github.com/go-kit/log"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/datastore/mysql"
 	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
-	kitlog "github.com/go-kit/log"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 func main() {

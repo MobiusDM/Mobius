@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/go-kit/kit/endpoint"
 	"github.com/notawar/mobius/internal/server/contexts/authz"
 	"github.com/notawar/mobius/internal/server/contexts/token"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/middleware/log"
-	"github.com/go-kit/kit/endpoint"
 )
 
 // AuthViewer creates an authenticated viewer by validating the session key.

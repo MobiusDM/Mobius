@@ -11,15 +11,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-kit/log"
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/google/uuid"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service/calendar"
 	"github.com/notawar/mobius/internal/server/service/schedule"
-	"github.com/go-kit/log"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/google/uuid"
 )
 
 const (

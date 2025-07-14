@@ -22,14 +22,6 @@ type Store struct {
 	DataStore
 }
 
-func (m *Store) EnrollOrbit(ctx context.Context, isMDMEnabled bool, orbitHostInfo mobius.OrbitHostInfo, orbitNodeKey string, teamID *uint) (*mobius.Host, error) {
-	return nil, nil
-}
-
-func (m *Store) LoadHostByOrbitNodeKey(ctx context.Context, orbitNodeKey string) (*mobius.Host, error) {
-	return nil, nil
-}
-
 func (m *Store) Drop() error                             { return nil }
 func (m *Store) MigrateTables(ctx context.Context) error { return nil }
 func (m *Store) MigrateData(ctx context.Context) error   { return nil }

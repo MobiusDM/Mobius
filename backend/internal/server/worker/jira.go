@@ -12,12 +12,12 @@ import (
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/externalsvc"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // jiraName is the name of the job as registered in the worker.
@@ -97,10 +97,10 @@ This issue was created automatically by your Mobius Jira integration.
 }
 
 type jiraVulnTplArgs struct {
-	NVDURL   string
+	NVDURL    string
 	MobiusURL string
-	CVE      string
-	Hosts    []mobius.HostVulnerabilitySummary
+	CVE       string
+	Hosts     []mobius.HostVulnerabilitySummary
 
 	IsPremium bool
 
@@ -120,7 +120,7 @@ type JiraClient interface {
 
 // Jira is the job processor for jira integrations.
 type Jira struct {
-	MobiusURL      string
+	MobiusURL     string
 	Datastore     mobius.Datastore
 	Log           kitlog.Logger
 	NewClientFunc func(*externalsvc.JiraOptions) (JiraClient, error)
@@ -286,7 +286,7 @@ func (j *Jira) runVuln(ctx context.Context, cli JiraClient, args jiraArgs) error
 
 	tplArgs := &jiraVulnTplArgs{
 		NVDURL:           nvdCVEURL,
-		MobiusURL:         j.MobiusURL,
+		MobiusURL:        j.MobiusURL,
 		CVE:              vargs.CVE,
 		Hosts:            hosts,
 		IsPremium:        license.IsPremium(ctx),

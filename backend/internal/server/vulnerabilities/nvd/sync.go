@@ -15,14 +15,14 @@ import (
 
 	"github.com/notawar/mobius/internal/server/contexts/license"
 
-	"github.com/notawar/mobius/pkg/download"
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cvefeed"
 	feednvd "github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cvefeed/nvd"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/pkg/download"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 type SyncOptions struct {

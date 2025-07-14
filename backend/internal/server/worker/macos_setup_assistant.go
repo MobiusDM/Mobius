@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
-	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
+	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // Name of the macos setup assistant job as registered in the worker. Note that
@@ -280,7 +280,7 @@ func (m *MacosSetupAssistant) runHostsTransferred(ctx context.Context, args maco
 	return nil
 }
 
-func (m *MacosSetupAssistant) runUpdateAllProfiles(ctx context.Context, args macosSetupAssistantArgs) error {
+func (m *MacosSetupAssistant) runUpdateAllProfiles(ctx context.Context, _ macosSetupAssistantArgs) error {
 	// for all teams and no-team, run the UpdateProfile task
 	teams, err := m.Datastore.TeamsSummary(ctx)
 	if err != nil {

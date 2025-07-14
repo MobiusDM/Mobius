@@ -21,7 +21,8 @@ import (
 
 	"github.com/VividCortex/mysqlerr"
 	"github.com/docker/go-units"
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/go-kit/log/level"
+	"github.com/go-sql-driver/mysql"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/authz"
 	authz_ctx "github.com/notawar/mobius/internal/server/contexts/authz"
@@ -31,7 +32,6 @@ import (
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm"
 	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
 	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
@@ -39,10 +39,10 @@ import (
 	"github.com/notawar/mobius/internal/server/mdm/cryptoutil"
 	"github.com/notawar/mobius/internal/server/mdm/microsoft/syncml"
 	nanomdm "github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
-	"github.com/go-kit/log/level"
-	"github.com/go-sql-driver/mysql"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -655,7 +655,7 @@ type getMDMCommandResultsRequest struct {
 
 type getMDMCommandResultsResponse struct {
 	Results []*mobius.MDMCommandResult `json:"results,omitempty"`
-	Err     error                     `json:"error,omitempty"`
+	Err     error                      `json:"error,omitempty"`
 }
 
 func (r getMDMCommandResultsResponse) Error() error { return r.Err }
@@ -789,13 +789,13 @@ func (svc *Service) getDeviceSoftwareMDMCommandResults(ctx context.Context, comm
 
 type listMDMCommandsRequest struct {
 	ListOptions    mobius.ListOptions `url:"list_options"`
-	HostIdentifier string            `query:"host_identifier,optional"`
-	RequestType    string            `query:"request_type,optional"`
+	HostIdentifier string             `query:"host_identifier,optional"`
+	RequestType    string             `query:"request_type,optional"`
 }
 
 type listMDMCommandsResponse struct {
 	Results []*mobius.MDMCommand `json:"results"`
-	Err     error               `json:"error,omitempty"`
+	Err     error                `json:"error,omitempty"`
 }
 
 func (r listMDMCommandsResponse) Error() error { return r.Err }
@@ -1722,7 +1722,7 @@ func (svc *Service) BatchSetMDMProfiles(
 	profilesVariablesByIdentifier := make([]mobius.MDMProfileIdentifierMobiusVariables, 0, len(profilesVariablesByIdentifierMap))
 	for identifier, variables := range profilesVariablesByIdentifierMap {
 		profilesVariablesByIdentifier = append(profilesVariablesByIdentifier, mobius.MDMProfileIdentifierMobiusVariables{
-			Identifier:     identifier,
+			Identifier:      identifier,
 			MobiusVariables: slices.Collect(maps.Keys(variables)),
 		})
 	}
@@ -2207,14 +2207,14 @@ func validateProfiles(profiles map[int]mobius.MDMProfileBatchPayload) error {
 ////////////////////////////////////////////////////////////////////////////////
 
 type listMDMConfigProfilesRequest struct {
-	TeamID      *uint             `query:"team_id,optional"`
+	TeamID      *uint              `query:"team_id,optional"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 
 type listMDMConfigProfilesResponse struct {
 	Meta     *mobius.PaginationMetadata        `json:"meta"`
 	Profiles []*mobius.MDMConfigProfilePayload `json:"profiles"`
-	Err      error                            `json:"error,omitempty"`
+	Err      error                             `json:"error,omitempty"`
 }
 
 func (r listMDMConfigProfilesResponse) Error() error { return r.Err }
@@ -2599,7 +2599,7 @@ func (uploadMDMAppleAPNSCertRequest) DecodeRequest(ctx context.Context, r *http.
 		}
 	}
 
-	if r.MultipartForm.File["certificate"] == nil || len(r.MultipartForm.File["certificate"]) == 0 {
+	if len(r.MultipartForm.File["certificate"]) == 0 {
 		return nil, &mobius.BadRequestError{
 			Message:     "certificate multipart field is required",
 			InternalErr: err,

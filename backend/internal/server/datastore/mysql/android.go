@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/android"
 	"github.com/go-kit/log/level"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
+	"github.com/notawar/mobius/internal/server/mdm/android"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func (ds *Datastore) NewAndroidHost(ctx context.Context, host *mobius.AndroidHost) (*mobius.AndroidHost, error) {

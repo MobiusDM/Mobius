@@ -10,10 +10,10 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) SoftwareTitleByID(ctx context.Context, id uint, teamID *uint, tmFilter mobius.TeamFilter) (*mobius.SoftwareTitle, error) {
@@ -135,7 +135,7 @@ func (ds *Datastore) ListSoftwareTitles(
 		VPPAppPlatform            *string `db:"vpp_app_platform"`
 		VPPAppIconURL             *string `db:"vpp_app_icon_url"`
 		VPPInstallDuringSetup     *bool   `db:"vpp_install_during_setup"`
-		MobiusMaintainedAppID      *uint   `db:"mobius_maintained_app_id"`
+		MobiusMaintainedAppID     *uint   `db:"mobius_maintained_app_id"`
 	}
 	var softwareList []*softwareTitle
 	getTitlesStmt, args = appendListOptionsWithCursorToSQL(getTitlesStmt, args, &opt.ListOptions)
@@ -175,12 +175,12 @@ func (ds *Datastore) ListSoftwareTitles(
 			}
 
 			title.SoftwarePackage = &mobius.SoftwarePackageOrApp{
-				Name:                 *title.PackageName,
-				Version:              version,
-				Platform:             platform,
-				SelfService:          title.PackageSelfService,
-				PackageURL:           title.PackageURL,
-				InstallDuringSetup:   title.PackageInstallDuringSetup,
+				Name:                  *title.PackageName,
+				Version:               version,
+				Platform:              platform,
+				SelfService:           title.PackageSelfService,
+				PackageURL:            title.PackageURL,
+				InstallDuringSetup:    title.PackageInstallDuringSetup,
 				MobiusMaintainedAppID: title.MobiusMaintainedAppID,
 			}
 		}

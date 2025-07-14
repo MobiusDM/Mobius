@@ -5,19 +5,18 @@ package mock
 import (
 	"context"
 	"crypto/x509"
-	"database/sql"
 	"encoding/json"
 	"math/big"
 	"sync"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/android"
 	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
 	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
-	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 var _ mobius.Datastore = (*DataStore)(nil)
@@ -646,6 +645,8 @@ type LoadHostByNodeKeyFunc func(ctx context.Context, nodeKey string) (*mobius.Ho
 
 type LoadHostByOrbitNodeKeyFunc func(ctx context.Context, nodeKey string) (*mobius.Host, error)
 
+type GetHostOrbitInfoFunc func(ctx context.Context, hostID uint) (*struct{}, error)
+
 type HostLiteFunc func(ctx context.Context, hostID uint) (*mobius.Host, error)
 
 type UpdateHostOsqueryIntervalsFunc func(ctx context.Context, hostID uint, intervals mobius.HostOsqueryIntervals) error
@@ -732,10 +733,6 @@ type GetHostMDMProfilesRetryCountsFunc func(ctx context.Context, host *mobius.Ho
 
 type GetHostMDMProfileRetryCountByCommandUUIDFunc func(ctx context.Context, host *mobius.Host, cmdUUID string) (mobius.HostMDMProfileRetryCount, error)
 
-type SetOrUpdateHostOrbitInfoFunc func(ctx context.Context, hostID uint, version string, desktopVersion sql.NullString, scriptsEnabled sql.NullBool) error
-
-type GetHostOrbitInfoFunc func(ctx context.Context, hostID uint) (*mobius.HostOrbitInfo, error)
-
 type ReplaceHostDeviceMappingFunc func(ctx context.Context, id uint, mappings []*mobius.HostDeviceMapping, source string) error
 
 type ReplaceHostBatteriesFunc func(ctx context.Context, id uint, mappings []*mobius.HostBattery) error
@@ -745,8 +742,6 @@ type VerifyEnrollSecretFunc func(ctx context.Context, secret string) (*mobius.En
 type IsEnrollSecretAvailableFunc func(ctx context.Context, secret string, isNew bool, teamID *uint) (bool, error)
 
 type EnrollHostFunc func(ctx context.Context, isMDMEnabled bool, osqueryHostId string, hardwareUUID string, hardwareSerial string, nodeKey string, teamID *uint, cooldown time.Duration) (*mobius.Host, error)
-
-type EnrollOrbitFunc func(ctx context.Context, isMDMEnabled bool, hostInfo mobius.OrbitHostInfo, orbitNodeKey string, teamID *uint) (*mobius.Host, error)
 
 type SerialUpdateHostFunc func(ctx context.Context, host *mobius.Host) error
 
@@ -1193,8 +1188,6 @@ type GetHostLastInstallDataFunc func(ctx context.Context, hostID uint, installer
 type MatchOrCreateSoftwareInstallerFunc func(ctx context.Context, payload *mobius.UploadSoftwareInstallerPayload) (installerID uint, titleID uint, err error)
 
 type GetSoftwareInstallerMetadataByIDFunc func(ctx context.Context, id uint) (*mobius.SoftwareInstaller, error)
-
-type ValidateOrbitSoftwareInstallerAccessFunc func(ctx context.Context, hostID uint, installerID uint) (bool, error)
 
 type GetSoftwareInstallerMetadataByTeamAndTitleIDFunc func(ctx context.Context, teamID *uint, titleID uint, withScriptContents bool) (*mobius.SoftwareInstaller, error)
 
@@ -2343,6 +2336,9 @@ type DataStore struct {
 	LoadHostByOrbitNodeKeyFunc        LoadHostByOrbitNodeKeyFunc
 	LoadHostByOrbitNodeKeyFuncInvoked bool
 
+	GetHostOrbitInfoFunc        GetHostOrbitInfoFunc
+	GetHostOrbitInfoFuncInvoked bool
+
 	HostLiteFunc        HostLiteFunc
 	HostLiteFuncInvoked bool
 
@@ -2472,12 +2468,6 @@ type DataStore struct {
 	GetHostMDMProfileRetryCountByCommandUUIDFunc        GetHostMDMProfileRetryCountByCommandUUIDFunc
 	GetHostMDMProfileRetryCountByCommandUUIDFuncInvoked bool
 
-	SetOrUpdateHostOrbitInfoFunc        SetOrUpdateHostOrbitInfoFunc
-	SetOrUpdateHostOrbitInfoFuncInvoked bool
-
-	GetHostOrbitInfoFunc        GetHostOrbitInfoFunc
-	GetHostOrbitInfoFuncInvoked bool
-
 	ReplaceHostDeviceMappingFunc        ReplaceHostDeviceMappingFunc
 	ReplaceHostDeviceMappingFuncInvoked bool
 
@@ -2492,9 +2482,6 @@ type DataStore struct {
 
 	EnrollHostFunc        EnrollHostFunc
 	EnrollHostFuncInvoked bool
-
-	EnrollOrbitFunc        EnrollOrbitFunc
-	EnrollOrbitFuncInvoked bool
 
 	SerialUpdateHostFunc        SerialUpdateHostFunc
 	SerialUpdateHostFuncInvoked bool
@@ -3164,9 +3151,6 @@ type DataStore struct {
 
 	GetSoftwareInstallerMetadataByIDFunc        GetSoftwareInstallerMetadataByIDFunc
 	GetSoftwareInstallerMetadataByIDFuncInvoked bool
-
-	ValidateOrbitSoftwareInstallerAccessFunc        ValidateOrbitSoftwareInstallerAccessFunc
-	ValidateOrbitSoftwareInstallerAccessFuncInvoked bool
 
 	GetSoftwareInstallerMetadataByTeamAndTitleIDFunc        GetSoftwareInstallerMetadataByTeamAndTitleIDFunc
 	GetSoftwareInstallerMetadataByTeamAndTitleIDFuncInvoked bool
@@ -5670,6 +5654,13 @@ func (s *DataStore) LoadHostByOrbitNodeKey(ctx context.Context, nodeKey string) 
 	return s.LoadHostByOrbitNodeKeyFunc(ctx, nodeKey)
 }
 
+func (s *DataStore) GetHostOrbitInfo(ctx context.Context, hostID uint) (*struct{}, error) {
+	s.mu.Lock()
+	s.GetHostOrbitInfoFuncInvoked = true
+	s.mu.Unlock()
+	return s.GetHostOrbitInfoFunc(ctx, hostID)
+}
+
 func (s *DataStore) HostLite(ctx context.Context, hostID uint) (*mobius.Host, error) {
 	s.mu.Lock()
 	s.HostLiteFuncInvoked = true
@@ -5971,20 +5962,6 @@ func (s *DataStore) GetHostMDMProfileRetryCountByCommandUUID(ctx context.Context
 	return s.GetHostMDMProfileRetryCountByCommandUUIDFunc(ctx, host, cmdUUID)
 }
 
-func (s *DataStore) SetOrUpdateHostOrbitInfo(ctx context.Context, hostID uint, version string, desktopVersion sql.NullString, scriptsEnabled sql.NullBool) error {
-	s.mu.Lock()
-	s.SetOrUpdateHostOrbitInfoFuncInvoked = true
-	s.mu.Unlock()
-	return s.SetOrUpdateHostOrbitInfoFunc(ctx, hostID, version, desktopVersion, scriptsEnabled)
-}
-
-func (s *DataStore) GetHostOrbitInfo(ctx context.Context, hostID uint) (*mobius.HostOrbitInfo, error) {
-	s.mu.Lock()
-	s.GetHostOrbitInfoFuncInvoked = true
-	s.mu.Unlock()
-	return s.GetHostOrbitInfoFunc(ctx, hostID)
-}
-
 func (s *DataStore) ReplaceHostDeviceMapping(ctx context.Context, id uint, mappings []*mobius.HostDeviceMapping, source string) error {
 	s.mu.Lock()
 	s.ReplaceHostDeviceMappingFuncInvoked = true
@@ -6018,13 +5995,6 @@ func (s *DataStore) EnrollHost(ctx context.Context, isMDMEnabled bool, osqueryHo
 	s.EnrollHostFuncInvoked = true
 	s.mu.Unlock()
 	return s.EnrollHostFunc(ctx, isMDMEnabled, osqueryHostId, hardwareUUID, hardwareSerial, nodeKey, teamID, cooldown)
-}
-
-func (s *DataStore) EnrollOrbit(ctx context.Context, isMDMEnabled bool, hostInfo mobius.OrbitHostInfo, orbitNodeKey string, teamID *uint) (*mobius.Host, error) {
-	s.mu.Lock()
-	s.EnrollOrbitFuncInvoked = true
-	s.mu.Unlock()
-	return s.EnrollOrbitFunc(ctx, isMDMEnabled, hostInfo, orbitNodeKey, teamID)
 }
 
 func (s *DataStore) SerialUpdateHost(ctx context.Context, host *mobius.Host) error {
@@ -7586,13 +7556,6 @@ func (s *DataStore) GetSoftwareInstallerMetadataByID(ctx context.Context, id uin
 	s.GetSoftwareInstallerMetadataByIDFuncInvoked = true
 	s.mu.Unlock()
 	return s.GetSoftwareInstallerMetadataByIDFunc(ctx, id)
-}
-
-func (s *DataStore) ValidateOrbitSoftwareInstallerAccess(ctx context.Context, hostID uint, installerID uint) (bool, error) {
-	s.mu.Lock()
-	s.ValidateOrbitSoftwareInstallerAccessFuncInvoked = true
-	s.mu.Unlock()
-	return s.ValidateOrbitSoftwareInstallerAccessFunc(ctx, hostID, installerID)
 }
 
 func (s *DataStore) GetSoftwareInstallerMetadataByTeamAndTitleID(ctx context.Context, teamID *uint, titleID uint, withScriptContents bool) (*mobius.SoftwareInstaller, error) {

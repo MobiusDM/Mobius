@@ -13,8 +13,8 @@ import (
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 
-	ws "github.com/notawar/mobius/internal/server/websocket"
 	"github.com/gorilla/websocket"
+	ws "github.com/notawar/mobius/internal/server/websocket"
 )
 
 // LiveQueryResultsHandler provides access to all of the information about an

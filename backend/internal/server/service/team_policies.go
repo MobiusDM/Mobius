@@ -38,7 +38,7 @@ type teamPolicyRequest struct {
 
 type teamPolicyResponse struct {
 	Policy *mobius.Policy `json:"policy,omitempty"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r teamPolicyResponse) Error() error { return r.Err }
@@ -179,19 +179,19 @@ func (svc *Service) newTeamPolicyPayloadToPolicyPayload(ctx context.Context, tea
 /////////////////////////////////////////////////////////////////////////////////
 
 type listTeamPoliciesRequest struct {
-	TeamID                  uint                 `url:"team_id"`
+	TeamID                  uint                  `url:"team_id"`
 	Opts                    mobius.ListOptions    `url:"list_options"`
-	InheritedPage           uint                 `query:"inherited_page,optional"`
-	InheritedPerPage        uint                 `query:"inherited_per_page,optional"`
+	InheritedPage           uint                  `query:"inherited_page,optional"`
+	InheritedPerPage        uint                  `query:"inherited_per_page,optional"`
 	InheritedOrderDirection mobius.OrderDirection `query:"inherited_order_direction,optional"`
-	InheritedOrderKey       string               `query:"inherited_order_key,optional"`
-	MergeInherited          bool                 `query:"merge_inherited,optional"`
+	InheritedOrderKey       string                `query:"inherited_order_key,optional"`
+	MergeInherited          bool                  `query:"merge_inherited,optional"`
 }
 
 type listTeamPoliciesResponse struct {
 	Policies          []*mobius.Policy `json:"policies,omitempty"`
 	InheritedPolicies []*mobius.Policy `json:"inherited_policies,omitempty"`
-	Err               error           `json:"error,omitempty"`
+	Err               error            `json:"error,omitempty"`
 }
 
 func (r listTeamPoliciesResponse) Error() error { return r.Err }
@@ -264,8 +264,8 @@ func (svc *Service) ListTeamPolicies(ctx context.Context, teamID uint, opts mobi
 
 type countTeamPoliciesRequest struct {
 	ListOptions    mobius.ListOptions `url:"list_options"`
-	TeamID         uint              `url:"team_id"`
-	MergeInherited bool              `query:"merge_inherited,optional"`
+	TeamID         uint               `url:"team_id"`
+	MergeInherited bool               `query:"merge_inherited,optional"`
 }
 
 type countTeamPoliciesResponse struct {
@@ -317,7 +317,7 @@ type getTeamPolicyByIDRequest struct {
 
 type getTeamPolicyByIDResponse struct {
 	Policy *mobius.Policy `json:"policy"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r getTeamPolicyByIDResponse) Error() error { return r.Err }
@@ -449,7 +449,7 @@ type modifyTeamPolicyRequest struct {
 
 type modifyTeamPolicyResponse struct {
 	Policy *mobius.Policy `json:"policy,omitempty"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r modifyTeamPolicyResponse) Error() error { return r.Err }

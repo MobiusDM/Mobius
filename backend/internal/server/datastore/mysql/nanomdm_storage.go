@@ -8,19 +8,19 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/jmoiron/sqlx"
+	nanomdm_log "github.com/micromdm/nanolib/log"
 	abmctx "github.com/notawar/mobius/internal/server/contexts/apple_bm"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/assets"
 	nanodep_client "github.com/notawar/mobius/internal/server/mdm/nanodep/client"
 	nanodep_mysql "github.com/notawar/mobius/internal/server/mdm/nanodep/storage/mysql"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	nanomdm_mysql "github.com/notawar/mobius/internal/server/mdm/nanomdm/storage/mysql"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/jmoiron/sqlx"
-	nanomdm_log "github.com/micromdm/nanolib/log"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // NanoMDMStorage wraps a *nanomdm_mysql.MySQLStorage and overrides further functionality.

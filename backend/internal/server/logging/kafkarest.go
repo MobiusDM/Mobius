@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 const (

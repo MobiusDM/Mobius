@@ -6,10 +6,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cpedict"
-	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/wfn"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cpedict"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/wfn"
 )
 
 func sqliteDB(dbPath string) (*sqlx.DB, error) {

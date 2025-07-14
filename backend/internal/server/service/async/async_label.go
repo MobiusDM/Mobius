@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
+	redigo "github.com/gomodule/redigo/redis"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/redis"
 	"github.com/notawar/mobius/internal/server/mobius"
-	redigo "github.com/gomodule/redigo/redis"
 )
 
 const (

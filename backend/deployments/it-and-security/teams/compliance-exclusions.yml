@@ -25,7 +25,7 @@ agent_options:
   update_channels:
     # We want to use these hosts to smoke test edge releases.
     osqueryd: edge
-    orbit: edge
+    # orbit: edge  # REMOVED: Orbit not supported in API-first architecture
     desktop: edge
 controls:
   enable_disk_encryption: true

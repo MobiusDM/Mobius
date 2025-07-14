@@ -8,10 +8,10 @@ import (
 	"context"
 	"errors"
 
+	"github.com/go-kit/kit/endpoint"
 	"github.com/notawar/mobius/internal/server/authz"
 	authz_ctx "github.com/notawar/mobius/internal/server/contexts/authz"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/go-kit/kit/endpoint"
 )
 
 // Middleware is the authzcheck middleware type.

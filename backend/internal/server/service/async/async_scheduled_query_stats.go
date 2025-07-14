@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
+	redigo "github.com/gomodule/redigo/redis"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/redis"
 	"github.com/notawar/mobius/internal/server/mobius"
-	redigo "github.com/gomodule/redigo/redis"
 )
 
 const (
@@ -157,7 +157,7 @@ func (t *Task) collectScheduledQueryStats(ctx context.Context, ds mobius.Datasto
 
 	// get all hosts' stats and index the scheduled query names
 	hostsStats := make(map[uint][]mobius.ScheduledQueryStats, len(hosts)) // key is host ID
-	uniqueSchedQueries := make(map[[2]string]uint)                       // key is pack+scheduled query names, value is scheduled query id
+	uniqueSchedQueries := make(map[[2]string]uint)                        // key is pack+scheduled query names, value is scheduled query id
 	for _, host := range hosts {
 		sqStats, names, err := getHostStats(host.HostID)
 		if err != nil {

@@ -11,12 +11,12 @@ import (
 	"text/template"
 	"time"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/externalsvc"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	zendesk "github.com/nukosuke/go-zendesk/zendesk"
 )
 
@@ -97,10 +97,10 @@ This issue was created automatically by your Mobius Zendesk integration.
 }
 
 type zendeskVulnTplArgs struct {
-	NVDURL   string
+	NVDURL    string
 	MobiusURL string
-	CVE      string
-	Hosts    []mobius.HostVulnerabilitySummary
+	CVE       string
+	Hosts     []mobius.HostVulnerabilitySummary
 
 	IsPremium bool
 
@@ -120,7 +120,7 @@ type ZendeskClient interface {
 
 // Zendesk is the job processor for zendesk integrations.
 type Zendesk struct {
-	MobiusURL      string
+	MobiusURL     string
 	Datastore     mobius.Datastore
 	Log           kitlog.Logger
 	NewClientFunc func(*externalsvc.ZendeskOptions) (ZendeskClient, error)
@@ -288,7 +288,7 @@ func (z *Zendesk) runVuln(ctx context.Context, cli ZendeskClient, args zendeskAr
 
 	tplArgs := &zendeskVulnTplArgs{
 		NVDURL:           nvdCVEURL,
-		MobiusURL:         z.MobiusURL,
+		MobiusURL:        z.MobiusURL,
 		CVE:              vargs.CVE,
 		Hosts:            hosts,
 		IsPremium:        license.IsPremium(ctx),

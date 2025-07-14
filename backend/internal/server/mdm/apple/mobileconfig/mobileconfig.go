@@ -18,10 +18,10 @@ import (
 const (
 	// MobiusFileVaultPayloadIdentifier is the value for the PayloadIdentifier
 	// used by Mobius to configure FileVault and FileVault Escrow.
-	MobiusFileVaultPayloadIdentifier        = "com.mobiusmdm.mobius.mdm.filevault"
-	MobiusFileVaultPayloadType              = "com.apple.MCX.FileVault2"
-	MobiusCustomSettingsPayloadType         = "com.apple.MCX"
-	MobiusRecoveryKeyEscrowPayloadType      = "com.apple.security.FDERecoveryKeyEscrow"
+	MobiusFileVaultPayloadIdentifier       = "com.mobiusmdm.mobius.mdm.filevault"
+	MobiusFileVaultPayloadType             = "com.apple.MCX.FileVault2"
+	MobiusCustomSettingsPayloadType        = "com.apple.MCX"
+	MobiusRecoveryKeyEscrowPayloadType     = "com.apple.security.FDERecoveryKeyEscrow"
 	DiskEncryptionProfileRestrictionErrMsg = "Couldn't add. The configuration profile can't include FileVault settings."
 
 	// MobiusdConfigPayloadIdentifier is the value for the PayloadIdentifier used
@@ -64,9 +64,9 @@ func MobiusPayloadIdentifiers() map[string]struct{} {
 // that are fully or partially handled and delivered by Mobius.
 func MobiusPayloadTypes() map[string]struct{} {
 	return map[string]struct{}{
-		MobiusRecoveryKeyEscrowPayloadType:        {},
-		MobiusFileVaultPayloadType:                {},
-		MobiusCustomSettingsPayloadType:           {},
+		MobiusRecoveryKeyEscrowPayloadType:       {},
+		MobiusFileVaultPayloadType:               {},
+		MobiusCustomSettingsPayloadType:          {},
 		"com.apple.security.FDERecoveryRedirect": {}, // no longer supported in macOS 10.13 and later
 	}
 }

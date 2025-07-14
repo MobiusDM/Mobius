@@ -6,8 +6,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/notawar/mobius/internal/server/mdm/android"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/mdm/android"
 )
 
 var _ android.Datastore = (*Datastore)(nil)

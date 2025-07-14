@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiusdbase"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
-	"github.com/notawar/mobius/internal/server/mdm/apple/appmanifest"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
+	"github.com/notawar/mobius/internal/server/mdm/apple/appmanifest"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/pkg/mobiusdbase"
 )
 
 // Name of the Apple MDM job as registered in the worker. Note that although it
@@ -273,7 +273,7 @@ func (a *AppleMDM) getIdPDisplayName(ctx context.Context, acct *mobius.MDMIdPAcc
 // This job is used only for iDevices or for macos devices that don't use any
 // setup experience items (software installs, script exec) - see
 // appleMDMArgs.UseWorkerDeviceRelease. Otherwise releasing devices is now done
-// via the orbit endpoint /setup_experience/status that is polled by a swift
+// via the agent endpoint /setup_experience/status that is polled by a swift
 // dialog UI window during the setup process, and automatically releases the
 // device once all pending setup tasks are done.
 func (a *AppleMDM) runPostDEPReleaseDevice(ctx context.Context, args appleMDMArgs) error {

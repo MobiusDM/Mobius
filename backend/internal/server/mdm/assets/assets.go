@@ -8,10 +8,10 @@ import (
 	"encoding/pem"
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	nanodep_client "github.com/notawar/mobius/internal/server/mdm/nanodep/client"
 	"github.com/notawar/mobius/internal/server/mdm/nanodep/tokenpki"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/cryptoutil"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func CAKeyPair(ctx context.Context, ds mobius.MDMAssetRetriever) (*tls.Certificate, error) {

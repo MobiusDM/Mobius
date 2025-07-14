@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/notawar/mobius/pkg/spec"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/ghodss/yaml"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/pkg/spec"
 	"github.com/urfave/cli/v2"
 )
 
@@ -69,7 +69,7 @@ func convertPlatforms(platformsIn string) (string, error) {
 	return resultString, nil
 }
 
-func specGroupFromPack(name string, inputPack mobius.PermissivePackContent) (*spec.Group, error) {
+func specGroupFromPack(_ string, inputPack mobius.PermissivePackContent) (*spec.Group, error) {
 	specs := &spec.Group{
 		Queries: []*mobius.QuerySpec{},
 	}

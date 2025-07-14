@@ -26,9 +26,9 @@ type mdmProxy struct {
 	migratePercentage int
 	existingServerURL string
 	existingHostname  string
-	mobiusServerURL    string
+	mobiusServerURL   string
 	existingProxy     *httputil.ReverseProxy
-	mobiusProxy        *httputil.ReverseProxy
+	mobiusProxy       *httputil.ReverseProxy
 	// mutex is used to sync reads/updates to the migrateUDIDs and migratePercentage
 	mutex sync.RWMutex
 	// token is used to authenticate updates to the migrateUDIDs and migratePercentage
@@ -333,12 +333,12 @@ func main() {
 	proxy := mdmProxy{
 		token:             *authToken,
 		existingServerURL: *existingURL,
-		mobiusServerURL:    *mobiusURL,
+		mobiusServerURL:   *mobiusURL,
 		existingHostname:  *existingHostname,
 		migratePercentage: *migratePercentage,
 		migrateUDIDs:      udids,
 		existingProxy:     makeExistingProxy(*existingURL, *existingHostname),
-		mobiusProxy:        makeMobiusProxy(*mobiusURL, *debug),
+		mobiusProxy:       makeMobiusProxy(*mobiusURL, *debug),
 		debug:             *debug,
 		logSkipped:        *logSkipped,
 	}

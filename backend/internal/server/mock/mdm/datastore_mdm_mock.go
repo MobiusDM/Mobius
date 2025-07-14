@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 var _ mobius.MDMAppleStore = (*MDMAppleStore)(nil)

@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	defaultMobiusDMAPIURL     = "https://mobiusmdm.com"
+	defaultMobiusDMAPIURL    = "https://mobiusmdm.com"
 	getSignedAPNSCSRPath     = "/api/v1/deliver-apple-csr"
 	depCertificateCommonName = "Mobius"
 	depCertificateExpiryDays = 30

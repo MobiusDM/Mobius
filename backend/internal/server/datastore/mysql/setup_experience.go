@@ -8,9 +8,9 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) EnqueueSetupExperienceItems(ctx context.Context, hostUUID string, teamID uint) (bool, error) {

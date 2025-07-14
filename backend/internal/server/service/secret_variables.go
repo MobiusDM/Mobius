@@ -19,7 +19,7 @@ const (
 // //////////////////////////////////////////////////////////////////////////////
 
 type secretVariablesRequest struct {
-	DryRun          bool                   `json:"dry_run"`
+	DryRun          bool                    `json:"dry_run"`
 	SecretVariables []mobius.SecretVariable `json:"secrets"`
 }
 

@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm"
-	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
-	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
 	"github.com/go-kit/log/level"
 	"github.com/google/go-cmp/cmp"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm"
+	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
+	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func (ds *Datastore) GetMDMCommandPlatform(ctx context.Context, commandUUID string) (string, error) {
@@ -1592,9 +1592,10 @@ func (ds *Datastore) AreHostsConnectedToMobiusMDM(ctx context.Context, hosts []*
 }
 
 func (ds *Datastore) IsHostConnectedToMobiusMDM(ctx context.Context, host *mobius.Host) (bool, error) {
-	if host.Platform == "windows" {
+	switch host.Platform {
+case "windows":
 		return isWindowsHostConnectedToMobiusMDM(ctx, ds.reader(ctx), host)
-	} else if host.Platform == "darwin" || host.Platform == "ipados" || host.Platform == "ios" {
+	case "darwin", "ipados", "ios":
 		return isAppleHostConnectedToMobiusMDM(ctx, ds.reader(ctx), host)
 	}
 

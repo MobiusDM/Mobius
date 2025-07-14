@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
-	"github.com/notawar/mobius/internal/server"
 	kithttp "github.com/go-kit/kit/transport/http"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server"
 
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"

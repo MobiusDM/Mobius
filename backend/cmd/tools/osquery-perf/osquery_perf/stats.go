@@ -11,6 +11,7 @@ type Stats struct {
 	errors                     int
 	osqueryEnrollments         int
 	orbitEnrollments           int
+	orbitSessions              int
 	mdmEnrollments             int
 	mdmSessions                int
 	distributedWrites          int
@@ -112,6 +113,13 @@ func (s *Stats) IncrementOrbitErrors() {
 	s.l.Lock()
 	defer s.l.Unlock()
 	s.orbitErrors++
+}
+
+// IncrementOrbitSessions increments count of orbit sessions
+func (s *Stats) IncrementOrbitSessions() {
+	s.l.Lock()
+	defer s.l.Unlock()
+	s.orbitSessions++
 }
 
 func (s *Stats) IncrementMDMErrors() {
@@ -223,6 +231,12 @@ func (s *Stats) IncrementSoftwareInstallErrs() {
 	s.l.Lock()
 	defer s.l.Unlock()
 	s.softwareInstallErrs++
+}
+
+func (s *Stats) IncrementScriptExecutions() {
+	s.l.Lock()
+	defer s.l.Unlock()
+	s.scriptExecs++
 }
 
 func (s *Stats) Log() {

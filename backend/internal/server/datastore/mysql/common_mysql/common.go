@@ -7,12 +7,12 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/go-kit/log"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/ngrok/sqlmw"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 )
 
 type DBOptions struct {

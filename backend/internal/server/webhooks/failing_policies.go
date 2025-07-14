@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"time"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // SendFailingPoliciesBatchedPOSTs sends a failing policy to the provided
@@ -78,9 +78,9 @@ func SendFailingPoliciesBatchedPOSTs(
 }
 
 type failingPoliciesPayload struct {
-	Timestamp    time.Time     `json:"timestamp"`
+	Timestamp    time.Time      `json:"timestamp"`
 	Policy       *mobius.Policy `json:"policy"`
-	FailingHosts []failingHost `json:"hosts"`
+	FailingHosts []failingHost  `json:"hosts"`
 }
 
 type failingHost struct {

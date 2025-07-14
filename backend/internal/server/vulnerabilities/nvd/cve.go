@@ -14,7 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/go-kit/log"
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/google/go-github/v37/github"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
@@ -24,10 +27,7 @@ import (
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cvefeed/nvd/schema"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/providers/nvd"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/wfn"
-	"github.com/go-kit/log"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/google/go-github/v37/github"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 const (

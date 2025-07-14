@@ -11,13 +11,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ type globalPolicyRequest struct {
 
 type globalPolicyResponse struct {
 	Policy *mobius.Policy `json:"policy,omitempty"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r globalPolicyResponse) Error() error { return r.Err }
@@ -104,7 +104,7 @@ type listGlobalPoliciesRequest struct {
 
 type listGlobalPoliciesResponse struct {
 	Policies []*mobius.Policy `json:"policies,omitempty"`
-	Err      error           `json:"error,omitempty"`
+	Err      error            `json:"error,omitempty"`
 }
 
 func (r listGlobalPoliciesResponse) Error() error { return r.Err }
@@ -136,7 +136,7 @@ type getPolicyByIDRequest struct {
 
 type getPolicyByIDResponse struct {
 	Policy *mobius.Policy `json:"policy"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r getPolicyByIDResponse) Error() error { return r.Err }
@@ -316,7 +316,7 @@ type modifyGlobalPolicyRequest struct {
 
 type modifyGlobalPolicyResponse struct {
 	Policy *mobius.Policy `json:"policy,omitempty"`
-	Err    error         `json:"error,omitempty"`
+	Err    error          `json:"error,omitempty"`
 }
 
 func (r modifyGlobalPolicyResponse) Error() error { return r.Err }

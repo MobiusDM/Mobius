@@ -16,7 +16,7 @@ import (
 /////////////////////////////////////////////////////////////////////////////////
 
 type getTeamScheduleRequest struct {
-	TeamID      uint              `url:"team_id"`
+	TeamID      uint               `url:"team_id"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 
@@ -69,7 +69,7 @@ type teamScheduleQueryRequest struct {
 
 type teamScheduleQueryResponse struct {
 	Scheduled *mobius.ScheduledQuery `json:"scheduled,omitempty"`
-	Err       error                 `json:"error,omitempty"`
+	Err       error                  `json:"error,omitempty"`
 }
 
 func (r teamScheduleQueryResponse) Error() error { return r.Err }
@@ -142,7 +142,7 @@ type modifyTeamScheduleRequest struct {
 
 type modifyTeamScheduleResponse struct {
 	Scheduled *mobius.ScheduledQuery `json:"scheduled,omitempty"`
-	Err       error                 `json:"error,omitempty"`
+	Err       error                  `json:"error,omitempty"`
 }
 
 func (r modifyTeamScheduleResponse) Error() error { return r.Err }
@@ -180,7 +180,7 @@ type deleteTeamScheduleRequest struct {
 
 type deleteTeamScheduleResponse struct {
 	Scheduled *mobius.ScheduledQuery `json:"scheduled,omitempty"`
-	Err       error                 `json:"error,omitempty"`
+	Err       error                  `json:"error,omitempty"`
 }
 
 func (r deleteTeamScheduleResponse) Error() error { return r.Err }

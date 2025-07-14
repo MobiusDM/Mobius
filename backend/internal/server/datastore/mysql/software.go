@@ -13,13 +13,13 @@ import (
 
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
 )
 
 type softwareIDChecksum struct {
@@ -415,31 +415,7 @@ func (ds *Datastore) applyChangesForNewSoftwareDB(
 	return r, err
 }
 
-//nolint:unused
-func updateExistingBundleIDs(ctx context.Context, tx sqlx.ExtContext, hostID uint, bundleIDsToSoftware map[string]mobius.Software) error {
-	if len(bundleIDsToSoftware) == 0 {
-		return nil
-	}
 
-	updateSoftwareStmt := `UPDATE software SET software.name = ?, software.name_source = 'bundle_4.67' WHERE software.bundle_identifier = ?`
-
-	hostSoftwareStmt := `
-		INSERT IGNORE INTO host_software 
-			(host_id, software_id, last_opened_at)
-		VALUES
-			(?, (SELECT id FROM software WHERE bundle_identifier = ? AND name_source = 'bundle_4.67' ORDER BY id DESC LIMIT 1), ?)`
-
-	for k, v := range bundleIDsToSoftware {
-		if _, err := tx.ExecContext(ctx, updateSoftwareStmt, v.Name, k); err != nil {
-			return ctxerr.Wrap(ctx, err, "update software names")
-		}
-
-		if _, err := tx.ExecContext(ctx, hostSoftwareStmt, hostID, v.ID, v.LastOpenedAt); err != nil {
-			return ctxerr.Wrap(ctx, err, "insert host software")
-		}
-	}
-	return nil
-}
 
 func checkForDeletedInstalledSoftware(ctx context.Context, tx sqlx.ExtContext, deleted []mobius.Software, inserted []mobius.Software,
 	hostID uint,

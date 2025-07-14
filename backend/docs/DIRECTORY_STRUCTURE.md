@@ -25,6 +25,7 @@ backend/
 **Purpose**: The core Mobius server that provides all device management functionality.
 
 **Key Files**:
+
 - `main.go` - Application entry point and initialization
 - `serve.go` - HTTP server setup and routing
 - `config_dump.go` - Configuration validation and debugging
@@ -34,6 +35,7 @@ backend/
 - `vuln_process.go` - Vulnerability scanning coordination
 
 **Responsibilities**:
+
 - HTTP/HTTPS server management
 - REST API endpoint handling
 - Database connection management
@@ -47,12 +49,14 @@ backend/
 **Purpose**: Administrative CLI tool for managing Mobius remotely.
 
 **Key Files**:
+
 - `main.go` - CLI application entry point
 - `mobiuscli/mobiuscli.go` - Core CLI functionality and commands
 - `mobiuscli/preview.go` - Development/testing server functionality
 - `mobiuscli/vulnerability_data_stream.go` - Vulnerability data management
 
 **Available Commands**:
+
 - Device management and querying
 - Policy creation and deployment
 - Live query execution
@@ -67,6 +71,7 @@ backend/
 **Purpose**: Contains all server-side business logic and implementations.
 
 #### `internal/server/mobius/` - Core Entities and Interfaces
+
 - Device models and management
 - User and team structures
 - Policy definitions
@@ -74,6 +79,7 @@ backend/
 - Core business logic interfaces
 
 #### `internal/server/service/` - Business Logic Services
+
 - Device enrollment and management
 - Query execution and scheduling
 - Policy evaluation and enforcement
@@ -81,6 +87,7 @@ backend/
 - Team and permission management
 
 #### `internal/server/datastore/` - Data Persistence
+
 - **`mysql/`** - MySQL database implementation
   - Connection management
   - Query builders and transactions
@@ -92,42 +99,49 @@ backend/
   - Distributed locking
 
 #### `internal/server/contexts/` - Request Context Management
+
 - Database context propagation
 - Error handling and reporting
 - Request tracing and logging
 - Authentication context
 
 #### `internal/server/config/` - Configuration Management
+
 - Configuration file parsing
 - Environment variable handling
 - Validation and defaults
 - Feature flags
 
 #### `internal/server/mdm/` - Mobile Device Management
+
 - **`apple/`** - Apple MDM implementation (macOS, iOS)
 - **`microsoft/`** - Microsoft MDM implementation (Windows)
 - **`scep/`** - Certificate enrollment protocols
 - **`nanomdm/`** - MDM protocol handling
 
 #### `internal/server/vulnerabilities/` - Security Scanning
+
 - **`nvd/`** - National Vulnerability Database integration
 - CVE data processing and analysis
 - Vulnerability assessment and reporting
 - Security compliance checking
 
 #### `internal/server/authz/` - Authorization
+
 - Role-based access control (RBAC)
 - Permission checking and enforcement
 - Team-based resource isolation
 - API authorization middleware
 
 #### `internal/server/cron/` - Background Jobs
+
 - Scheduled task management
 - Vulnerability scanning jobs
 - Data cleanup and maintenance
 - Report generation
 
 ### `internal/server/goose/` - Database Migrations
+
 - Database schema versioning
 - Migration execution and rollback
 - Schema change management
@@ -138,35 +152,41 @@ backend/
 ### Core Utilities
 
 #### `pkg/open/` - Cross-platform File Operations
+
 - File and URL opening across operating systems
 - Platform-specific implementations
 - Browser and application launching
 
 #### `pkg/file/` - File System Utilities
+
 - File path manipulation
 - Directory operations
 - Cross-platform file handling
 - Temporary file management
 
 #### `pkg/mobiushttp/` - HTTP Client Library
+
 - Standardized HTTP client for Mobius APIs
 - Authentication handling
 - Request/response processing
 - Error handling and retries
 
 #### `pkg/scripts/` - Script Execution
+
 - Cross-platform script running
 - Command execution utilities
 - Process management
 - Output capturing
 
 #### `pkg/secure/` - Security Utilities
+
 - Cryptographic operations
 - Certificate management
 - Secure random generation
 - Key derivation functions
 
 #### `pkg/download/` - Download Management
+
 - File downloading with progress tracking
 - Integrity verification
 - Resume capability
@@ -175,24 +195,28 @@ backend/
 ### Specialized Libraries
 
 #### `pkg/certificate/` - Certificate Operations
+
 - X.509 certificate parsing and validation
 - Certificate chain verification
 - Key pair generation
 - Certificate signing
 
 #### `pkg/buildpkg/` - Package Building
+
 - Software package creation
 - Installer generation
 - Cross-platform packaging
 - Dependency management
 
 #### `pkg/retry/` - Retry Logic
+
 - Configurable retry strategies
 - Exponential backoff
 - Circuit breaker patterns
 - Error classification
 
 #### `pkg/mdm/` - MDM Utilities
+
 - **`mdmtest/`** - MDM testing utilities and mocks
 - Device simulation for testing
 - MDM protocol testing helpers
@@ -202,16 +226,19 @@ backend/
 ### Build and Development Tools
 
 #### `tools/api/` - API Development
+
 - API documentation generation
 - OpenAPI specification tools
 - API testing utilities
 
 #### `tools/ci/` - Continuous Integration
+
 - Build automation scripts
 - Testing infrastructure
 - Deployment pipelines
 
 #### `tools/release/` - Release Management
+
 - Version tagging and bumping
 - Release note generation
 - Binary distribution
@@ -220,18 +247,21 @@ backend/
 ### Operational Tools
 
 #### `tools/backup_db/` - Database Backup
+
 - Automated database backups
 - Backup verification
 - Restore procedures
 - Backup retention policies
 
 #### `tools/dbutils/` - Database Utilities
+
 - Database maintenance scripts
 - Performance analysis tools
 - Schema comparison utilities
 - Data migration helpers
 
 #### `tools/nvd/` - Vulnerability Data Management
+
 - NVD data feed synchronization
 - CVE database updates
 - Vulnerability data processing
@@ -240,12 +270,14 @@ backend/
 ### Testing and Performance Tools
 
 #### `tools/osquery-perf/` - Performance Testing
+
 - Osquery load testing
 - Performance benchmarking
 - Scalability testing
 - Resource utilization monitoring
 
 #### `tools/file-server/` - Development File Server
+
 - Local file serving for development
 - Asset hosting for testing
 - Mock service implementations
@@ -253,12 +285,14 @@ backend/
 ### Integration Tools
 
 #### `tools/terraform/` - Infrastructure as Code
+
 - Infrastructure deployment templates
 - Cloud resource provisioning
 - Configuration management
 - Environment setup automation
 
 #### `tools/webhook/` - Webhook Testing
+
 - Webhook endpoint simulation
 - Event payload testing
 - Integration testing helpers
@@ -266,12 +300,14 @@ backend/
 ## 📋 API Definitions (`api/`)
 
 ### `api/schema/` - API Schemas
+
 - **`osquery_mobius_schema.json`** - Osquery table definitions
 - API request/response schemas
 - Data validation rules
 - Documentation specifications
 
 ### `api/tables/` - Database Table Definitions
+
 - Osquery table schemas
 - Custom table implementations
 - Table relationship definitions
@@ -295,21 +331,25 @@ backend/
 ## 🎯 Key Design Patterns
 
 ### Dependency Injection
+
 - Services injected through interfaces
 - Testable and mockable components
 - Clear separation of concerns
 
 ### Repository Pattern
+
 - Data access abstraction
 - Database-agnostic interfaces
 - Consistent data operations
 
 ### Middleware Pattern
+
 - HTTP request/response processing
 - Authentication and authorization
 - Logging and monitoring
 
 ### Event-Driven Architecture
+
 - Asynchronous job processing
 - Event publishing and subscription
 - Loose coupling between components
@@ -317,6 +357,7 @@ backend/
 ## 🚀 Getting Started
 
 ### Building the Project
+
 ```bash
 # Build the server
 go build ./cmd/mobius
@@ -332,6 +373,7 @@ go mod tidy
 ```
 
 ### Running the Server
+
 ```bash
 # Start with default configuration
 ./mobius serve
@@ -344,6 +386,7 @@ go mod tidy
 ```
 
 ### Using the CLI
+
 ```bash
 # Configure CLI
 ./mobiuscli config set --address https://your-server.com

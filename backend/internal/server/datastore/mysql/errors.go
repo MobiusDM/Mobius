@@ -7,10 +7,10 @@ import (
 	"strconv"
 
 	"github.com/VividCortex/mysqlerr"
+	"github.com/go-sql-driver/mysql"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/go-sql-driver/mysql"
 )
 
 func notFound(kind string) *common_mysql.NotFoundError {

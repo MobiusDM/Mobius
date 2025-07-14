@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/macoffice"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/msrc/parsed"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd"
-	"github.com/jmoiron/sqlx"
 )
 
 func main() {

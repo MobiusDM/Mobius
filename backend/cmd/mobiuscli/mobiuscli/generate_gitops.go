@@ -10,11 +10,11 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/notawar/mobius/pkg/spec"
+	"github.com/ghodss/yaml"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service"
-	"github.com/ghodss/yaml"
+	"github.com/notawar/mobius/pkg/spec"
 	"github.com/urfave/cli/v2"
 )
 
@@ -578,7 +578,7 @@ func (cmd *GenerateGitopsCommand) generateOrgSettings() (orgSettings map[string]
 	t := reflect.TypeOf(mobius.EnrichedAppConfig{})
 	orgSettings = map[string]interface{}{
 		jsonFieldName(t, "Features"):           cmd.AppConfig.Features,
-		jsonFieldName(t, "MobiusDesktop"):       cmd.AppConfig.MobiusDesktop,
+		jsonFieldName(t, "MobiusDesktop"):      cmd.AppConfig.MobiusDesktop,
 		jsonFieldName(t, "HostExpirySettings"): cmd.AppConfig.HostExpirySettings,
 		jsonFieldName(t, "OrgInfo"):            cmd.AppConfig.OrgInfo,
 		jsonFieldName(t, "ServerSettings"):     cmd.AppConfig.ServerSettings,
@@ -784,12 +784,13 @@ func (cmd *GenerateGitopsCommand) generateMDM(mdm *mobius.MDM) (map[string]inter
 	return result, nil
 }
 
-func (cmd *GenerateGitopsCommand) generateYaraRules(yaraRules []mobius.YaraRule) (map[string]interface{}, error) {
+func (cmd *GenerateGitopsCommand) generateYaraRules(_ []mobius.YaraRule) (map[string]interface{}, error) {
 	// TODC -- come up with a way to export Yara rules.
 	return map[string]interface{}{}, nil
 }
 
 func (cmd *GenerateGitopsCommand) generateTeamSettings(filePath string, team *mobius.Team) (teamSettings map[string]interface{}, err error) {
+	_ = filePath // parameter reserved for future use
 	t := reflect.TypeOf(mobius.TeamConfig{})
 	teamSettings = map[string]interface{}{
 		jsonFieldName(t, "Features"):           team.Config.Features,

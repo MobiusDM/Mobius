@@ -16,8 +16,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/notawar/mobius/pkg/optjson"
-	"github.com/notawar/mobius/pkg/rawjson"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/authz"
 	authz_ctx "github.com/notawar/mobius/internal/server/contexts/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxdb"
@@ -26,7 +25,8 @@ import (
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/version"
-	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/pkg/optjson"
+	"github.com/notawar/mobius/pkg/rawjson"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -51,8 +51,8 @@ type appConfigResponseFields struct {
 	// Email is returned when the email backend is something other than SMTP, for example SES
 	Email *mobius.EmailConfig `json:"email,omitempty"`
 	// SandboxEnabled is true if mobius serve was ran with server.sandbox_enabled=true
-	SandboxEnabled bool                `json:"sandbox_enabled,omitempty"`
-	Err            error               `json:"error,omitempty"`
+	SandboxEnabled bool                 `json:"sandbox_enabled,omitempty"`
+	Err            error                `json:"error,omitempty"`
 	Partnerships   *mobius.Partnerships `json:"partnerships,omitempty"`
 	// ConditionalAccess holds the Microsoft conditional access configuration.
 	ConditionalAccess *mobius.ConditionalAccessSettings `json:"conditional_access,omitempty"`
@@ -1974,7 +1974,7 @@ func validateSSOSettings(p mobius.AppConfig, existing *mobius.AppConfig, invalid
 
 type applyEnrollSecretSpecRequest struct {
 	Spec   *mobius.EnrollSecretSpec `json:"spec"`
-	DryRun bool                    `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
+	DryRun bool                     `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
 }
 
 type applyEnrollSecretSpecResponse struct {
@@ -2036,7 +2036,7 @@ func (svc *Service) ApplyEnrollSecretSpec(ctx context.Context, spec *mobius.Enro
 
 type getEnrollSecretSpecResponse struct {
 	Spec *mobius.EnrollSecretSpec `json:"spec"`
-	Err  error                   `json:"error,omitempty"`
+	Err  error                    `json:"error,omitempty"`
 }
 
 func (r getEnrollSecretSpecResponse) Error() error { return r.Err }

@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) UpsertMaintainedApp(ctx context.Context, app *mobius.MaintainedApp) (*mobius.MaintainedApp, error) {
@@ -163,7 +163,7 @@ func (ds *Datastore) ListAvailableMobiusMaintainedApps(ctx context.Context, team
 	}
 
 	meta := &mobius.PaginationMetadata{HasPreviousResults: opt.Page > 0, TotalResults: uint(filteredCount)} //nolint:gosec // dismiss G115
-	if len(avail) > int(opt.PerPage) {                                                                     //nolint:gosec // dismiss G115
+	if len(avail) > int(opt.PerPage) {                                                                      //nolint:gosec // dismiss G115
 		meta.HasNextResults = true
 		avail = avail[:len(avail)-1]
 	}

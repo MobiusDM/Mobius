@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/igm/sockjs-go/v3/sockjs"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/websocket"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/igm/sockjs-go/v3/sockjs"
 )
 
 type targetTotals struct {

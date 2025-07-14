@@ -12,9 +12,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/ghodss/yaml"
 	"github.com/hashicorp/go-multierror"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 var yamlSeparator = regexp.MustCompile(`(?m:^---[\t ]*)`)

@@ -14,6 +14,9 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
+	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	hostctx "github.com/notawar/mobius/internal/server/contexts/host"
@@ -25,9 +28,6 @@ import (
 	"github.com/notawar/mobius/internal/server/service/conditional_access_microsoft_proxy"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/notawar/mobius/internal/server/service/osquery_utils"
-	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/spf13/cast"
 	"golang.org/x/exp/slices"
 )
@@ -640,7 +640,7 @@ func (svc *Service) GetDistributedQueries(ctx context.Context) (queries map[stri
 	// query and return more than one row are executed on the host.
 	//
 	// Thus, we set the alwaysTrueQuery for all queries, except for those where we set
-	// an explicit discovery query (e.g. orbit_info, google_chrome_profiles).
+	// an explicit discovery query (e.g. google_chrome_profiles).
 	for name, query := range queries {
 		// there's a bug somewhere (Mobius, osquery or both?)
 		// that causes hosts to check-in in a loop if you send
@@ -852,7 +852,7 @@ type submitDistributedQueryResultsRequestShim struct {
 	Results  map[string]json.RawMessage `json:"queries"`
 	Statuses map[string]interface{}     `json:"statuses"`
 	Messages map[string]string          `json:"messages"`
-	Stats    map[string]*mobius.Stats    `json:"stats"`
+	Stats    map[string]*mobius.Stats   `json:"stats"`
 }
 
 func (shim *submitDistributedQueryResultsRequestShim) hostNodeKey() string {
@@ -899,10 +899,10 @@ func (shim *submitDistributedQueryResultsRequestShim) toRequest(ctx context.Cont
 }
 
 type SubmitDistributedQueryResultsRequest struct {
-	NodeKey  string                               `json:"node_key"`
+	NodeKey  string                                `json:"node_key"`
 	Results  mobius.OsqueryDistributedQueryResults `json:"queries"`
 	Statuses map[string]mobius.OsqueryStatus       `json:"statuses"`
-	Messages map[string]string                    `json:"messages"`
+	Messages map[string]string                     `json:"messages"`
 	Stats    map[string]*mobius.Stats              `json:"stats"`
 }
 
@@ -1035,12 +1035,12 @@ func (svc *Service) SubmitDistributedQueryResults(
 			logging.WithErr(ctx, err)
 		}
 
-		if err := svc.processScriptsForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.Platform, host.OrbitNodeKey, host.ScriptsEnabled, policyResults); err != nil {
+		if err := svc.processScriptsForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.Platform, host.NodeKey, host.ScriptsEnabled, policyResults); err != nil {
 			logging.WithErr(ctx, err)
 		}
 
 		if host.Platform == "darwin" {
-			if err := svc.processConditionalAccessForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.OrbitNodeKey, policyResults); err != nil {
+			if err := svc.processConditionalAccessForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.NodeKey, policyResults); err != nil {
 				logging.WithErr(ctx, err)
 			}
 		}
@@ -1055,7 +1055,7 @@ func (svc *Service) SubmitDistributedQueryResults(
 
 		// NOTE: if the installers for the policies here are not scoped to the host via labels, we update the policy status here to stop it from showing up as "failed" in the
 		// host details.
-		if err := svc.processSoftwareForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.Platform, host.OrbitNodeKey, policyResults); err != nil {
+		if err := svc.processSoftwareForNewlyFailingPolicies(ctx, host.ID, host.TeamID, host.Platform, host.NodeKey, policyResults); err != nil {
 			logging.WithErr(ctx, err)
 		}
 
@@ -1191,9 +1191,12 @@ func processCalendarPolicies(
 	}
 
 	//
-	// TODO(lucas): Discuss.
+	// Allow up to 5 minutes after the end_time to account for:
+	// - Short (0-time) event durations
+	// - Network delays in result submission
+	// - Clock skew between host and server
 	//
-	const allowedTimeRelativeToEndTime = 5 * time.Minute // up to 5 minutes after the end_time to allow for short (0-time) event times
+	const allowedTimeRelativeToEndTime = 5 * time.Minute
 
 	if now.After(calendarEvent.EndTime.Add(allowedTimeRelativeToEndTime)) {
 		level.Warn(logger).Log("msg", "results came too late", "now", now, "end_time", calendarEvent.EndTime)
@@ -1726,7 +1729,7 @@ func filterPolicyResults(incoming map[uint]*bool, webhookPolicies []uint) map[ui
 	return filtered
 }
 
-func (svc *Service) registerFlippedPolicies(ctx context.Context, hostID uint, hostname, displayName string, newFailing, newPassing []uint) error {
+func (svc *Service) registerFlippedPolicies(_ context.Context, hostID uint, hostname, displayName string, newFailing, newPassing []uint) error {
 	host := mobius.PolicySetHost{
 		ID:          hostID,
 		Hostname:    hostname,
@@ -1750,10 +1753,10 @@ func (svc *Service) processSoftwareForNewlyFailingPolicies(
 	hostID uint,
 	hostTeamID *uint,
 	hostPlatform string,
-	hostOrbitNodeKey *string,
+	hostNodeKey *string,
 	incomingPolicyResults map[uint]*bool,
 ) error {
-	if hostOrbitNodeKey == nil || *hostOrbitNodeKey == "" {
+	if hostNodeKey == nil || *hostNodeKey == "" {
 		// We do not want to queue software installations on vanilla osquery hosts.
 		return nil
 	}
@@ -2053,11 +2056,11 @@ func (svc *Service) processScriptsForNewlyFailingPolicies(
 	hostID uint,
 	hostTeamID *uint,
 	hostPlatform string,
-	hostOrbitNodeKey *string,
+	hostNodeKey *string,
 	hostScriptsEnabled *bool,
 	incomingPolicyResults map[uint]*bool,
 ) error {
-	if hostOrbitNodeKey == nil || *hostOrbitNodeKey == "" {
+	if hostNodeKey == nil || *hostNodeKey == "" {
 		return nil // vanilla osquery hosts can't run scripts
 	}
 	// not logging here to avoid spamming logs on every policy failure for every no-scripts host even if the policy
@@ -2273,10 +2276,10 @@ func (svc *Service) processConditionalAccessForNewlyFailingPolicies(
 	ctx context.Context,
 	hostID uint,
 	hostTeamID *uint,
-	hostOrbitNodeKey *string,
+	hostNodeKey *string,
 	incomingPolicyResults map[uint]*bool,
 ) error {
-	if hostOrbitNodeKey == nil || *hostOrbitNodeKey == "" {
+	if hostNodeKey == nil || *hostNodeKey == "" {
 		// Vanilla osquery hosts cannot do conditional access.
 		return nil
 	}

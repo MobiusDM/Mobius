@@ -18,7 +18,7 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 
 type getScheduledQueriesInPackRequest struct {
-	ID          uint              `url:"id"`
+	ID          uint               `url:"id"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 

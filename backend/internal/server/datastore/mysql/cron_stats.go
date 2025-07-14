@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 // GetLatestCronStats returns a slice of no more than two cron stats records, where index 0 (if

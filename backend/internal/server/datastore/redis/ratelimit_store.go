@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/gomodule/redigo/redis"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type ThrottledStore struct {

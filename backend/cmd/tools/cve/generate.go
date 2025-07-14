@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
-	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd"
-	nvdsync "github.com/notawar/mobius/internal/server/vulnerabilities/nvd/sync"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd"
+	nvdsync "github.com/notawar/mobius/internal/server/vulnerabilities/nvd/sync"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 const emptyData = `{

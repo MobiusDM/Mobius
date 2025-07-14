@@ -1,14 +1,17 @@
-# name: pr-helm
+# This workflow is currently disabled
+name: Disabled PR Helm Workflow
 
-# on:
-#   pull_request:
-#     paths:
-#     - 'charts/**'
-#     - '.github/workflows/pr-helm.yaml'
-#     - '.github/scripts/helm-check-expected.sh'
-#     - 'tools/ci/helm-values/**'
+on:
+  workflow_dispatch: # Manual trigger only
 
-# # This allows a subsequently queued workflow run to interrupt previous runs
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder step
+        run: echo "This workflow is disabled"
+      - name: Placeholder
+        run: echo "This workflow is disabled"
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id}}
 #   cancel-in-progress: true

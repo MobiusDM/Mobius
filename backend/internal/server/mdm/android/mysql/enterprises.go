@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/notawar/mobius/internal/server/mdm/android"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) CreateEnterprise(ctx context.Context, userID uint) (uint, error) {

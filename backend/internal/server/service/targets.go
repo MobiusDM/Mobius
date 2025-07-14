@@ -44,13 +44,13 @@ func (t teamSearchResult) MarshalJSON() ([]byte, error) {
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		mobius.TeamConfig
-		UserCount   int                   `json:"user_count"`
+		UserCount   int                    `json:"user_count"`
 		Users       []mobius.TeamUser      `json:"users,omitempty"`
-		HostCount   int                   `json:"host_count"`
+		HostCount   int                    `json:"host_count"`
 		Hosts       []mobius.HostResponse  `json:"hosts,omitempty"`
 		Secrets     []*mobius.EnrollSecret `json:"secrets,omitempty"`
-		DisplayText string                `json:"display_text"`
-		Count       int                   `json:"count"`
+		DisplayText string                 `json:"display_text"`
+		Count       int                    `json:"count"`
 	}{
 		ID:          t.ID,
 		CreatedAt:   t.CreatedAt,
@@ -76,13 +76,13 @@ func (t *teamSearchResult) UnmarshalJSON(b []byte) error {
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		mobius.TeamConfig
-		UserCount   int                   `json:"user_count"`
+		UserCount   int                    `json:"user_count"`
 		Users       []mobius.TeamUser      `json:"users,omitempty"`
-		HostCount   int                   `json:"host_count"`
+		HostCount   int                    `json:"host_count"`
 		Hosts       []mobius.Host          `json:"hosts,omitempty"`
 		Secrets     []*mobius.EnrollSecret `json:"secrets,omitempty"`
-		DisplayText string                `json:"display_text"`
-		Count       int                   `json:"count"`
+		DisplayText string                 `json:"display_text"`
+		Count       int                    `json:"count"`
 	}
 
 	if err := json.Unmarshal(b, &x); err != nil {
@@ -111,8 +111,8 @@ func (t *teamSearchResult) UnmarshalJSON(b []byte) error {
 
 type targetsData struct {
 	Hosts  []*mobius.HostResponse `json:"hosts"`
-	Labels []labelSearchResult   `json:"labels"`
-	Teams  []teamSearchResult    `json:"teams"`
+	Labels []labelSearchResult    `json:"labels"`
+	Teams  []teamSearchResult     `json:"teams"`
 }
 
 type searchTargetsResponse struct {
@@ -254,7 +254,7 @@ func (svc *Service) CountHostsInTargets(ctx context.Context, queryID *uint, targ
 
 type countTargetsRequest struct {
 	Selected mobius.HostTargets `json:"selected"`
-	QueryID  *uint             `json:"query_id"`
+	QueryID  *uint              `json:"query_id"`
 }
 
 type countTargetsResponse struct {

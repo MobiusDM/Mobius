@@ -9,13 +9,13 @@ import (
 	"math"
 	"strings"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm"
-	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm"
+	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func isWindowsHostConnectedToMobiusMDM(ctx context.Context, q sqlx.QueryerContext, h *mobius.Host) (bool, error) {
@@ -704,7 +704,7 @@ WHERE
 
 	var dest struct {
 		Status mobius.DiskEncryptionStatus `db:"status"`
-		Detail string                     `db:"detail"`
+		Detail string                      `db:"detail"`
 	}
 	if err := sqlx.GetContext(ctx, ds.reader(ctx), &dest, stmt, host.ID); err != nil {
 		if err != sql.ErrNoRows {

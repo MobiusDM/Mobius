@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/android"
-	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
+	"github.com/notawar/mobius/internal/server/mdm/android"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 )
 
 func GetRoutes(mobiusSvc mobius.Service, svc android.Service) endpoint_utils.HandlerRoutesFunc {

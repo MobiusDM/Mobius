@@ -11,10 +11,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
 	"github.com/notawar/mobius/internal/server/mdm/assets"
 	"github.com/notawar/mobius/internal/server/mdm/scep/depot"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // SCEPDepot is a MySQL-backed SCEP certificate depot.

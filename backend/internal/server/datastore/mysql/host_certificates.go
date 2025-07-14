@@ -8,11 +8,11 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/go-kit/log/level"
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/go-kit/log/level"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) ListHostCertificates(ctx context.Context, hostID uint, opts mobius.ListOptions) ([]*mobius.HostCertificateRecord, *mobius.PaginationMetadata, error) {

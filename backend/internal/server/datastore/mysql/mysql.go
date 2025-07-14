@@ -17,23 +17,23 @@ import (
 	"github.com/XSAM/otelsql"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/go-sql-driver/mysql"
+	"github.com/hashicorp/go-multierror"
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxdb"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/migrations/data"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/migrations/tables"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/goose"
 	"github.com/notawar/mobius/internal/server/mdm/android"
 	android_mysql "github.com/notawar/mobius/internal/server/mdm/android/mysql"
 	nano_push "github.com/notawar/mobius/internal/server/mdm/nanomdm/push"
 	scep_depot "github.com/notawar/mobius/internal/server/mdm/scep/depot"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/go-sql-driver/mysql"
-	"github.com/hashicorp/go-multierror"
-	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/mobius"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
@@ -129,7 +129,7 @@ func (ds *Datastore) reader(ctx context.Context) mobius.DBReader {
 
 // writer returns the DB instance to use for write statements, which is always
 // the primary.
-func (ds *Datastore) writer(ctx context.Context) *sqlx.DB {
+func (ds *Datastore) writer(_ context.Context) *sqlx.DB {
 	return ds.primary
 }
 

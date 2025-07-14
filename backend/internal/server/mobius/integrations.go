@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/notawar/mobius/internal/server/service/externalsvc"
+	"github.com/notawar/mobius/pkg/optjson"
 )
 
 // TeamIntegrations contains the configuration for external services'

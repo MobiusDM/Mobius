@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
-	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/micromdm/nanolib/log"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
+	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 )
 
 func enqueue(ctx context.Context, tx sqlx.ExtContext, ids []string, cmd *mdm.CommandWithSubtype) error {

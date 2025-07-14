@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
-	"github.com/gorilla/mux"
 )
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {

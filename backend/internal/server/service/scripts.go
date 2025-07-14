@@ -15,15 +15,15 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/notawar/mobius/pkg/file"
-	"github.com/notawar/mobius/pkg/scripts"
+	"github.com/gorilla/mux"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/gorilla/mux"
+	"github.com/notawar/mobius/pkg/file"
+	"github.com/notawar/mobius/pkg/scripts"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ func runScriptSyncEndpoint(ctx context.Context, request interface{}, svc mobius.
 }
 
 func (svc *Service) GetScriptIDByName(ctx context.Context, scriptName string, teamID *uint) (uint, error) {
-	// TODO: confirm auth level
+	// Requires read permission on scripts for the specified team
 	if err := svc.authz.Authorize(ctx, &mobius.Script{TeamID: teamID}, mobius.ActionRead); err != nil {
 		return 0, err
 	}
@@ -211,7 +211,7 @@ func (svc *Service) RunHostScript(ctx context.Context, request *mobius.HostScrip
 		return nil, ctxerr.Wrap(ctx, err, "get host lite")
 	}
 
-	if host.OrbitNodeKey == nil || *host.OrbitNodeKey == "" {
+	if host.NodeKey == nil || *host.NodeKey == "" {
 		// mobiusdaemon is required to run scripts so if the host is enrolled via plain osquery we return
 		// an error
 		svc.authz.SkipAuthorization(ctx)
@@ -219,10 +219,10 @@ func (svc *Service) RunHostScript(ctx context.Context, request *mobius.HostScrip
 	}
 
 	// If scripts are disabled (according to the last detail query), we return an error.
-	// host.ScriptsEnabled may be nil for older orbit versions.
+	// host.ScriptsEnabled may be nil for older agent versions.
 	if host.ScriptsEnabled != nil && !*host.ScriptsEnabled {
 		svc.authz.SkipAuthorization(ctx)
-		return nil, mobius.NewUserMessageError(errors.New(mobius.RunScriptsOrbitDisabledErrMsg), http.StatusUnprocessableEntity)
+		return nil, mobius.NewUserMessageError(errors.New(mobius.RunScriptsDisabledErrMsg), http.StatusUnprocessableEntity)
 	}
 
 	maxPending := maxPendingScripts
@@ -300,7 +300,7 @@ func (svc *Service) RunHostScript(ctx context.Context, request *mobius.HostScrip
 	}
 
 	// create the script execution request, the host will be notified of the
-	// script execution request via the orbit config's Notifications mechanism.
+	// script execution request via the agent config's Notifications mechanism.
 	if ctxUser := authz.UserFromContext(ctx); ctxUser != nil {
 		request.UserID = &ctxUser.ID
 	}
@@ -633,14 +633,14 @@ func (svc *Service) DeleteScript(ctx context.Context, scriptID uint) error {
 ////////////////////////////////////////////////////////////////////////////////
 
 type listScriptsRequest struct {
-	TeamID      *uint             `query:"team_id,optional"`
+	TeamID      *uint              `query:"team_id,optional"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 
 type listScriptsResponse struct {
 	Meta    *mobius.PaginationMetadata `json:"meta"`
 	Scripts []*mobius.Script           `json:"scripts"`
-	Err     error                     `json:"error,omitempty"`
+	Err     error                      `json:"error,omitempty"`
 }
 
 func (r listScriptsResponse) Error() error { return r.Err }
@@ -881,14 +881,14 @@ func (svc *Service) UpdateScript(ctx context.Context, scriptID uint, r io.Reader
 ////////////////////////////////////////////////////////////////////////////////
 
 type getHostScriptDetailsRequest struct {
-	HostID      uint              `url:"id"`
+	HostID      uint               `url:"id"`
 	ListOptions mobius.ListOptions `url:"list_options"`
 }
 
 type getHostScriptDetailsResponse struct {
 	Scripts []*mobius.HostScriptDetail `json:"scripts"`
 	Meta    *mobius.PaginationMetadata `json:"meta"`
-	Err     error                     `json:"error,omitempty"`
+	Err     error                      `json:"error,omitempty"`
 }
 
 func (r getHostScriptDetailsResponse) Error() error { return r.Err }
@@ -940,15 +940,15 @@ func (svc *Service) GetHostScriptDetails(ctx context.Context, hostID uint, opt m
 ////////////////////////////////////////////////////////////////////////////////
 
 type batchSetScriptsRequest struct {
-	TeamID   *uint                 `json:"-" query:"team_id,optional"`
-	TeamName *string               `json:"-" query:"team_name,optional"`
-	DryRun   bool                  `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
+	TeamID   *uint                  `json:"-" query:"team_id,optional"`
+	TeamName *string                `json:"-" query:"team_name,optional"`
+	DryRun   bool                   `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
 	Scripts  []mobius.ScriptPayload `json:"scripts"`
 }
 
 type batchSetScriptsResponse struct {
 	Scripts []mobius.ScriptResponse `json:"scripts"`
-	Err     error                  `json:"error,omitempty"`
+	Err     error                   `json:"error,omitempty"`
 }
 
 type batchScriptExecutionSummaryRequest struct {
@@ -1234,10 +1234,10 @@ type lockHostRequest struct {
 }
 
 type lockHostResponse struct {
-	Err           error                     `json:"error,omitempty"`
+	Err           error                      `json:"error,omitempty"`
 	DeviceStatus  mobius.DeviceStatus        `json:"device_status,omitempty"`
 	PendingAction mobius.PendingDeviceAction `json:"pending_action,omitempty"`
-	UnlockPIN     string                    `json:"unlock_pin,omitempty"`
+	UnlockPIN     string                     `json:"unlock_pin,omitempty"`
 }
 
 func (r lockHostResponse) Error() error { return r.Err }
@@ -1274,11 +1274,11 @@ type unlockHostRequest struct {
 }
 
 type unlockHostResponse struct {
-	HostID        *uint                     `json:"host_id,omitempty"`
-	UnlockPIN     string                    `json:"unlock_pin,omitempty"`
+	HostID        *uint                      `json:"host_id,omitempty"`
+	UnlockPIN     string                     `json:"unlock_pin,omitempty"`
 	DeviceStatus  mobius.DeviceStatus        `json:"device_status,omitempty"`
 	PendingAction mobius.PendingDeviceAction `json:"pending_action,omitempty"`
-	Err           error                     `json:"error,omitempty"`
+	Err           error                      `json:"error,omitempty"`
 }
 
 func (r unlockHostResponse) Error() error { return r.Err }
@@ -1340,7 +1340,7 @@ type wipeHostRequest struct {
 }
 
 type wipeHostResponse struct {
-	Err           error                     `json:"error,omitempty"`
+	Err           error                      `json:"error,omitempty"`
 	DeviceStatus  mobius.DeviceStatus        `json:"device_status,omitempty"`
 	PendingAction mobius.PendingDeviceAction `json:"pending_action,omitempty"`
 }

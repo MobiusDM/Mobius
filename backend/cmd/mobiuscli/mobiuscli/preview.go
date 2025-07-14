@@ -565,6 +565,7 @@ func waitStartup() error {
 	return nil
 }
 
+// nolint:unused
 func waitFirstHost(client *service.Client) error {
 	retryStrategy := backoff.NewExponentialBackOff()
 	retryStrategy.MaxInterval = 1 * time.Second

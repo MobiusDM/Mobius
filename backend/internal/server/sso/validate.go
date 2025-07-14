@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/beevik/etree"
-	"github.com/notawar/mobius/internal/server/mobius"
 	rtvalidator "github.com/mattermost/xml-roundtrip-validator"
+	"github.com/notawar/mobius/internal/server/mobius"
 	dsig "github.com/russellhaering/goxmldsig"
 )
 

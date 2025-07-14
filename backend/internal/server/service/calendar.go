@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/gorilla/mux"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
-	"github.com/gorilla/mux"
 )
 
 type calendarWebhookRequest struct {

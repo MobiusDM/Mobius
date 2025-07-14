@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/contexts/token"
 	"github.com/igm/sockjs-go/v3/sockjs"
+	"github.com/notawar/mobius/internal/server/contexts/token"
 )
 
 const (

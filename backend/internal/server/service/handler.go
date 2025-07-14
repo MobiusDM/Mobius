@@ -399,9 +399,8 @@ func attachMobiusAPIRoutes(r *mux.Router, svc mobius.Service, config config.Mobi
 	// Deprecated: Emails are now included in host details endpoint: /api/_version_/mobius/hosts/{id}
 	ue.GET("/api/_version_/mobius/hosts/{id:[0-9]+}/device_mapping", listHostDeviceMappingEndpoint, listHostDeviceMappingRequest{})
 	// Deprecated: Because the corresponding GET endpoint is deprecated.
-	// /api/mobius/orbit/device_mapping can be used instead.
-	// FIXME(sarah): Is this really deprecated? The orbit-authenticated endpoint is not a substitute
-	// for the user-authenticated endpoint?
+	// API-first architecture provides direct API access instead.
+	// Note: This endpoint provides user-authenticated access vs the removed agent-authenticated endpoint.
 	ue.PUT("/api/_version_/mobius/hosts/{id:[0-9]+}/device_mapping", putHostDeviceMappingEndpoint, putHostDeviceMappingRequest{})
 	ue.GET("/api/_version_/mobius/hosts/report", hostsReportEndpoint, hostsReportRequest{})
 	ue.GET("/api/_version_/mobius/os_versions", osVersionsEndpoint, osVersionsRequest{})
@@ -878,26 +877,22 @@ func attachMobiusAPIRoutes(r *mux.Router, svc mobius.Service, config config.Mobi
 	he.WithAltPaths("/api/v1/osquery/yara/{name}").
 		POST("/api/osquery/yara/{name}", getYaraEndpoint, getYaraRequest{})
 
-	// orbit authenticated endpoints
-	oe := newOrbitAuthenticatedEndpointer(svc, logger, opts, r, apiVersions...)
-	oe.POST("/api/mobius/orbit/device_token", setOrUpdateDeviceTokenEndpoint, setOrUpdateDeviceTokenRequest{})
-	oe.POST("/api/mobius/orbit/config", getOrbitConfigEndpoint, orbitGetConfigRequest{})
-	// using POST to get a script execution request since all authenticated orbit
-	// endpoints are POST due to passing the device token in the JSON body.
-	oe.POST("/api/mobius/orbit/scripts/request", getOrbitScriptEndpoint, orbitGetScriptRequest{})
-	oe.POST("/api/mobius/orbit/scripts/result", postOrbitScriptResultEndpoint, orbitPostScriptResultRequest{})
-	oe.PUT("/api/mobius/orbit/device_mapping", putOrbitDeviceMappingEndpoint, orbitPutDeviceMappingRequest{})
-	oe.POST("/api/mobius/orbit/software_install/result", postOrbitSoftwareInstallResultEndpoint, orbitPostSoftwareInstallResultRequest{})
-	oe.POST("/api/mobius/orbit/software_install/package", orbitDownloadSoftwareInstallerEndpoint, orbitDownloadSoftwareInstallerRequest{})
-	oe.POST("/api/mobius/orbit/software_install/details", getOrbitSoftwareInstallDetails, orbitGetSoftwareInstallRequest{})
-
-	oeAppleMDM := oe.WithCustomMiddleware(mdmConfiguredMiddleware.VerifyAppleMDM())
-	oeAppleMDM.POST("/api/mobius/orbit/setup_experience/status", getOrbitSetupExperienceStatusEndpoint, getOrbitSetupExperienceStatusRequest{})
-
-	oeWindowsMDM := oe.WithCustomMiddleware(mdmConfiguredMiddleware.VerifyWindowsMDM())
-	oeWindowsMDM.POST("/api/mobius/orbit/disk_encryption_key", postOrbitDiskEncryptionKeyEndpoint, orbitPostDiskEncryptionKeyRequest{})
-
-	oe.POST("/api/mobius/orbit/luks_data", postOrbitLUKSEndpoint, orbitPostLUKSRequest{})
+	// ORBIT ENDPOINTS REMOVED - API-FIRST ARCHITECTURE
+	// All orbit endpoints have been removed as part of the transition to pure Go backend with API-first architecture.
+	// The frontend will be rebuilt as a separate application consuming REST APIs directly.
+	//
+	// Previously removed endpoints:
+	// - /api/mobius/orbit/device_token
+	// - /api/mobius/orbit/config
+	// - /api/mobius/orbit/scripts/request
+	// - /api/mobius/orbit/scripts/result
+	// - /api/mobius/orbit/device_mapping
+	// - /api/mobius/orbit/software_install/result
+	// - /api/mobius/orbit/software_install/package
+	// - /api/mobius/orbit/software_install/details
+	// - /api/mobius/orbit/setup_experience/status
+	// - /api/mobius/orbit/disk_encryption_key
+	// - /api/mobius/orbit/luks_data
 
 	// unauthenticated endpoints - most of those are either login-related,
 	// invite-related or host-enrolling. So they typically do some kind of
@@ -962,7 +957,9 @@ func attachMobiusAPIRoutes(r *mux.Router, svc mobius.Service, config config.Mobi
 	// This endpoint is unauthenticated and is used by to retrieve the MDM enrollment Terms of Use
 	neWindowsMDM.GET(microsoft_mdm.MDE2TOSPath, mdmMicrosoftTOSEndpoint, MDMWebContainer{})
 
-	ne.POST("/api/mobius/orbit/enroll", enrollOrbitEndpoint, EnrollOrbitRequest{})
+	// ORBIT ENROLLMENT ENDPOINT REMOVED - API-FIRST ARCHITECTURE
+	// Orbit enrollment has been removed as part of the transition to API-first architecture
+	// ne.POST("/api/mobius/orbit/enroll", enrollOrbitEndpoint, EnrollOrbitRequest{})
 
 	// For some reason osquery does not provide a node key with the block data.
 	// Instead the carve session ID should be verified in the service method.
@@ -1014,7 +1011,8 @@ func attachMobiusAPIRoutes(r *mux.Router, svc mobius.Service, config config.Mobi
 
 	ne.HEAD("/api/mobius/device/ping", devicePingEndpoint, devicePingRequest{})
 
-	ne.HEAD("/api/mobius/orbit/ping", orbitPingEndpoint, orbitPingRequest{})
+	// ORBIT PING ENDPOINT REMOVED - API-FIRST ARCHITECTURE
+	// ne.HEAD("/api/mobius/orbit/ping", orbitPingEndpoint, orbitPingRequest{})
 
 	// This is a callback endpoint for calendar integration -- it is called to notify an event change in a user calendar
 	ne.POST("/api/_version_/mobius/calendar/webhook/{event_uuid}", calendarWebhookEndpoint, calendarWebhookRequest{})

@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 )
 
 type pubSubLogWriter struct {

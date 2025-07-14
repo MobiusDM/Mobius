@@ -4,9 +4,9 @@ package logging
 import (
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type FilesystemConfig struct {

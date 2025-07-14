@@ -552,7 +552,7 @@ func (svc *Service) ApplyPackSpecs(ctx context.Context, specs []*mobius.PackSpec
 
 type getPackSpecsResponse struct {
 	Specs []*mobius.PackSpec `json:"specs"`
-	Err   error             `json:"error,omitempty"`
+	Err   error              `json:"error,omitempty"`
 }
 
 func (r getPackSpecsResponse) Error() error { return r.Err }
@@ -579,7 +579,7 @@ func (svc *Service) GetPackSpecs(ctx context.Context) ([]*mobius.PackSpec, error
 
 type getPackSpecResponse struct {
 	Spec *mobius.PackSpec `json:"specs,omitempty"`
-	Err  error           `json:"error,omitempty"`
+	Err  error            `json:"error,omitempty"`
 }
 
 func (r getPackSpecResponse) Error() error { return r.Err }

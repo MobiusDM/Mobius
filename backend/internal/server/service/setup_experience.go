@@ -53,9 +53,9 @@ type getSetupExperienceSoftwareRequest struct {
 
 type getSetupExperienceSoftwareResponse struct {
 	SoftwareTitles []mobius.SoftwareTitleListResult `json:"software_titles"`
-	Count          int                             `json:"count"`
+	Count          int                              `json:"count"`
 	Meta           *mobius.PaginationMetadata       `json:"meta"`
-	Err            error                           `json:"error,omitempty"`
+	Err            error                            `json:"error,omitempty"`
 }
 
 func (r getSetupExperienceSoftwareResponse) Error() error { return r.Err }
@@ -94,8 +94,7 @@ func (r getSetupExperienceScriptResponse) Error() error { return r.Err }
 func getSetupExperienceScriptEndpoint(ctx context.Context, request interface{}, svc mobius.Service) (mobius.Errorer, error) {
 	req := request.(*getSetupExperienceScriptRequest)
 	downloadRequested := req.Alt == "media"
-	// // TODO: do we want to allow end users to specify team_id=0? if so, we'll need convert it to nil here so that we can
-	// // use it in the auth layer where team_id=0 is not allowed?
+	// NOTE: team_id=0 is not supported in the auth layer, ensure proper team validation
 	script, content, err := svc.GetSetupExperienceScript(ctx, req.TeamID, downloadRequested)
 	if err != nil {
 		return getSetupExperienceScriptResponse{Err: err}, nil

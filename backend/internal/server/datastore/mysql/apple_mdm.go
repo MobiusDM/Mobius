@@ -17,21 +17,21 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
-	"github.com/notawar/mobius/internal/server/mobius"
-	mobiusmdm "github.com/notawar/mobius/internal/server/mdm"
-	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
-	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
-	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
-	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
+	mobiusmdm "github.com/notawar/mobius/internal/server/mdm"
+	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
+	"github.com/notawar/mobius/internal/server/mdm/apple/mobileconfig"
+	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
+	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
 )
 
 // addHostMDMCommandsBatchSize is the number of host MDM commands to add in a single batch. This is a var so that it can be modified in tests.
@@ -1225,7 +1225,7 @@ func ingestMDMAppleDeviceFromCheckinDB(
 
 	// MDM is necessarily enabled if this gets called, always pass true for that
 	// parameter.
-	enrolledHostInfo, err := matchHostDuringEnrollment(ctx, tx, mdmEnroll, true, "", mdmHost.UUID, mdmHost.HardwareSerial)
+	enrolledHostInfo, err := matchHostDuringEnrollment(ctx, tx, true, "", mdmHost.UUID, mdmHost.HardwareSerial)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return insertMDMAppleHostDB(ctx, tx, mdmHost, logger, appCfg)
@@ -2297,7 +2297,7 @@ ON DUPLICATE KEY UPDATE
 		profilesVarsToUpsert := make([]mobius.MDMProfileUUIDMobiusVariables, 0, len(insertedUpdatedProfs))
 		for _, p := range insertedUpdatedProfs {
 			profilesVarsToUpsert = append(profilesVarsToUpsert, mobius.MDMProfileUUIDMobiusVariables{
-				ProfileUUID:    p.ProfileUUID,
+				ProfileUUID:     p.ProfileUUID,
 				MobiusVariables: lookupVariablesByIdentifier[p.Identifier],
 			})
 		}

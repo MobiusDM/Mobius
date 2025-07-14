@@ -13,17 +13,17 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/doug-martin/goqu/v9"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/datastore/mysql/common_mysql"
-	"github.com/notawar/mobius/internal/server/mobius"
 	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
-	"github.com/jmoiron/sqlx"
 )
 
 // Since many hosts may have issues, we need to batch the inserts of host issues.
@@ -672,7 +672,6 @@ SELECT
   h.updated_at,
   h.detail_updated_at,
   h.node_key,
-  h.orbit_node_key,
   h.hostname,
   h.uuid,
   h.platform,
@@ -993,7 +992,6 @@ func (ds *Datastore) ListHosts(ctx context.Context, filter mobius.TeamFilter, op
     h.team_id,
     h.policy_updated_at,
     h.public_ip,
-    h.orbit_node_key,
     COALESCE(hd.gigs_disk_space_available, 0) as gigs_disk_space_available,
     COALESCE(hd.percent_disk_space_available, 0) as percent_disk_space_available,
     COALESCE(hd.gigs_total_disk_space, 0) as gigs_total_disk_space,
@@ -1922,23 +1920,21 @@ type enroll uint
 
 const (
 	osqueryEnroll enroll = iota
-	orbitEnroll
 	mdmEnroll
 )
 
 // enrolledHostInfo contains information of an enrolled host to
-// be used when enrolling orbit/osquery, MDM or just re-enrolling hosts
+// be used when enrolling osquery, MDM or just re-enrolling hosts
 // (e.g. when a osquery.db is deleted from a host).
 //
-// NOTE: orbit and osquery running as part of mobiusdaemon on a device are identified
-// with the same entry in the hosts table.
+// NOTE: orbit support has been removed. osquery and mobiusdaemon use the same entry.
 type enrolledHostInfo struct {
 	// ID is the identifier of the host.
 	ID uint
 	// LastEnrolledAt is the time the host last enrolled to Mobius.
 	LastEnrolledAt time.Time
-	// NodeKeySet indicates whether `node_key` is set (NOT NULL) for a osquery host
-	// or if `orbit_node_key` is set (NOT NULL) for a orbit host.
+	// NodeKeySet indicates whether `node_key` is set (NOT NULL) for a osquery host.
+	// Note: orbit_node_key support has been removed.
 	NodeKeySet bool
 	// Platform is the OS of the host.
 	Platform string
@@ -1961,7 +1957,6 @@ type enrolledHostInfo struct {
 func matchHostDuringEnrollment(
 	ctx context.Context,
 	q sqlx.QueryerContext,
-	enrollType enroll,
 	isMDMEnabled bool,
 	osqueryID, uuid, serial string,
 ) (*enrolledHostInfo, error) {
@@ -1980,10 +1975,8 @@ func matchHostDuringEnrollment(
 	)
 
 	// For enrollType == mdmEnroll, nodeKeyColumn doesn't matter.
+	// Note: enrollType parameter is now unused since orbit removal.
 	nodeKeyColumn := "node_key"
-	if enrollType == orbitEnroll {
-		nodeKeyColumn = "orbit_node_key"
-	}
 
 	if osqueryID != "" || uuid != "" {
 		_, _ = query.WriteString(fmt.Sprintf(`(SELECT id, last_enrolled_at, %s IS NOT NULL AS node_key_set, 1 priority, platform FROM hosts WHERE osquery_host_id = ?)`, nodeKeyColumn))
@@ -1996,7 +1989,8 @@ func matchHostDuringEnrollment(
 	}
 
 	// We want to prevent orbit enrolling with an osquery identifier to be matched with the serial number.
-	orbitEnrollingWithOsqueryIdentifier := enrollType == orbitEnroll && osqueryID != ""
+	// Since orbit is removed, this is no longer a concern.
+	orbitEnrollingWithOsqueryIdentifier := false
 
 	if serial != "" && isMDMEnabled && !orbitEnrollingWithOsqueryIdentifier {
 		if query.Len() > 0 {
@@ -2024,160 +2018,6 @@ func matchHostDuringEnrollment(
 	}, nil
 }
 
-func (ds *Datastore) EnrollOrbit(ctx context.Context, isMDMEnabled bool, hostInfo mobius.OrbitHostInfo, orbitNodeKey string, teamID *uint) (*mobius.Host, error) {
-	if orbitNodeKey == "" {
-		return nil, ctxerr.New(ctx, "orbit node key is empty")
-	}
-	if hostInfo.HardwareUUID == "" {
-		return nil, ctxerr.New(ctx, "hardware uuid is empty")
-	}
-	// NOTE: allow an empty serial, currently it is empty for Windows.
-
-	host := mobius.Host{
-		ComputerName:   hostInfo.ComputerName,
-		Hostname:       hostInfo.Hostname,
-		HardwareModel:  hostInfo.HardwareModel,
-		HardwareSerial: hostInfo.HardwareSerial,
-	}
-	err := ds.withRetryTxx(ctx, func(tx sqlx.ExtContext) error {
-		serialToMatch := hostInfo.HardwareSerial
-		if hostInfo.Platform == "windows" {
-			// For Windows, don't match by serial number to retain legacy functionality.
-			serialToMatch = ""
-		}
-		enrolledHostInfo, err := matchHostDuringEnrollment(ctx, tx, orbitEnroll, isMDMEnabled, hostInfo.OsqueryIdentifier,
-			hostInfo.HardwareUUID, serialToMatch)
-
-		// If the osquery identifier that osqueryd will use was not sent by Orbit, then use the hardware UUID as identifier
-		// (using the hardware UUID is Orbit's default behavior).
-		osqueryIdentifier := hostInfo.OsqueryIdentifier
-		if osqueryIdentifier == "" {
-			osqueryIdentifier = hostInfo.HardwareUUID
-		}
-
-		switch {
-		case err == nil:
-			if enrolledHostInfo.NodeKeySet {
-				// This means a orbit host already enrolled at this hosts entry.
-				// This can happen if two devices have duplicate hardware identifiers or
-				// if orbit's node key file was deleted from the device (e.g. uninstall+install).
-				level.Warn(ds.logger).Log(
-					"msg", "orbit host with duplicate identifier has enrolled in Mobius and will overwrite existing host data",
-					"identifier", hostInfo.HardwareUUID,
-					"host_id", enrolledHostInfo.ID,
-				)
-			}
-			refetchRequested := mobius.PlatformSupportsOsquery(enrolledHostInfo.Platform)
-
-			sqlUpdate := `
-      UPDATE
-        hosts
-      SET
-        orbit_node_key = ?,
-        uuid = COALESCE(NULLIF(uuid, ''), ?),
-        osquery_host_id = COALESCE(NULLIF(osquery_host_id, ''), ?),
-        hardware_serial = COALESCE(NULLIF(hardware_serial, ''), ?),
-        computer_name = COALESCE(NULLIF(computer_name, ''), ?),
-        hardware_model = COALESCE(NULLIF(hardware_model, ''), ?),
-        team_id = ?,
-        refetch_requested = ?
-      WHERE id = ?`
-			_, err := tx.ExecContext(ctx, sqlUpdate,
-				orbitNodeKey,
-				hostInfo.HardwareUUID,
-				osqueryIdentifier,
-				hostInfo.HardwareSerial,
-				hostInfo.ComputerName,
-				hostInfo.HardwareModel,
-				teamID,
-				refetchRequested,
-				enrolledHostInfo.ID,
-			)
-			if err != nil {
-				return ctxerr.Wrap(ctx, err, "orbit enroll error updating host details")
-			}
-			host.ID = enrolledHostInfo.ID
-
-			// clear any host_mdm_actions following re-enrollment here
-			if _, err := tx.ExecContext(ctx, `DELETE FROM host_mdm_actions WHERE host_id = ?`, enrolledHostInfo.ID); err != nil {
-				return ctxerr.Wrap(ctx, err, "orbit enroll error clearing host_mdm_actions")
-			}
-
-			// Clear host_mdm table row for this host if switching from Windows to non-Windows(e.g. Ubuntu) platform
-			// so that hosts that get re-imaged with other OS don't show erroneous MDM status
-			if enrolledHostInfo.Platform == "windows" && hostInfo.Platform != "" && hostInfo.Platform != "windows" {
-				if _, err := tx.ExecContext(ctx, `DELETE FROM host_mdm WHERE host_id = ?`, enrolledHostInfo.ID); err != nil {
-					return ctxerr.Wrap(ctx, err, "orbit enroll error clearing host_mdm entry on platform change re-enrollment")
-				}
-			}
-
-		case errors.Is(err, sql.ErrNoRows):
-			zeroTime := time.Unix(0, 0).Add(24 * time.Hour)
-			// Create new host record. We always create newly enrolled hosts with refetch_requested = true
-			// so that the frontend automatically starts background checks to update the page whenever
-			// the refetch is completed.
-			// We are also initially setting node_key to be the same as orbit_node_key because node_key has a unique
-			// constraint
-			sqlInsert := `
-				INSERT INTO hosts (
-					last_enrolled_at,
-					detail_updated_at,
-					label_updated_at,
-					policy_updated_at,
-					osquery_host_id,
-					uuid,
-					node_key,
-					team_id,
-					refetch_requested,
-					orbit_node_key,
-					hardware_serial,
-					hostname,
-					computer_name,
-					hardware_model,
-					platform
-				) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)
-			`
-			result, err := tx.ExecContext(ctx, sqlInsert,
-				zeroTime,
-				zeroTime,
-				zeroTime,
-				zeroTime,
-				osqueryIdentifier,
-				hostInfo.HardwareUUID,
-				orbitNodeKey,
-				teamID,
-				orbitNodeKey,
-				hostInfo.HardwareSerial,
-				hostInfo.Hostname,
-				hostInfo.ComputerName,
-				hostInfo.HardwareModel,
-				hostInfo.Platform,
-			)
-			if err != nil {
-				return ctxerr.Wrap(ctx, err, "orbit enroll error inserting host details")
-			}
-			hostID, _ := result.LastInsertId()
-			const sqlHostDisplayName = `
-				INSERT INTO host_display_names (host_id, display_name) VALUES (?, ?)
-			`
-			_, err = tx.ExecContext(ctx, sqlHostDisplayName, hostID, host.DisplayName())
-			if err != nil {
-				return ctxerr.Wrap(ctx, err, "insert host_display_names")
-			}
-			host.ID = uint(hostID)
-
-		default:
-			return ctxerr.Wrap(ctx, err, "orbit enroll error selecting host details")
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &host, nil
-}
-
 // EnrollHost enrolls the osquery agent to Mobius.
 func (ds *Datastore) EnrollHost(ctx context.Context, isMDMEnabled bool, osqueryHostID, hardwareUUID, hardwareSerial, nodeKey string, teamID *uint, cooldown time.Duration) (*mobius.Host, error) {
 	if osqueryHostID == "" {
@@ -2189,7 +2029,7 @@ func (ds *Datastore) EnrollHost(ctx context.Context, isMDMEnabled bool, osqueryH
 		zeroTime := time.Unix(0, 0).Add(24 * time.Hour)
 
 		var hostID uint
-		enrolledHostInfo, err := matchHostDuringEnrollment(ctx, tx, osqueryEnroll, isMDMEnabled, osqueryHostID, hardwareUUID, hardwareSerial)
+		enrolledHostInfo, err := matchHostDuringEnrollment(ctx, tx, isMDMEnabled, osqueryHostID, hardwareUUID, hardwareSerial)
 		switch {
 		case err != nil && !errors.Is(err, sql.ErrNoRows):
 			return ctxerr.Wrap(ctx, err, "check existing")
@@ -2323,7 +2163,6 @@ func (ds *Datastore) EnrollHost(ctx context.Context, isMDMEnabled bool, osqueryH
         h.team_id,
         h.policy_updated_at,
         h.public_ip,
-        h.orbit_node_key,
         COALESCE(hd.gigs_disk_space_available, 0) as gigs_disk_space_available,
         COALESCE(hd.gigs_total_disk_space, 0) as gigs_total_disk_space,
         COALESCE(hd.percent_disk_space_available, 0) as percent_disk_space_available
@@ -2423,7 +2262,6 @@ func (ds *Datastore) LoadHostByNodeKey(ctx context.Context, nodeKey string) (*mo
       h.team_id,
       h.policy_updated_at,
       h.public_ip,
-      h.orbit_node_key,
       COALESCE(hd.gigs_disk_space_available, 0) as gigs_disk_space_available,
       COALESCE(hd.gigs_total_disk_space, 0) as gigs_total_disk_space,
       COALESCE(hd.percent_disk_space_available, 0) as percent_disk_space_available
@@ -2493,7 +2331,6 @@ func (ds *Datastore) LoadHostByOrbitNodeKey(ctx context.Context, nodeKey string)
       h.team_id,
       h.policy_updated_at,
       h.public_ip,
-      h.orbit_node_key,
       IF(hdep.host_id AND ISNULL(hdep.deleted_at), true, false) AS dep_assigned_to_mobius,
       hd.encrypted as disk_encryption_enabled,
       COALESCE(hdek.decryptable, false) as encryption_key_available,
@@ -2517,7 +2354,7 @@ func (ds *Datastore) LoadHostByOrbitNodeKey(ctx context.Context, nodeKey string)
     ON
       h.team_id = t.id
     WHERE
-      h.orbit_node_key = ?`
+      h.node_key = ?`
 
 	var hostWithEnc hostWithEncryptionKeys
 	switch err := ds.getContextTryStmt(ctx, &hostWithEnc, query, nodeKey); {
@@ -2714,7 +2551,6 @@ func (ds *Datastore) SearchHosts(ctx context.Context, filter mobius.TeamFilter, 
     h.team_id,
     h.policy_updated_at,
     h.public_ip,
-    h.orbit_node_key,
     COALESCE(hd.gigs_disk_space_available, 0) as gigs_disk_space_available,
     COALESCE(hd.percent_disk_space_available, 0) as percent_disk_space_available,
     COALESCE(hd.gigs_total_disk_space, 0) as gigs_total_disk_space,
@@ -2952,7 +2788,6 @@ func (ds *Datastore) HostByIdentifier(ctx context.Context, identifier string) (*
       h.team_id,
       h.policy_updated_at,
       h.public_ip,
-      h.orbit_node_key,
       t.name AS team_name,
       COALESCE(hd.gigs_disk_space_available, 0) as gigs_disk_space_available,
       COALESCE(hd.percent_disk_space_available, 0) as percent_disk_space_available,
@@ -4017,6 +3852,8 @@ func maybeAssociateHostMDMIdPWithScimUser(ctx context.Context, tx sqlx.ExtContex
 	case mobius.IsNotFound(err) || scimUser == nil:
 		// There is no SCIM association possible at this time
 		return nil
+	default:
+		// scimUser found, proceed with association
 	}
 
 	err = associateHostWithScimUser(ctx, tx, hostID, scimUser.ID)
@@ -4026,11 +3863,7 @@ func maybeAssociateHostMDMIdPWithScimUser(ctx context.Context, tx sqlx.ExtContex
 	return nil
 }
 
-func (ds *Datastore) associateHostWithScimUser(ctx context.Context, hostID uint, scimUserID uint) error {
-	return ds.withRetryTxx(ctx, func(tx sqlx.ExtContext) error {
-		return associateHostWithScimUser(ctx, tx, hostID, scimUserID)
-	})
-}
+
 
 func associateHostWithScimUser(ctx context.Context, tx sqlx.ExtContext, hostID uint, scimUserID uint) error {
 	_, err := tx.ExecContext(
@@ -4084,36 +3917,9 @@ func (ds *Datastore) SetOrUpdateHostDisksEncryption(ctx context.Context, hostID 
 	)
 }
 
-func (ds *Datastore) SetOrUpdateHostOrbitInfo(
-	ctx context.Context, hostID uint, version string, desktopVersion sql.NullString, scriptsEnabled sql.NullBool,
-) error {
-	return ds.updateOrInsert(
-		ctx,
-		`UPDATE host_orbit_info SET version = ?, desktop_version = ?, scripts_enabled = ? WHERE host_id = ?`,
-		`INSERT INTO host_orbit_info (version, desktop_version, scripts_enabled, host_id) VALUES (?, ?, ?, ?)`,
-		version, desktopVersion, scriptsEnabled, hostID,
-	)
-}
-
-func (ds *Datastore) GetHostOrbitInfo(ctx context.Context, hostID uint) (*mobius.HostOrbitInfo, error) {
-	var orbit mobius.HostOrbitInfo
-	err := sqlx.GetContext(
-		ctx, ds.reader(ctx), &orbit, `
-	SELECT
-		version,
-		desktop_version,
-		scripts_enabled
-	FROM
-		host_orbit_info
-	WHERE host_id = ?`, hostID,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ctxerr.Wrap(ctx, notFound("HostOrbitInfo").WithID(hostID))
-		}
-		return nil, ctxerr.Wrapf(ctx, err, "select host_orbit_info for host_id %d", hostID)
-	}
-	return &orbit, nil
+func (ds *Datastore) GetHostOrbitInfo(ctx context.Context, hostID uint) (*struct{}, error) {
+	// Orbit support has been removed - return not found
+	return nil, ctxerr.Wrap(ctx, notFound("HostOrbitInfo").WithID(hostID))
 }
 
 func (ds *Datastore) getOrInsertMDMSolution(ctx context.Context, serverURL string, mdmName string) (mdmID uint, err error) {
@@ -4769,9 +4575,9 @@ func (ds *Datastore) UpdateHostRefetchCriticalQueriesUntil(ctx context.Context, 
 // UpdateHost updates all columns of the `hosts` table.
 // It only updates `hosts` table, other additional host information is ignored.
 func (ds *Datastore) UpdateHost(ctx context.Context, host *mobius.Host) error {
-	if host.OrbitNodeKey == nil || *host.OrbitNodeKey == "" {
-		level.Debug(ds.logger).Log("msg", "missing orbit_node_key to update host",
-			"host_id", host.ID, "node_key", host.NodeKey, "orbit_node_key", host.OrbitNodeKey)
+	if host.NodeKey == nil || *host.NodeKey == "" {
+		level.Debug(ds.logger).Log("msg", "missing node_key to update host",
+			"host_id", host.ID, "node_key", host.NodeKey)
 	}
 
 	sqlStatement := `
@@ -4808,7 +4614,6 @@ func (ds *Datastore) UpdateHost(ctx context.Context, host *mobius.Host) error {
 			primary_mac = ?,
 			public_ip = ?,
 			refetch_requested = ?,
-			orbit_node_key = ?,
 			refetch_critical_queries_until = ?
 		WHERE id = ?
 	`
@@ -4848,7 +4653,6 @@ func (ds *Datastore) UpdateHost(ctx context.Context, host *mobius.Host) error {
 				host.PrimaryMac,
 				host.PublicIP,
 				host.RefetchRequested,
-				host.OrbitNodeKey,
 				host.RefetchCriticalQueriesUntil,
 				host.ID,
 			)
@@ -5304,21 +5108,6 @@ WHERE
 		level.Info(logger).Log("err", fmt.Sprintf("hosts detected that are not responding distributed queries %v", ids))
 	}
 	return len(ids), nil
-}
-
-func amountHostsByOrbitVersionDB(ctx context.Context, db sqlx.QueryerContext) ([]mobius.HostsCountByOrbitVersion, error) {
-	counts := make([]mobius.HostsCountByOrbitVersion, 0)
-
-	const stmt = `
-		SELECT version as orbit_version, count(*) as num_hosts
-		FROM host_orbit_info
-		GROUP BY version
-  	`
-	if err := sqlx.SelectContext(ctx, db, &counts, stmt); err != nil {
-		return nil, err
-	}
-
-	return counts, nil
 }
 
 func amountHostsByOsqueryVersionDB(ctx context.Context, db sqlx.QueryerContext) ([]mobius.HostsCountByOsqueryVersion, error) {

@@ -4,11 +4,11 @@ import (
 	"context"
 	"net/http"
 
+	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/contexts/token"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
 	"github.com/notawar/mobius/internal/server/mobius"
-	kithttp "github.com/go-kit/kit/transport/http"
 )
 
 // SetRequestsContexts updates the request with necessary context values for a request

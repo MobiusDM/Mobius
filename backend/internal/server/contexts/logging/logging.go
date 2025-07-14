@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/viewer"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kithttp "github.com/go-kit/kit/transport/http"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/viewer"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type key int

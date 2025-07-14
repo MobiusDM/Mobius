@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-sql-driver/mysql"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // ErrBadRoute is used for mux errors

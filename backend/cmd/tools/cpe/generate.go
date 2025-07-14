@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/cpedict"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/nvd/tools/wfn"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/pandatix/nvdapi/common"
 	"github.com/pandatix/nvdapi/v2"
 )

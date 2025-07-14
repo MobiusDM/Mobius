@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	"github.com/go-kit/log/level"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 var (

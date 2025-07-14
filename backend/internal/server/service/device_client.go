@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/notawar/mobius/pkg/retry"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/retry"
 	"github.com/rs/zerolog/log"
 )
 
@@ -21,7 +21,7 @@ type DeviceClient struct {
 
 	// mobiusAlternativeBrowserHost is an alternative host to use for the Mobius Desktop URLs generated for the browser.
 	//
-	// This is needed when the host that Orbit will connect to is different from the host that will connect via the browser.
+	// This is needed when the host that the agent will connect to is different from the host that will connect via the browser.
 	mobiusAlternativeBrowserHost string
 
 	// if set and a request fails with ErrUnauthenticated, the client will call
@@ -39,7 +39,7 @@ func NewDeviceClient(addr string, insecureSkipVerify bool, rootCA string, mobius
 	}
 
 	return &DeviceClient{
-		baseClient:                  baseClient,
+		baseClient:                   baseClient,
 		mobiusAlternativeBrowserHost: mobiusAlternativeBrowserHost,
 	}, nil
 }

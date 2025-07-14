@@ -6,9 +6,9 @@ import (
 	"errors"
 
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/assets"
 	scepserver "github.com/notawar/mobius/internal/server/mdm/scep/server"
+	"github.com/notawar/mobius/internal/server/mobius"
 
 	"github.com/go-kit/log"
 	"github.com/smallstep/scep"

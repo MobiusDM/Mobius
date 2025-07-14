@@ -2,7 +2,6 @@ package osquery_utils
 
 import (
 	"context"
-	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -16,6 +15,8 @@ import (
 
 	"github.com/notawar/mobius/internal/server/mdm"
 
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
@@ -26,8 +27,6 @@ import (
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service/async"
-	"github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/spf13/cast"
 )
 
@@ -665,12 +664,7 @@ var extraDetailQueries = map[string]DetailQuery{
 		Platforms:        []string{"chrome"},
 		DirectIngestFunc: directIngestOSUnixLike,
 	},
-	"orbit_info": {
-		Query:            `SELECT * FROM orbit_info`,
-		DirectIngestFunc: directIngestOrbitInfo,
-		Platforms:        append(mobius.HostLinuxOSs, "darwin", "windows"),
-		Discovery:        discoveryTable("orbit_info"),
-	},
+
 	"disk_encryption_darwin": {
 		Query:            usesMacOSDiskEncryptionQuery,
 		Platforms:        []string{"darwin"},
@@ -1313,27 +1307,6 @@ var usersQueryChrome = DetailQuery{
 	DirectIngestFunc: directIngestUsers,
 }
 
-// directIngestOrbitInfo ingests data from the orbit_info extension table.
-func directIngestOrbitInfo(ctx context.Context, logger log.Logger, host *mobius.Host, ds mobius.Datastore, rows []map[string]string) error {
-	if len(rows) != 1 {
-		return ctxerr.Errorf(ctx, "directIngestOrbitInfo invalid number of rows: %d", len(rows))
-	}
-	version := rows[0]["version"]
-	var desktopVersion sql.NullString
-	desktopVersion.String, desktopVersion.Valid = rows[0]["desktop_version"]
-	var scriptsEnabled sql.NullBool
-	scriptsEnabledStr, ok := rows[0]["scripts_enabled"]
-	if ok {
-		scriptsEnabled.Bool = scriptsEnabledStr == "1"
-		scriptsEnabled.Valid = true
-	}
-	if err := ds.SetOrUpdateHostOrbitInfo(ctx, host.ID, version, desktopVersion, scriptsEnabled); err != nil {
-		return ctxerr.Wrap(ctx, err, "directIngestOrbitInfo update host orbit info")
-	}
-
-	return nil
-}
-
 // directIngestOSWindows ingests selected operating system data from a host on a Windows platform
 func directIngestOSWindows(ctx context.Context, logger log.Logger, host *mobius.Host, ds mobius.Datastore, rows []map[string]string) error {
 	if len(rows) != 1 {
@@ -1834,10 +1807,8 @@ func directIngestMDMMac(ctx context.Context, logger log.Logger, host *mobius.Hos
 	if mdmSolutionName == mobius.WellKnownMDMMobius {
 		mobiusEnrollRef = serverURL.Query().Get(mobileconfig.MobiusEnrollReferenceKey)
 		if mobiusEnrollRef == "" {
-			// TODO: We have some inconsistencies where we use enroll_reference sometimes and
-			// enrollment_reference other times. It really should be the same everywhere, but
-			// it seems to be working now because the values are matching where they need to match.
-			// We should clean this up at some point, but for now we'll just check both.
+			// Check both enroll_reference and enrollment_reference for backwards compatibility
+			// This handles legacy naming inconsistencies in the codebase
 			mobiusEnrollRef = serverURL.Query().Get("enrollment_reference")
 		}
 	}
@@ -2177,7 +2148,7 @@ var luksVerifyQuery = DetailQuery{
 		discoveryTable("cryptsetup_luks_salt"),
 	),
 	QueryFunc: func(ctx context.Context, logger log.Logger, host *mobius.Host, ds mobius.Datastore) (string, bool) {
-		if host.OrbitNodeKey == nil || *host.OrbitNodeKey == "" || !host.IsLUKSSupported() {
+		if host.NodeKey == nil || *host.NodeKey == "" || !host.IsLUKSSupported() {
 			return "", false
 		}
 

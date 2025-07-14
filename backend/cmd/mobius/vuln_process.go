@@ -10,11 +10,11 @@ import (
 	"github.com/notawar/mobius/internal/server/contexts/license"
 
 	"github.com/WatchBeam/clock"
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/datastore/mysql"
 	"github.com/notawar/mobius/internal/server/mobius"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 	"github.com/spf13/cobra"
 )
 
@@ -157,7 +157,7 @@ type NamedVulnFunc struct {
 	VulnFunc func(ctx context.Context) error
 }
 
-func getVulnFuncs(ctx context.Context, ds mobius.Datastore, logger kitlog.Logger, config *config.VulnerabilitiesConfig) []NamedVulnFunc {
+func getVulnFuncs(_ context.Context, ds mobius.Datastore, logger kitlog.Logger, config *config.VulnerabilitiesConfig) []NamedVulnFunc {
 	vulnFuncs := []NamedVulnFunc{
 		{
 			Name: "cron_vulnerabilities",

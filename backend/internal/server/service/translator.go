@@ -14,7 +14,7 @@ type translatorRequest struct {
 
 type translatorResponse struct {
 	List []mobius.TranslatePayload `json:"list"`
-	Err  error                    `json:"error,omitempty"`
+	Err  error                     `json:"error,omitempty"`
 }
 
 func (r translatorResponse) Error() error { return r.Err }

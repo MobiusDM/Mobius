@@ -16,7 +16,7 @@ func browser(url string) error {
 	// We get XAUTHORITY from the Xwayland process environment.
 	//
 	// We have to do this here instead of when executing mobius-desktop because the Xwayland process
-	// may not be running yet when orbit is executing mobius-desktop.
+	// may not be running yet when the agent is executing mobius-desktop.
 	xAuthority, err := getXWaylandAuthority()
 	log.Info().Str("XAUTHORITY", xAuthority).Err(err).Msg("Xwayland process")
 	if err == nil {

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/contexts/publicip"
@@ -20,7 +21,6 @@ import (
 	"github.com/notawar/mobius/internal/server/service/contract"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/notawar/mobius/internal/server/sso"
-	"github.com/go-kit/log/level"
 )
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -10,12 +10,12 @@ import (
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/service/middleware/auth"
 
-	"github.com/notawar/mobius/internal/server/contexts/viewer"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/websocket"
 	kitlog "github.com/go-kit/log"
 	gws "github.com/gorilla/websocket"
 	"github.com/igm/sockjs-go/v3/sockjs"
+	"github.com/notawar/mobius/internal/server/contexts/viewer"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/websocket"
 )
 
 ////////////////////////////////////////////////////////////////////////////////

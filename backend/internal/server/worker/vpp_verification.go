@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 const VPPVerificationJobName = "vpp_verification"

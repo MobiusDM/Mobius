@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 const (
@@ -38,11 +38,11 @@ type Job interface {
 // failingPolicyArgs are the args common to all integrations that can process
 // failing policies.
 type failingPolicyArgs struct {
-	PolicyID       uint                  `json:"policy_id"`
-	PolicyName     string                `json:"policy_name"`
-	PolicyCritical bool                  `json:"policy_critical"`
+	PolicyID       uint                   `json:"policy_id"`
+	PolicyName     string                 `json:"policy_name"`
+	PolicyCritical bool                   `json:"policy_critical"`
 	Hosts          []mobius.PolicySetHost `json:"hosts"`
-	TeamID         *uint                 `json:"team_id,omitempty"`
+	TeamID         *uint                  `json:"team_id,omitempty"`
 }
 
 // vulnArgs are the args common to all integrations that can process
@@ -207,7 +207,7 @@ func (w *Worker) processJob(ctx context.Context, job *mobius.Job) error {
 }
 
 type failingPoliciesTplArgs struct {
-	MobiusURL       string
+	MobiusURL      string
 	PolicyID       uint
 	PolicyName     string
 	PolicyCritical bool
@@ -217,7 +217,7 @@ type failingPoliciesTplArgs struct {
 
 func newFailingPoliciesTplArgs(mobiusURL string, args *failingPolicyArgs) *failingPoliciesTplArgs {
 	return &failingPoliciesTplArgs{
-		MobiusURL:       mobiusURL,
+		MobiusURL:      mobiusURL,
 		PolicyName:     args.PolicyName,
 		PolicyID:       args.PolicyID,
 		PolicyCritical: args.PolicyCritical,

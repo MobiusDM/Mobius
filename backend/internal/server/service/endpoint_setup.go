@@ -14,11 +14,11 @@ import (
 	"github.com/go-kit/kit/endpoint"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
-	"github.com/notawar/mobius/pkg/mobiushttp"
-	"github.com/notawar/mobius/pkg/spec"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/notawar/mobius/pkg/spec"
 )
 
 const (

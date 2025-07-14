@@ -28,7 +28,8 @@ func (mw validationMiddleware) NewAppConfig(ctx context.Context, payload mobius.
 }
 
 func ValidateServerURL(urlString string) error {
-	// TODO - implement more robust URL validation here
+	// Basic URL validation - checks scheme and host presence
+	// Future enhancements could include port validation, path restrictions, etc.
 
 	// no valid scheme provided
 	if !(strings.HasPrefix(urlString, "http://") || strings.HasPrefix(urlString, "https://")) {

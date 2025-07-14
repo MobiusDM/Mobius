@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/notawar/mobius/pkg/mobiushttp"
+	"github.com/google/go-github/v37/github"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/io"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/msrc"
 	"github.com/notawar/mobius/internal/server/vulnerabilities/msrc/parsed"
-	"github.com/google/go-github/v37/github"
+	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
 func panicif(err error) {

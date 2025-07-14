@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/go-kit/log/level"
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
@@ -12,8 +14,6 @@ import (
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/version"
-	"github.com/go-kit/log/level"
-	"github.com/jmoiron/sqlx"
 )
 
 type statistics struct {
@@ -97,10 +97,6 @@ func (ds *Datastore) ShouldSendStatistics(ctx context.Context, frequency time.Du
 		if err != nil {
 			return ctxerr.Wrap(ctx, err, "amount hosts not responding")
 		}
-		amountHostsByOrbitVersion, err := amountHostsByOrbitVersionDB(ctx, ds.reader(ctx))
-		if err != nil {
-			return ctxerr.Wrap(ctx, err, "amount hosts by orbit version")
-		}
 		amountHostsByOsqueryVersion, err := amountHostsByOsqueryVersionDB(ctx, ds.reader(ctx))
 		if err != nil {
 			return ctxerr.Wrap(ctx, err, "amount hosts by osquery version")
@@ -138,7 +134,6 @@ func (ds *Datastore) ShouldSendStatistics(ctx context.Context, frequency time.Du
 		stats.NumWeeklyPolicyViolationDaysActual = amountPolicyViolationDaysActual
 		stats.NumWeeklyPolicyViolationDaysPossible = amountPolicyViolationDaysPossible
 		stats.HostsEnrolledByOperatingSystem = enrolledHostsByOS
-		stats.HostsEnrolledByOrbitVersion = amountHostsByOrbitVersion
 		stats.HostsEnrolledByOsqueryVersion = amountHostsByOsqueryVersion
 		stats.StoredErrors = storedErrs
 		stats.NumHostsNotResponding = amountHostsNotResponding
@@ -183,7 +178,7 @@ func (ds *Datastore) ShouldSendStatistics(ctx context.Context, frequency time.Du
 			// compute active weekly users since now - frequency
 			stats := mobius.StatisticsPayload{
 				AnonymousIdentifier: anonIdentifier,
-				MobiusVersion:        version.Version().Version,
+				MobiusVersion:       version.Version().Version,
 				LicenseTier:         mobius.TierFree,
 			}
 			if lic != nil {
@@ -208,7 +203,7 @@ func (ds *Datastore) ShouldSendStatistics(ctx context.Context, frequency time.Du
 
 	stats := mobius.StatisticsPayload{
 		AnonymousIdentifier: dest.Identifier,
-		MobiusVersion:        version.Version().Version,
+		MobiusVersion:       version.Version().Version,
 		LicenseTier:         mobius.TierFree,
 	}
 	if lic != nil {

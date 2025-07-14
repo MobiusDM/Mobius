@@ -5,8 +5,8 @@ package mdmconfigured
 import (
 	"context"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type Middleware struct {

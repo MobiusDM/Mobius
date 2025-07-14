@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
-	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/gomodule/redigo/redis"
 	"github.com/mna/redisc"
+	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // this is an adapter type to implement the same Stats method as for

@@ -316,7 +316,7 @@ func labelResponseForLabel(label *mobius.Label, hostIDs []uint) (*labelResponse,
 
 type getLabelsSummaryResponse struct {
 	Labels []*mobius.LabelSummary `json:"labels"`
-	Err    error                 `json:"error,omitempty"`
+	Err    error                  `json:"error,omitempty"`
 }
 
 func (r getLabelsSummaryResponse) Error() error { return r.Err }
@@ -342,7 +342,7 @@ func (svc *Service) LabelsSummary(ctx context.Context) ([]*mobius.LabelSummary, 
 ////////////////////////////////////////////////////////////////////////////////
 
 type listHostsInLabelRequest struct {
-	ID          uint                  `url:"id"`
+	ID          uint                   `url:"id"`
 	ListOptions mobius.HostListOptions `url:"host_options"`
 }
 
@@ -590,7 +590,7 @@ func (svc *Service) ApplyLabelSpecs(ctx context.Context, specs []*mobius.LabelSp
 
 type getLabelSpecsResponse struct {
 	Specs []*mobius.LabelSpec `json:"specs"`
-	Err   error              `json:"error,omitempty"`
+	Err   error               `json:"error,omitempty"`
 }
 
 func (r getLabelSpecsResponse) Error() error { return r.Err }
@@ -617,7 +617,7 @@ func (svc *Service) GetLabelSpecs(ctx context.Context) ([]*mobius.LabelSpec, err
 
 type getLabelSpecResponse struct {
 	Spec *mobius.LabelSpec `json:"specs,omitempty"`
-	Err  error            `json:"error,omitempty"`
+	Err  error             `json:"error,omitempty"`
 }
 
 func (r getLabelSpecResponse) Error() error { return r.Err }

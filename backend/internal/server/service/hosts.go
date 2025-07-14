@@ -14,6 +14,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-kit/log/level"
+	"github.com/gocarina/gocsv"
+	"github.com/google/uuid"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/authz"
 	authzctx "github.com/notawar/mobius/internal/server/contexts/authz"
@@ -30,9 +33,6 @@ import (
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/notawar/mobius/internal/server/worker"
-	"github.com/go-kit/log/level"
-	"github.com/gocarina/gocsv"
-	"github.com/google/uuid"
 )
 
 // HostDetailResponse is the response struct that contains the full host information
@@ -1619,7 +1619,7 @@ func putHostDeviceMappingEndpoint(ctx context.Context, request interface{}, svc 
 }
 
 func (svc *Service) SetCustomHostDeviceMapping(ctx context.Context, hostID uint, email string) ([]*mobius.HostDeviceMapping, error) {
-	isInstallerSource := svc.authz.IsAuthenticatedWith(ctx, authzctx.AuthnOrbitToken)
+	isInstallerSource := svc.authz.IsAuthenticatedWith(ctx, authzctx.AuthnDeviceToken)
 	if !isInstallerSource {
 		if err := svc.authz.Authorize(ctx, &mobius.Host{}, mobius.ActionList); err != nil {
 			return nil, err
@@ -1751,7 +1751,7 @@ func (svc *Service) MacadminsData(ctx context.Context, id uint) (*mobius.Macadmi
 	switch issues, err := svc.ds.GetHostMunkiIssues(ctx, id); {
 	case err != nil:
 		return nil, err
-	case err == nil:
+	default:
 		munkiIssues = issues
 	}
 

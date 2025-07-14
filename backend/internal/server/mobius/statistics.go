@@ -7,7 +7,7 @@ import (
 
 type StatisticsPayload struct {
 	AnonymousIdentifier           string `json:"anonymousIdentifier"`
-	MobiusVersion                  string `json:"mobiusVersion"`
+	MobiusVersion                 string `json:"mobiusVersion"`
 	LicenseTier                   string `json:"licenseTier"`
 	Organization                  string `json:"organization"`
 	NumHostsEnrolled              int    `json:"numHostsEnrolled"`
@@ -42,8 +42,6 @@ type StatisticsPayload struct {
 	// increments once per 24-hour interval and resets each week.
 	NumWeeklyPolicyViolationDaysPossible int                                `json:"numWeeklyPolicyViolationDaysPossible"`
 	HostsEnrolledByOperatingSystem       map[string][]HostsCountByOSVersion `json:"hostsEnrolledByOperatingSystem"`
-	// HostsEnrolledByOrbitVersion is a count of hosts enrolled to Mobius grouped by orbit version
-	HostsEnrolledByOrbitVersion []HostsCountByOrbitVersion `json:"hostsEnrolledByOrbitVersion"`
 	// HostsEnrolledByOsqueryVersion is a count of hosts enrolled to Mobius grouped by osquery version
 	HostsEnrolledByOsqueryVersion []HostsCountByOsqueryVersion `json:"hostsEnrolledByOsqueryVersion"`
 	StoredErrors                  json.RawMessage              `json:"storedErrors"`
@@ -61,10 +59,6 @@ type StatisticsPayload struct {
 	NumHostsMobiusDesktopEnabled int `json:"numHostsMobiusDesktopEnabled"`
 }
 
-type HostsCountByOrbitVersion struct {
-	OrbitVersion string `json:"orbitVersion" db:"orbit_version"`
-	NumHosts     int    `json:"numHosts" db:"num_hosts"`
-}
 type HostsCountByOsqueryVersion struct {
 	OsqueryVersion string `json:"osqueryVersion" db:"osquery_version"`
 	NumHosts       int    `json:"numHosts" db:"num_hosts"`

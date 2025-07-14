@@ -17,8 +17,8 @@ func (p *Client) InitCommonMocks() {
 	}
 	p.EnterprisesCreateFunc = func(ctx context.Context, req androidmgmt.EnterprisesCreateRequest) (androidmgmt.EnterprisesCreateResponse, error) {
 		return androidmgmt.EnterprisesCreateResponse{
-			EnterpriseName:    "enterprises/name",
-			TopicName:         "",
+			EnterpriseName:     "enterprises/name",
+			TopicName:          "",
 			MobiusServerSecret: "mobiusServerSecret",
 		}, nil
 	}

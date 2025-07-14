@@ -63,14 +63,9 @@ func (c CapabilityMap) Copy(from CapabilityMap) {
 }
 
 // The following are the capabilities that Mobius supports. These can be used by
-// the Mobius server, Orbit or Mobius Desktop to communicate that a given feature
+// the Mobius server or Mobius Desktop to communicate that a given feature
 // is supported.
 const (
-	// CapabilityOrbitEndpoints denotes the presence of server endpoints
-	// dedicated to communicating with Orbit. These endpoints start with
-	// `/api/mobius/orbit`, and allow enrolling a host through Orbit among other
-	// functionality.
-	CapabilityOrbitEndpoints Capability = "orbit_endpoints"
 	// CapabilityTokenRotation denotes the ability of the server to support
 	// periodic rotation of device tokens
 	CapabilityTokenRotation  Capability = "token_rotation"
@@ -90,9 +85,8 @@ const (
 	CapabilitySetupExperience Capability = "setup_experience"
 )
 
-func GetServerOrbitCapabilities() CapabilityMap {
+func GetServerCapabilities() CapabilityMap {
 	return CapabilityMap{
-		CapabilityOrbitEndpoints:            {},
 		CapabilityTokenRotation:             {},
 		CapabilityEndUserEmail:              {},
 		CapabilityEscrowBuddy:               {},

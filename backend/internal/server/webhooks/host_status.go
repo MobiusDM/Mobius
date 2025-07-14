@@ -3,12 +3,12 @@ package webhooks
 import (
 	"context"
 	"fmt"
-	"github.com/notawar/mobius/internal/server"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/hashicorp/go-multierror"
+	"github.com/notawar/mobius/internal/server"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 func TriggerHostStatusWebhook(

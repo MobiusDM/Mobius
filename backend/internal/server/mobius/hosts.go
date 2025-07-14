@@ -286,13 +286,11 @@ type Host struct {
 	SeenTime         time.Time `json:"seen_time" db:"seen_time" csv:"seen_time"`                         // Time that the host was last "seen"
 	RefetchRequested bool      `json:"refetch_requested" db:"refetch_requested" csv:"refetch_requested"`
 	NodeKey          *string   `json:"-" db:"node_key" csv:"-"`
-	OrbitNodeKey     *string   `json:"-" db:"orbit_node_key" csv:"-"`
 	Hostname         string    `json:"hostname" db:"hostname" csv:"hostname"` // there is a fulltext index on this field
 	UUID             string    `json:"uuid" db:"uuid" csv:"uuid"`             // there is a fulltext index on this field
 	// Platform is the host's platform as defined by osquery's os_version.platform.
 	Platform       string        `json:"platform" csv:"platform"`
 	OsqueryVersion string        `json:"osquery_version" db:"osquery_version" csv:"osquery_version"`
-	OrbitVersion   *string       `json:"orbit_version" db:"orbit_version" csv:"orbit_version"`
 	DesktopVersion *string       `json:"mobius_desktop_version" db:"mobius_desktop_version" csv:"mobius_desktop_version"`
 	ScriptsEnabled *bool         `json:"scripts_enabled" db:"scripts_enabled" csv:"scripts_enabled"`
 	OSVersion      string        `json:"os_version" db:"os_version" csv:"os_version"`
@@ -407,13 +405,6 @@ func (ah *AndroidHost) IsValid() bool {
 	return !(ah == nil || ah.Host == nil || ah.Device == nil ||
 		ah.Host.NodeKey == nil || ah.Device.EnterpriseSpecificID == nil ||
 		*ah.Host.NodeKey != "android/"+*ah.Device.EnterpriseSpecificID)
-}
-
-// HostOrbitInfo maps to the host_orbit_info table in the database, which maps to the orbit_info agent table.
-type HostOrbitInfo struct {
-	Version        string  `json:"version" db:"version"`
-	DesktopVersion *string `json:"desktop_version" db:"desktop_version"`
-	ScriptsEnabled *bool   `json:"scripts_enabled" db:"scripts_enabled"`
 }
 
 // HostHealth contains a subset of Host data that indicates how healthy a Host is. For fields with
@@ -1038,7 +1029,7 @@ const (
 	WellKnownMDMVMWare    = "VMware Workspace ONE"
 	WellKnownMDMIntune    = "Intune"
 	WellKnownMDMSimpleMDM = "SimpleMDM"
-	WellKnownMDMMobius     = "Mobius"
+	WellKnownMDMMobius    = "Mobius"
 )
 
 var mdmNameFromServerURLChecks = map[string]string{
@@ -1049,7 +1040,7 @@ var mdmNameFromServerURLChecks = map[string]string{
 	"awmdm":     WellKnownMDMVMWare,
 	"microsoft": WellKnownMDMIntune,
 	"simplemdm": WellKnownMDMSimpleMDM,
-	"mobiusmdm":   WellKnownMDMMobius,
+	"mobiusmdm": WellKnownMDMMobius,
 }
 
 // MDMNameFromServerURL returns the MDM solution name corresponding to the
@@ -1245,12 +1236,12 @@ type EnrollHostLimiter interface {
 }
 
 type HostMDMCheckinInfo struct {
-	HardwareSerial     string `json:"hardware_serial" db:"hardware_serial"`
-	InstalledFromDEP   bool   `json:"installed_from_dep" db:"installed_from_dep"`
-	DisplayName        string `json:"display_name" db:"display_name"`
-	TeamID             uint   `json:"team_id" db:"team_id"`
+	HardwareSerial      string `json:"hardware_serial" db:"hardware_serial"`
+	InstalledFromDEP    bool   `json:"installed_from_dep" db:"installed_from_dep"`
+	DisplayName         string `json:"display_name" db:"display_name"`
+	TeamID              uint   `json:"team_id" db:"team_id"`
 	DEPAssignedToMobius bool   `json:"dep_assigned_to_mobius" db:"dep_assigned_to_mobius"`
-	OsqueryEnrolled    bool   `json:"osquery_enrolled" db:"osquery_enrolled"`
+	OsqueryEnrolled     bool   `json:"osquery_enrolled" db:"osquery_enrolled"`
 
 	SCEPRenewalInProgress bool   `json:"-" db:"scep_renewal_in_progress"`
 	Platform              string `json:"-" db:"platform"`

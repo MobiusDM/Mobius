@@ -38,7 +38,7 @@ agent_options:
     # We want to use these hosts to stick to stable releases
     # to perform smoke tests after promoting edge to stable.
     osqueryd: stable
-    orbit: stable
+    # orbit: stable  # REMOVED: Orbit not supported in API-first architecture
     desktop: stable
 controls:
   enable_disk_encryption: true

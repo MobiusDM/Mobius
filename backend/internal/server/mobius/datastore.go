@@ -3,13 +3,13 @@ package mobius
 import (
 	"context"
 	"crypto/x509"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"io"
 	"math/big"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/health"
 	"github.com/notawar/mobius/internal/server/mdm/android"
@@ -17,7 +17,6 @@ import (
 	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
 	"github.com/notawar/mobius/internal/server/mdm/nanomdm/storage"
-	"github.com/jmoiron/sqlx"
 )
 
 type CarveStore interface {
@@ -869,9 +868,13 @@ type Datastore interface {
 	// If the node key is invalid it returns a NotFoundError.
 	LoadHostByNodeKey(ctx context.Context, nodeKey string) (*Host, error)
 
-	// LoadHostByOrbitNodeKey loads the whole host identified by the node key.
-	// If the node key is invalid it returns a NotFoundError.
+	// LoadHostByOrbitNodeKey loads the whole host identified by the orbit node key.
+	// NOTE: Orbit support has been removed - this is a stub that searches by regular node key
 	LoadHostByOrbitNodeKey(ctx context.Context, nodeKey string) (*Host, error)
+
+	// GetHostOrbitInfo retrieves orbit information for a host.
+	// NOTE: Orbit support has been removed - this is a stub that returns not found
+	GetHostOrbitInfo(ctx context.Context, hostID uint) (*struct{}, error)
 
 	// HostLite will load the primary data of the host with the given id.
 	// We define "primary data" as all host information except the
@@ -1016,13 +1019,6 @@ type Datastore interface {
 	// host UUID and command UUID.
 	GetHostMDMProfileRetryCountByCommandUUID(ctx context.Context, host *Host, cmdUUID string) (HostMDMProfileRetryCount, error)
 
-	// SetOrUpdateHostOrbitInfo inserts of updates the orbit info for a host
-	SetOrUpdateHostOrbitInfo(
-		ctx context.Context, hostID uint, version string, desktopVersion sql.NullString, scriptsEnabled sql.NullBool,
-	) error
-
-	GetHostOrbitInfo(ctx context.Context, hostID uint) (*HostOrbitInfo, error)
-
 	ReplaceHostDeviceMapping(ctx context.Context, id uint, mappings []*HostDeviceMapping, source string) error
 
 	// ReplaceHostBatteries creates or updates the battery mappings of a host.
@@ -1039,11 +1035,6 @@ type Datastore interface {
 	// this method should respect the provided host enrollment cooldown, by returning an error if the host has enrolled
 	// within the cooldown period.
 	EnrollHost(ctx context.Context, isMDMEnabled bool, osqueryHostId, hardwareUUID, hardwareSerial, nodeKey string, teamID *uint, cooldown time.Duration) (*Host, error)
-
-	// EnrollOrbit will enroll a new orbit instance.
-	//	- If an entry for the host exists (osquery enrolled first) then it will update the host's orbit node key and team.
-	//	- If an entry for the host doesn't exist (osquery enrolls later) then it will create a new entry in the hosts table.
-	EnrollOrbit(ctx context.Context, isMDMEnabled bool, hostInfo OrbitHostInfo, orbitNodeKey string, teamID *uint) (*Host, error)
 
 	SerialUpdateHost(ctx context.Context, host *Host) error
 
@@ -1876,11 +1867,6 @@ type Datastore interface {
 
 	// GetSoftwareInstallerMetadataByID returns the software installer corresponding to the installer id.
 	GetSoftwareInstallerMetadataByID(ctx context.Context, id uint) (*SoftwareInstaller, error)
-
-	// ValidateSoftwareInstallerAccess checks if a host has access to
-	// an installer. Access is granted if there is currently an unfinished
-	// install request present in host_software_installs
-	ValidateOrbitSoftwareInstallerAccess(ctx context.Context, hostID uint, installerID uint) (bool, error)
 
 	// GetSoftwareInstallerMetadataByTeamAndTitleID returns the software
 	// installer corresponding to the specified team and title ids. If

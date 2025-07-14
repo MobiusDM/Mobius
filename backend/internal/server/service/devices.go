@@ -12,15 +12,15 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	hostctx "github.com/notawar/mobius/internal/server/contexts/host"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
-	"github.com/notawar/mobius/internal/server/mobius"
 	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
 	mdmcrypto "github.com/notawar/mobius/internal/server/mdm/crypto"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/go-kit/log/level"
 )
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -111,12 +111,12 @@ func (r *getDeviceHostRequest) deviceAuthToken() string {
 }
 
 type getDeviceHostResponse struct {
-	Host                      *HostDetailResponse      `json:"host"`
-	SelfService               bool                     `json:"self_service"`
-	OrgLogoURL                string                   `json:"org_logo_url"`
-	OrgLogoURLLightBackground string                   `json:"org_logo_url_light_background"`
-	OrgContactURL             string                   `json:"org_contact_url"`
-	Err                       error                    `json:"error,omitempty"`
+	Host                      *HostDetailResponse       `json:"host"`
+	SelfService               bool                      `json:"self_service"`
+	OrgLogoURL                string                    `json:"org_logo_url"`
+	OrgLogoURLLightBackground string                    `json:"org_logo_url_light_background"`
+	OrgContactURL             string                    `json:"org_contact_url"`
+	Err                       error                     `json:"error,omitempty"`
 	License                   mobius.LicenseInfo        `json:"license"`
 	GlobalConfig              mobius.DeviceGlobalConfig `json:"global_config"`
 }
@@ -337,7 +337,7 @@ func (r *listDevicePoliciesRequest) deviceAuthToken() string {
 }
 
 type listDevicePoliciesResponse struct {
-	Err      error               `json:"error,omitempty"`
+	Err      error                `json:"error,omitempty"`
 	Policies []*mobius.HostPolicy `json:"policies"`
 }
 
@@ -705,9 +705,9 @@ func (r *getDeviceSoftwareRequest) deviceAuthToken() string {
 
 type getDeviceSoftwareResponse struct {
 	Software []*mobius.HostSoftwareWithInstaller `json:"software"`
-	Count    int                                `json:"count"`
+	Count    int                                 `json:"count"`
 	Meta     *mobius.PaginationMetadata          `json:"meta,omitempty"`
-	Err      error                              `json:"error,omitempty"`
+	Err      error                               `json:"error,omitempty"`
 }
 
 func (r getDeviceSoftwareResponse) Error() error { return r.Err }
@@ -753,7 +753,7 @@ func (r *listDeviceCertificatesRequest) deviceAuthToken() string {
 type listDeviceCertificatesResponse struct {
 	Certificates []*mobius.HostCertificatePayload `json:"certificates"`
 	Meta         *mobius.PaginationMetadata       `json:"meta,omitempty"`
-	Err          error                           `json:"error,omitempty"`
+	Err          error                            `json:"error,omitempty"`
 }
 
 func (r listDeviceCertificatesResponse) Error() error { return r.Err }

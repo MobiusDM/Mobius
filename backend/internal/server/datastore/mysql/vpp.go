@@ -12,15 +12,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/notawar/mobius/pkg/automatic_policy"
-	"github.com/notawar/mobius/internal/server/authz"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/go-kit/log/level"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/authz"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mdm/nanomdm/mdm"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/automatic_policy"
 )
 
 func (ds *Datastore) GetVPPAppMetadataByTeamAndTitleID(ctx context.Context, teamID *uint, titleID uint) (*mobius.VPPAppStoreApp, error) {
@@ -1219,9 +1219,9 @@ func (ds *Datastore) GetVPPToken(ctx context.Context, tokenID uint) (*mobius.VPP
 	var tokEnc mobius.VPPTokenDB
 
 	var tokTeams []struct {
-		TeamID   *uint              `db:"team_id"`
+		TeamID   *uint               `db:"team_id"`
 		NullTeam mobius.NullTeamType `db:"null_team_type"`
-		Name     string             `db:"name"`
+		Name     string              `db:"name"`
 	}
 
 	if err := sqlx.GetContext(ctx, ds.reader(ctx), &tokEnc, stmt, tokenID); err != nil {
@@ -1449,10 +1449,10 @@ func (ds *Datastore) ListVPPTokens(ctx context.Context) ([]*mobius.VPPTokenDB, e
 	var tokEncs []mobius.VPPTokenDB
 
 	var teams []struct {
-		ID         string             `db:"id"`
-		VPPTokenID uint               `db:"vpp_token_id"`
-		TeamID     *uint              `db:"team_id"`
-		TeamName   string             `db:"name"`
+		ID         string              `db:"id"`
+		VPPTokenID uint                `db:"vpp_token_id"`
+		TeamID     *uint               `db:"team_id"`
+		TeamName   string              `db:"name"`
 		NullTeam   mobius.NullTeamType `db:"null_team_type"`
 	}
 
@@ -1568,9 +1568,9 @@ func (ds *Datastore) GetVPPTokenByTeamID(ctx context.Context, teamID *uint) (*mo
 	var tokEnc mobius.VPPTokenDB
 
 	var tokTeams []struct {
-		TeamID   *uint              `db:"team_id"`
+		TeamID   *uint               `db:"team_id"`
 		NullTeam mobius.NullTeamType `db:"null_team_type"`
-		Name     string             `db:"name"`
+		Name     string              `db:"name"`
 	}
 
 	var err error

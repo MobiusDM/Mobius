@@ -13,10 +13,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/notawar/mobius/pkg/optjson"
-	"github.com/notawar/mobius/pkg/rawjson"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/pkg/optjson"
+	"github.com/notawar/mobius/pkg/rawjson"
 )
 
 // SMTP settings names returned from API, these map to SMTPAuthType and

@@ -33,8 +33,6 @@ import (
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
 	"github.com/micromdm/plist"
-	"github.com/notawar/mobius/pkg/file"
-	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/config"
@@ -58,6 +56,8 @@ import (
 	"github.com/notawar/mobius/internal/server/service/middleware/endpoint_utils"
 	"github.com/notawar/mobius/internal/server/sso"
 	"github.com/notawar/mobius/internal/server/worker"
+	"github.com/notawar/mobius/pkg/file"
+	"github.com/notawar/mobius/pkg/optjson"
 	"github.com/smallstep/pkcs7"
 )
 
@@ -798,7 +798,7 @@ func (p *SCEPPayloadContent) UnmarshalPlist(f func(interface{}) error) error {
 // additionalNDESValidation checks that Challenge/URL fields match NDES Mobius variables
 // exactly, that the SCEP renewal ID variable is present in the CN, and that these variables are only
 // present in a "com.apple.security.scep" payload
-func additionalNDESValidation(contents string, ndesVars *ndesVarsFound) error {
+func additionalNDESValidation(contents string, _ *ndesVarsFound) error {
 	scepProf, err := unmarshalSCEPProfile(contents)
 	if err != nil {
 		return err
@@ -1471,9 +1471,6 @@ func (svc *Service) UploadMDMAppleInstaller(ctx context.Context, name string, si
 	}
 
 	token := uuid.New().String()
-	if err != nil {
-		return nil, ctxerr.Wrap(ctx, err)
-	}
 
 	url := svc.installerURL(token, appConfig)
 
@@ -4562,6 +4559,7 @@ func preprocessProfileContents(
 			}
 		}
 
+	validateVars:
 		for mobiusVar := range mobiusVars {
 			switch {
 			case mobiusVar == mobius.MobiusVarNDESSCEPChallenge || mobiusVar == mobius.MobiusVarNDESSCEPProxyURL:
@@ -4571,7 +4569,7 @@ func preprocessProfileContents(
 				}
 				if !configured {
 					valid = false
-					break
+					break validateVars
 				}
 
 			case mobiusVar == mobius.MobiusVarHostEndUserEmailIDP || mobiusVar == mobius.MobiusVarHostHardwareSerial ||
@@ -4595,7 +4593,7 @@ func preprocessProfileContents(
 				}
 				if !configured {
 					valid = false
-					break
+					break validateVars
 				}
 
 			case strings.HasPrefix(mobiusVar, mobius.MobiusVarCustomSCEPChallengePrefix) || strings.HasPrefix(mobiusVar, mobius.MobiusVarCustomSCEPProxyURLPrefix):
@@ -4615,7 +4613,7 @@ func preprocessProfileContents(
 				}
 				if !configured {
 					valid = false
-					break
+					break validateVars
 				}
 
 			default:

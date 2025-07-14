@@ -7,12 +7,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/datastore/redis"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	redigo "github.com/gomodule/redigo/redis"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/datastore/redis"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 type redisQueryResults struct {

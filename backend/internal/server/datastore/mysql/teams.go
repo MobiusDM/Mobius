@@ -10,10 +10,10 @@ import (
 
 	"golang.org/x/text/unicode/norm"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/jmoiron/sqlx"
 )
 
 var teamSearchColumns = []string{"name"}

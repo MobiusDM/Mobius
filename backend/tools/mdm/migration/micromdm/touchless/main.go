@@ -14,12 +14,12 @@ import (
 	"strings"
 
 	"github.com/boltdb/bolt"
-	scepdepot "github.com/notawar/mobius/internal/server/mdm/scep/depot/bolt"
 	apnsbuiltin "github.com/micromdm/micromdm/platform/apns/builtin"
 	"github.com/micromdm/micromdm/platform/device"
 	devicebuiltin "github.com/micromdm/micromdm/platform/device/builtin"
 	"github.com/micromdm/micromdm/platform/pubsub/inmem"
 	"github.com/micromdm/plist"
+	scepdepot "github.com/notawar/mobius/internal/server/mdm/scep/depot/bolt"
 	"go.etcd.io/bbolt"
 )
 

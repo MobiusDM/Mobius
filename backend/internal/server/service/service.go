@@ -10,18 +10,18 @@ import (
 	"time"
 
 	"github.com/WatchBeam/clock"
+	kitlog "github.com/go-kit/log"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/mobius"
 	apple_mdm "github.com/notawar/mobius/internal/server/mdm/apple"
 	microsoft_mdm "github.com/notawar/mobius/internal/server/mdm/microsoft"
 	nanodep_storage "github.com/notawar/mobius/internal/server/mdm/nanodep/storage"
 	nanomdm_push "github.com/notawar/mobius/internal/server/mdm/nanomdm/push"
 	nanomdm_storage "github.com/notawar/mobius/internal/server/mdm/nanomdm/storage"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service/async"
 	"github.com/notawar/mobius/internal/server/service/conditional_access_microsoft_proxy"
 	"github.com/notawar/mobius/internal/server/sso"
-	kitlog "github.com/go-kit/log"
 )
 
 var _ mobius.Service = (*Service)(nil)
@@ -163,9 +163,8 @@ func NewService(
 		geoIP:             geoIP,
 		enrollHostLimiter: enrollHostLimiter,
 		depStorage:        depStorage,
-		// TODO: remove mdmStorage and mdmPushService when
-		// we remove deprecated top-level service methods
-		// from the prototype.
+		// Legacy compatibility: mdmStorage and mdmPushService are maintained for
+		// backwards compatibility with existing service methods
 		mdmStorage:           mdmStorage,
 		mdmPushService:       mdmPushService,
 		mdmAppleCommander:    apple_mdm.NewMDMAppleCommander(mdmStorage, mdmPushService),

@@ -7,6 +7,6 @@ find /Users/awar/Documents/Mobius/backend -name "*.go" -type f -exec sed -i '' '
 
 echo "Fixed goose imports"
 
-# Check for orbit references that need to be removed or made external
-echo "Orbit references found (these may need manual review):"
-grep -r "backend/orbit" /Users/awar/Documents/Mobius/backend || echo "No orbit references found"
+# Check for legacy agent references that need to be removed or made external
+echo "Legacy agent references found (these may need manual review):"
+grep -r "backend/orbit" /Users/awar/Documents/Mobius/backend || echo "No legacy agent references found"

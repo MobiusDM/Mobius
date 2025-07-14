@@ -13,12 +13,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/contexts/host"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/health"
 	"github.com/go-kit/log"
 	"github.com/kolide/launcher/pkg/service"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/contexts/host"
+	"github.com/notawar/mobius/internal/server/health"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/osquery/osquery-go/plugin/distributed"
 	"github.com/osquery/osquery-go/plugin/logger"
 )

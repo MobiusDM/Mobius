@@ -25,9 +25,9 @@ type listSoftwareRequest struct {
 // listSoftwareEndpoint. It differs from listSoftwareVersionsResponse in that
 // the latter includes a count of the total number of software items.
 type listSoftwareResponse struct {
-	CountsUpdatedAt *time.Time       `json:"counts_updated_at"`
+	CountsUpdatedAt *time.Time        `json:"counts_updated_at"`
 	Software        []mobius.Software `json:"software,omitempty"`
-	Err             error            `json:"error,omitempty"`
+	Err             error             `json:"error,omitempty"`
 }
 
 func (r listSoftwareResponse) Error() error { return r.Err }
@@ -56,11 +56,11 @@ func listSoftwareEndpoint(ctx context.Context, request interface{}, svc mobius.S
 }
 
 type listSoftwareVersionsResponse struct {
-	Count           int                       `json:"count"`
-	CountsUpdatedAt *time.Time                `json:"counts_updated_at"`
+	Count           int                        `json:"count"`
+	CountsUpdatedAt *time.Time                 `json:"counts_updated_at"`
 	Software        []mobius.Software          `json:"software,omitempty"`
 	Meta            *mobius.PaginationMetadata `json:"meta"`
-	Err             error                     `json:"error,omitempty"`
+	Err             error                      `json:"error,omitempty"`
 }
 
 func (r listSoftwareVersionsResponse) Error() error { return r.Err }
@@ -140,7 +140,7 @@ type getSoftwareRequest struct {
 
 type getSoftwareResponse struct {
 	Software *mobius.Software `json:"software,omitempty"`
-	Err      error           `json:"error,omitempty"`
+	Err      error            `json:"error,omitempty"`
 }
 
 func (r getSoftwareResponse) Error() error { return r.Err }

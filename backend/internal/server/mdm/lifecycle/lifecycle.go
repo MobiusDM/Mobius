@@ -3,12 +3,12 @@ package mdmlifecycle
 import (
 	"context"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/license"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/worker"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // HostAction is a supported MDM lifecycle action that can be performed on a

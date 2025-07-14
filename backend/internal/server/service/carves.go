@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	hostctx "github.com/notawar/mobius/internal/server/contexts/host"
 	"github.com/notawar/mobius/internal/server/contexts/logging"
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
-	"github.com/google/uuid"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ type listCarvesRequest struct {
 
 type listCarvesResponse struct {
 	Carves []mobius.CarveMetadata `json:"carves"`
-	Err    error                 `json:"error,omitempty"`
+	Err    error                  `json:"error,omitempty"`
 }
 
 func (r listCarvesResponse) Error() error { return r.Err }
@@ -61,7 +61,7 @@ type getCarveRequest struct {
 
 type getCarveResponse struct {
 	Carve mobius.CarveMetadata `json:"carve"`
-	Err   error               `json:"error,omitempty"`
+	Err   error                `json:"error,omitempty"`
 }
 
 func (r getCarveResponse) Error() error { return r.Err }
@@ -293,7 +293,7 @@ func (svc *Service) CarveBlock(ctx context.Context, payload mobius.CarveBlockPay
 
 	if err := svc.validateCarveBlock(payload, carve); err != nil {
 		carve.Error = ptr.String(err.Error())
-		if errRecord := svc.carveStore.UpdateCarve(ctx, carve); err != nil {
+		if errRecord := svc.carveStore.UpdateCarve(ctx, carve); errRecord != nil {
 			logging.WithExtras(ctx, "validate_carve_error", errRecord, "carve_id", carve.ID)
 		}
 
@@ -302,7 +302,7 @@ func (svc *Service) CarveBlock(ctx context.Context, payload mobius.CarveBlockPay
 
 	if err := svc.carveStore.NewBlock(ctx, carve, payload.BlockId, payload.Data); err != nil {
 		carve.Error = ptr.String(err.Error())
-		if errRecord := svc.carveStore.UpdateCarve(ctx, carve); err != nil {
+		if errRecord := svc.carveStore.UpdateCarve(ctx, carve); errRecord != nil {
 			logging.WithExtras(ctx, "record_carve_error", errRecord, "carve_id", carve.ID)
 		}
 

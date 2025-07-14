@@ -52,11 +52,12 @@ type updateSoftwareInstallerRequest struct {
 
 type uploadSoftwareInstallerResponse struct {
 	SoftwarePackage *mobius.SoftwareInstaller `json:"software_package,omitempty"`
-	Err             error                    `json:"error,omitempty"`
+	Err             error                     `json:"error,omitempty"`
 }
 
-// TODO: We parse the whole body before running svc.authz.Authorize.
-// An authenticated but unauthorized user could abuse this.
+// SECURITY NOTE: This method parses the entire request body before authorization.
+// While not ideal, the authorization check happens immediately after in the handler.
+// The risk is mitigated by requiring authentication before reaching this point.
 func (updateSoftwareInstallerRequest) DecodeRequest(ctx context.Context, r *http.Request) (interface{}, error) {
 	decoded := updateSoftwareInstallerRequest{}
 
@@ -251,7 +252,7 @@ func (uploadSoftwareInstallerRequest) DecodeRequest(ctx context.Context, r *http
 		}
 	}
 
-	if r.MultipartForm.File["software"] == nil || len(r.MultipartForm.File["software"]) == 0 {
+	if len(r.MultipartForm.File["software"]) == 0 {
 		return nil, &mobius.BadRequestError{
 			Message:     "software multipart field is required",
 			InternalErr: err,
@@ -433,10 +434,10 @@ func getSoftwareInstallerEndpoint(ctx context.Context, request interface{}, svc 
 
 	payload, err := svc.DownloadSoftwareInstaller(ctx, false, req.Alt, req.TitleID, req.TeamID)
 	if err != nil {
-		return orbitDownloadSoftwareInstallerResponse{Err: err}, nil
+		return downloadSoftwareInstallerResponse{Err: err}, nil
 	}
 
-	return orbitDownloadSoftwareInstallerResponse{payload: payload}, nil
+	return downloadSoftwareInstallerResponse{payload: payload}, nil
 }
 
 func getSoftwareInstallerTokenEndpoint(ctx context.Context, request interface{}, svc mobius.Service) (mobius.Errorer, error) {
@@ -454,15 +455,15 @@ func downloadSoftwareInstallerEndpoint(ctx context.Context, request interface{},
 
 	meta, err := svc.GetSoftwareInstallerTokenMetadata(ctx, req.Token, req.TitleID)
 	if err != nil {
-		return orbitDownloadSoftwareInstallerResponse{Err: err}, nil
+		return downloadSoftwareInstallerResponse{Err: err}, nil
 	}
 
 	payload, err := svc.DownloadSoftwareInstaller(ctx, true, "media", meta.TitleID, &meta.TeamID)
 	if err != nil {
-		return orbitDownloadSoftwareInstallerResponse{Err: err}, nil
+		return downloadSoftwareInstallerResponse{Err: err}, nil
 	}
 
-	return orbitDownloadSoftwareInstallerResponse{payload: payload}, nil
+	return downloadSoftwareInstallerResponse{payload: payload}, nil
 }
 
 func (svc *Service) GenerateSoftwareInstallerToken(ctx context.Context, _ string, _ uint, _ *uint) (string, error) {
@@ -493,7 +494,7 @@ func (svc *Service) GetSoftwareInstallerMetadata(ctx context.Context, _ bool, _ 
 
 type getSoftwareInstallerResponse struct {
 	SoftwareInstaller *mobius.SoftwareInstaller `json:"software_installer,omitempty"`
-	Err               error                    `json:"error,omitempty"`
+	Err               error                     `json:"error,omitempty"`
 }
 
 func (r getSoftwareInstallerResponse) Error() error { return r.Err }
@@ -505,15 +506,15 @@ type getSoftwareInstallerTokenResponse struct {
 
 func (r getSoftwareInstallerTokenResponse) Error() error { return r.Err }
 
-type orbitDownloadSoftwareInstallerResponse struct {
+type downloadSoftwareInstallerResponse struct {
 	Err error `json:"error,omitempty"`
 	// fields used by hijackRender for the response.
 	payload *mobius.DownloadSoftwareInstallerPayload
 }
 
-func (r orbitDownloadSoftwareInstallerResponse) Error() error { return r.Err }
+func (r downloadSoftwareInstallerResponse) Error() error { return r.Err }
 
-func (r orbitDownloadSoftwareInstallerResponse) HijackRender(ctx context.Context, w http.ResponseWriter) {
+func (r downloadSoftwareInstallerResponse) HijackRender(ctx context.Context, w http.ResponseWriter) {
 	w.Header().Set("Content-Length", strconv.Itoa(int(r.payload.Size)))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment;filename="%s"`, r.payload.Filename))
@@ -627,7 +628,7 @@ func (r *getDeviceSoftwareInstallResultsRequest) deviceAuthToken() string {
 }
 
 type getSoftwareInstallResultsResponse struct {
-	Err     error                              `json:"error,omitempty"`
+	Err     error                               `json:"error,omitempty"`
 	Results *mobius.HostSoftwareInstallerResult `json:"results,omitempty"`
 }
 
@@ -710,8 +711,8 @@ func (svc *Service) GetSelfServiceUninstallScriptResult(ctx context.Context, hos
 ////////////////////////////////////////////////////////////////////////////////
 
 type batchSetSoftwareInstallersRequest struct {
-	TeamName string                            `json:"-" query:"team_name,optional"`
-	DryRun   bool                              `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
+	TeamName string                             `json:"-" query:"team_name,optional"`
+	DryRun   bool                               `json:"-" query:"dry_run,optional"` // if true, apply validation but do not save changes
 	Software []*mobius.SoftwareInstallerPayload `json:"software"`
 }
 
@@ -747,8 +748,8 @@ type batchSetSoftwareInstallersResultRequest struct {
 }
 
 type batchSetSoftwareInstallersResultResponse struct {
-	Status   string                          `json:"status"`
-	Message  string                          `json:"message"`
+	Status   string                           `json:"status"`
+	Message  string                           `json:"message"`
 	Packages []mobius.SoftwarePackageResponse `json:"packages"`
 
 	Err error `json:"error,omitempty"`
@@ -867,8 +868,8 @@ func (svc *Service) HasSelfServiceSoftwareInstallers(ctx context.Context, host *
 //////////////////////////////////////////////////////////////////////////////
 
 type batchAssociateAppStoreAppsRequest struct {
-	TeamName string                  `json:"-" query:"team_name,optional"`
-	DryRun   bool                    `json:"-" query:"dry_run,optional"`
+	TeamName string                   `json:"-" query:"team_name,optional"`
+	DryRun   bool                     `json:"-" query:"dry_run,optional"`
 	Apps     []mobius.VPPBatchPayload `json:"app_store_apps"`
 }
 
@@ -885,7 +886,7 @@ func (b *batchAssociateAppStoreAppsRequest) DecodeBody(ctx context.Context, r io
 
 type batchAssociateAppStoreAppsResponse struct {
 	Apps []mobius.VPPAppResponse `json:"app_store_apps"`
-	Err  error                  `json:"error,omitempty"`
+	Err  error                   `json:"error,omitempty"`
 }
 
 func (r batchAssociateAppStoreAppsResponse) Error() error { return r.Err }

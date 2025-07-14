@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/jmoiron/sqlx"
 )
 
 func (ds *Datastore) ListOSVulnerabilitiesByOS(ctx context.Context, osID uint) ([]mobius.OSVulnerability, error) {

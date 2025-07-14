@@ -5,13 +5,13 @@ import (
 	"errors"
 	"net/http"
 
+	kitlog "github.com/go-kit/log"
 	abmctx "github.com/notawar/mobius/internal/server/contexts/apple_bm"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/assets"
 	depclient "github.com/notawar/mobius/internal/server/mdm/nanodep/client"
 	"github.com/notawar/mobius/internal/server/mdm/nanodep/storage"
-	kitlog "github.com/go-kit/log"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // SetABMTokenMetadata uses the provided ABM token to fetch the associated

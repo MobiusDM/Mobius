@@ -10,8 +10,8 @@ import (
 	launcher "github.com/kolide/launcher/pkg/service"
 	grpc "google.golang.org/grpc"
 
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/health"
+	"github.com/notawar/mobius/internal/server/mobius"
 )
 
 // Handler extends the grpc.Server, providing Handler that allows us to serve

@@ -11,13 +11,13 @@ import (
 	"time"
 	"unicode/utf8"
 
-	constants "github.com/notawar/mobius/pkg/scripts"
-	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/go-kit/log/level"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
+	"github.com/notawar/mobius/internal/server/mobius"
+	"github.com/notawar/mobius/internal/server/ptr"
+	constants "github.com/notawar/mobius/pkg/scripts"
 )
 
 func (ds *Datastore) NewHostScriptExecutionRequest(ctx context.Context, request *mobius.HostScriptRequestPayload) (*mobius.HostScriptResult, error) {
@@ -1319,10 +1319,10 @@ func (ds *Datastore) GetHostLockWipeStatus(ctx context.Context, host *mobius.Hos
 `
 
 	var mdmActions struct {
-		LockRef       *string `db:"lock_ref"`
-		WipeRef       *string `db:"wipe_ref"`
-		UnlockRef     *string `db:"unlock_ref"`
-		UnlockPIN     *string `db:"unlock_pin"`
+		LockRef        *string `db:"lock_ref"`
+		WipeRef        *string `db:"wipe_ref"`
+		UnlockRef      *string `db:"unlock_ref"`
+		UnlockPIN      *string `db:"unlock_pin"`
 		MobiusPlatform string  `db:"mobius_platform"`
 	}
 	mobiusPlatform := host.MobiusPlatform()
@@ -1825,8 +1825,8 @@ func (ds *Datastore) BatchExecuteScript(ctx context.Context, userID *uint, scrip
 
 	if err := ds.withRetryTxx(ctx, func(tx sqlx.ExtContext) error {
 		for _, host := range fullHosts {
-			// Non-orbit-enrolled host (iOS, android)
-			noNodeKey := host.OrbitNodeKey == nil || *host.OrbitNodeKey == ""
+			// Non-enrolled host (iOS, android)
+			noNodeKey := host.NodeKey == nil || *host.NodeKey == ""
 			// Scripts disabled on host
 			scriptsDisabled := host.ScriptsEnabled != nil && !*host.ScriptsEnabled
 

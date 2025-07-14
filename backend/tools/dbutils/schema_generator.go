@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/WatchBeam/clock"
+	"github.com/go-kit/log"
 	"github.com/notawar/mobius/internal/server/config"
 	"github.com/notawar/mobius/internal/server/datastore/mysql"
 	"github.com/notawar/mobius/internal/server/mdm/android"
-	"github.com/go-kit/log"
 )
 
 const (

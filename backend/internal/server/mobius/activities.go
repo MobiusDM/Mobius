@@ -26,13 +26,13 @@ type Activity struct {
 	// past activities as those are "real activities" with an activity id.
 	UUID string `json:"uuid,omitempty" db:"uuid"`
 
-	ActorFullName  *string          `json:"actor_full_name,omitempty" db:"name"`
-	ActorID        *uint            `json:"actor_id,omitempty" db:"user_id"`
-	ActorGravatar  *string          `json:"actor_gravatar,omitempty" db:"gravatar_url"`
-	ActorEmail     *string          `json:"actor_email,omitempty" db:"user_email"`
-	Type           string           `json:"type" db:"activity_type"`
-	Details        *json.RawMessage `json:"details" db:"details"`
-	Streamed       *bool            `json:"-" db:"streamed"`
+	ActorFullName   *string          `json:"actor_full_name,omitempty" db:"name"`
+	ActorID         *uint            `json:"actor_id,omitempty" db:"user_id"`
+	ActorGravatar   *string          `json:"actor_gravatar,omitempty" db:"gravatar_url"`
+	ActorEmail      *string          `json:"actor_email,omitempty" db:"user_email"`
+	Type            string           `json:"type" db:"activity_type"`
+	Details         *json.RawMessage `json:"details" db:"details"`
+	Streamed        *bool            `json:"-" db:"streamed"`
 	MobiusInitiated bool             `json:"mobius_initiated" db:"mobius_initiated"`
 }
 

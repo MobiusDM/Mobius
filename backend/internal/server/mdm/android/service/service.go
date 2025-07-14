@@ -10,15 +10,15 @@ import (
 	"strings"
 	"time"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/authz"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/contexts/viewer"
-	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/mdm/android"
 	"github.com/notawar/mobius/internal/server/mdm/android/service/androidmgmt"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
+	"github.com/notawar/mobius/internal/server/mobius"
 	"google.golang.org/api/androidmanagement/v1"
 )
 
@@ -34,7 +34,7 @@ type Service struct {
 	authz            *authz.Authorizer
 	ds               mobius.AndroidDatastore
 	androidAPIClient androidmgmt.Client
-	mobiusSvc         mobius.Service
+	mobiusSvc        mobius.Service
 
 	// SignupSSEInterval can be overwritten in tests.
 	SignupSSEInterval time.Duration
@@ -74,7 +74,7 @@ func NewServiceWithClient(
 		authz:             authorizer,
 		ds:                ds,
 		androidAPIClient:  client,
-		mobiusSvc:          mobiusSvc,
+		mobiusSvc:         mobiusSvc,
 		SignupSSEInterval: DefaultSignupSSEInterval,
 	}, nil
 }

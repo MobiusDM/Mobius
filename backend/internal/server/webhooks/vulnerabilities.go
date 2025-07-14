@@ -5,11 +5,11 @@ import (
 	"net/url"
 	"time"
 
+	kitlog "github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/notawar/mobius/internal/server"
 	"github.com/notawar/mobius/internal/server/contexts/ctxerr"
 	"github.com/notawar/mobius/internal/server/mobius"
-	kitlog "github.com/go-kit/log"
-	"github.com/go-kit/log/level"
 )
 
 // TriggerVulnerabilitiesWebhook performs the webhook requests for vulnerabilities.
