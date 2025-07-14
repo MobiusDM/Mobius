@@ -565,30 +565,7 @@ func waitStartup() error {
 	return nil
 }
 
-// nolint:unused
-func waitFirstHost(client *service.Client) error {
-	retryStrategy := backoff.NewExponentialBackOff()
-	retryStrategy.MaxInterval = 1 * time.Second
 
-	if err := backoff.Retry(
-		func() error {
-			hosts, err := client.GetHosts("")
-			if err != nil {
-				return err
-			}
-			if len(hosts) == 0 {
-				return errors.New("no hosts yet")
-			}
-
-			return nil
-		},
-		retryStrategy,
-	); err != nil {
-		return fmt.Errorf("checking host count: %w", err)
-	}
-
-	return nil
-}
 
 func checkDocker() error {
 	// Check installed

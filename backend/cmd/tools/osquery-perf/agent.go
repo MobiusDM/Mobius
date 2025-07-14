@@ -33,7 +33,6 @@ import (
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/ptr"
 	"github.com/notawar/mobius/internal/server/service"
-	"github.com/notawar/mobius/pkg/file"
 	"github.com/notawar/mobius/pkg/mdm/mdmtest"
 )
 
@@ -2110,50 +2109,9 @@ func (a *agent) submitLogs(batch []resultLog) error {
 	return nil
 }
 
-func scheduledQueryResults(packName, queryName string, numResults int) []byte {
-	return []byte(`{
-  "snapshot": [` + rows(numResults) + `
-  ],
-  "action": "snapshot",
-  "name": "pack/` + packName + `/` + queryName + `",
-  "hostIdentifier": "EF9595F0-CE81-493A-9B06-D8A9D2CCB952",
-  "calendarTime": "Fri Oct  6 18:13:04 2023 UTC",
-  "unixTime": 1696615984,
-  "epoch": 0,
-  "counter": 0,
-  "numerics": false,
-  "decorations": {
-    "host_uuid": "187c4d56-8e45-1a9d-8513-ac17efd2f0fd",
-    "hostname": "osquery-perf"
-  }
-}`)
-}
 
-// rows returns a set of rows for use in tests for query results.
-func rows(num int) string {
-	b := strings.Builder{}
-	for i := 0; i < num; i++ {
-		b.WriteString(`    {
-      "build_distro": "centos7",
-      "build_platform": "linux",
-      "config_hash": "eed0d8296e5f90b790a23814a9db7a127b13498d",
-      "config_valid": "1",
-      "extensions": "active",
-      "instance_id": "e5799132-85ab-4cfa-89f3-03e0dd3c509a",
-      "pid": "3574",
-      "platform_mask": "9",
-      "start_time": "1696502961",
-      "uuid": "EF9595F0-CE81-493A-9B06-D8A9D2CCB95",
-      "version": "5.9.2",
-      "watcher": "3570"
-    }`)
-		if i != num-1 {
-			b.WriteString(",")
-		}
-	}
 
-	return b.String()
-}
+
 
 func main() {
 	// Start HTTP server for pprof. See https://pkg.go.dev/net/http/pprof.

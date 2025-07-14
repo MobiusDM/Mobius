@@ -1,8 +1,6 @@
 package mobiuscli
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"errors"
 	"flag"
 	"fmt"
@@ -17,7 +15,6 @@ import (
 	"github.com/notawar/mobius/internal/server/mobius"
 	"github.com/notawar/mobius/internal/server/service"
 	"github.com/notawar/mobius/internal/server/version"
-	"github.com/notawar/mobius/pkg/mobiushttp"
 	"github.com/urfave/cli/v2"
 )
 
@@ -142,43 +139,7 @@ func unauthenticatedClientFromConfig(cc Context, debug bool, outputWriter io.Wri
 	return mobius, nil
 }
 
-// rawHTTPClientFromConfig is kept for potential future use in mobiuscli.
-// It returns an HTTP client and the parsed URL for the configured server's
-// address. The reason why this exists instead of using
-// unauthenticatedClientFromConfig is because this doesn't apply the same rules
-// around TLS config - in particular, it only sets a root CA if one is
-// explicitly configured.
-// nolint:unused
-func rawHTTPClientFromConfig(cc Context) (*http.Client, *url.URL, error) {
-	if flag.Lookup("test.v") != nil {
-		cc.Address = os.Getenv("MOBIUS_SERVER_ADDRESS")
-	}
-	baseURL, err := url.Parse(cc.Address)
-	if err != nil {
-		return nil, nil, fmt.Errorf("parse address: %w", err)
-	}
 
-	var rootCA *x509.CertPool
-	if cc.RootCA != "" {
-		rootCA = x509.NewCertPool()
-		// read in the root cert file specified in the context
-		certs, err := os.ReadFile(cc.RootCA)
-		if err != nil {
-			return nil, nil, fmt.Errorf("reading root CA: %w", err)
-		}
-
-		// add certs to pool
-		if ok := rootCA.AppendCertsFromPEM(certs); !ok {
-			return nil, nil, errors.New("failed to add certificates to root CA pool")
-		}
-	}
-
-	cli := mobiushttp.NewClient(mobiushttp.WithTLSClientConfig(&tls.Config{
-		InsecureSkipVerify: cc.TLSSkipVerify,
-		RootCAs:            rootCA,
-	}))
-	return cli, baseURL, nil
-}
 
 func clientConfigFromCLI(c *cli.Context) (Context, error) {
 	// if a config file is explicitly provided, do not return a default context,
