@@ -7,26 +7,23 @@ RUN apk add --no-cache git ca-certificates
 WORKDIR /app
 
 # Copy go mod files
-COPY go.mod go.sum ./
+COPY backend/go.mod backend/go.sum ./
 
 # Download dependencies
 RUN go mod download
 
 # Copy backend source code
-COPY backend/ ./backend/
-
-# Copy server mail templates
-COPY backend/server/mail/templates ./server/mail/templates
+COPY backend/ ./
 
 # Create minimal assets directory for bindata
 RUN mkdir -p assets && echo "/* Empty CSS */" > assets/bundle.css
 
 # Generate embedded assets and build the application
 RUN go run github.com/kevinburke/go-bindata/go-bindata -pkg=bindata -tags full \
-    -o=backend/server/bindata/generated.go \
-    assets/... server/mail/templates
+    -o=internal/server/bindata/generated.go \
+    assets/... internal/server/mail/templates
 
-RUN cd backend && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ../mobius ./cmd/mobius
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o mobius ./cmd/mobius
 
 # Production stage
 FROM alpine:latest
