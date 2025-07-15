@@ -1,12 +1,10 @@
-name: Build and Deploy Mobius
+name: Build and Deploy Mobius (DISABLED)
+
+# DISABLED: This workflow is disabled to prevent conflicts with build-and-deploy.yml
+# Remove this file if no longer needed, or merge changes into build-and-deploy.yml
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  release:
-    types: [ published ]
+  workflow_dispatch: # Manual trigger only
 
 env:
   REGISTRY: ghcr.io
