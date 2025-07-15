@@ -24,6 +24,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version-file: 'backend/go.mod'
+        cache-dependency-path: 'backend/go.sum'
     
 #    - name: Run backend tests
 #      run: |
@@ -96,7 +97,8 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version-file: 'backend/go.mod'
-    
+        cache-dependency-path: 'backend/go.sum'
+
     - name: Build release binaries
       run: |
         # Build for multiple platforms
