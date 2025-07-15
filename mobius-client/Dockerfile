@@ -1,5 +1,5 @@
 # Multi-stage build for Mobius Client
-FROM golang:1.24.4-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 # Install dependencies
 RUN apk add --no-cache git ca-certificates tzdata
@@ -13,8 +13,11 @@ COPY go.work go.work.sum ./
 # Copy shared module
 COPY shared/ ./shared/
 
-# Copy client module
+# Copy all modules (required for go.work)
+COPY mobius-cli/ ./mobius-cli/
 COPY mobius-client/ ./mobius-client/
+COPY mobius-server/ ./mobius-server/
+COPY mobius-cocoon/ ./mobius-cocoon/
 
 # Build the client
 WORKDIR /app/mobius-client

@@ -47,7 +47,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        component: [server, cli, client, combined]
+        component: [server, cli, client, cocoon]
     
     steps:
     - uses: actions/checkout@v4
@@ -78,7 +78,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: ${{ matrix.component == 'combined' && './Dockerfile.combined' || format('./mobius-{0}/Dockerfile', matrix.component) }}
+        file: ./mobius-${{ matrix.component }}/Dockerfile
         platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
