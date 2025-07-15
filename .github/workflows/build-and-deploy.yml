@@ -73,6 +73,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
@@ -101,11 +102,12 @@ jobs:
         # Build for multiple platforms
         cd backend
         GOOS=linux GOARCH=amd64 go build -o mobius-linux-amd64 ./cmd/mobius
+        GOOS=linux GOARCH=arm64 go build -o mobius-linux-arm64 ./cmd/mobius
         GOOS=darwin GOARCH=amd64 go build -o mobius-darwin-amd64 ./cmd/mobius
         GOOS=darwin GOARCH=arm64 go build -o mobius-darwin-arm64 ./cmd/mobius
         GOOS=windows GOARCH=amd64 go build -o mobius-windows-amd64.exe ./cmd/mobius
     
-    - name: Upload release assets
+    - name: Upload Linux AMD64 binary
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -115,4 +117,42 @@ jobs:
         asset_name: mobius-linux-amd64
         asset_content_type: application/octet-stream
     
-    # Add more upload steps for other platforms...
+    - name: Upload Linux ARM64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./backend/mobius-linux-arm64
+        asset_name: mobius-linux-arm64
+        asset_content_type: application/octet-stream
+    
+    - name: Upload macOS AMD64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./backend/mobius-darwin-amd64
+        asset_name: mobius-darwin-amd64
+        asset_content_type: application/octet-stream
+    
+    - name: Upload macOS ARM64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./backend/mobius-darwin-arm64
+        asset_name: mobius-darwin-arm64
+        asset_content_type: application/octet-stream
+    
+    - name: Upload Windows AMD64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./backend/mobius-windows-amd64.exe
+        asset_name: mobius-windows-amd64.exe
+        asset_content_type: application/octet-stream
