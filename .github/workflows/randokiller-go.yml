@@ -7,7 +7,7 @@ on:
       - "**-randokiller"
     paths:
       - "**.go"
-      - "backend/go.mod"
+      - "mobius-server/go.mod"
       - "go.sum"
       - ".github/workflows/randokiller-go.yml"
       - "docker-compose.yml"
@@ -63,7 +63,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
         with:
-          go-version-file: "backend/go.mod"
+          go-version-file: "mobius-server/go.mod"
 
       # Pre-starting dependencies here means they are ready to go when we need them.
       - name: Start Infra Dependencies

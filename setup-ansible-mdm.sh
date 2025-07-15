@@ -1,7 +1,25 @@
 #!/bin/bash
 
 # Mobius MDM Setup Script
-# Setup script for the open-source Mobius MDM platform
+# Set# Step 5: Build the Mobius applications
+echo "🔧 Building Mobius applications..."
+
+if command -v go &> /dev/null; then
+    echo "Building mobius server..."
+    cd mobius-server
+    go build -o ../build/mobius ./cmd/mobius
+    cd ..
+    
+    echo "Building mobiuscli..."
+    cd mobius-cli
+    go build -o ../build/mobiuscli ./cmd/mobiuscli
+    cd ..
+    
+    echo "✅ Build complete"
+else
+    echo "❌ Please install Go: https://golang.org/"
+    exit 1
+fithe open-source Mobius MDM platform
 
 set -e
 

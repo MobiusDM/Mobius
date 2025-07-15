@@ -23,19 +23,26 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version-file: 'backend/go.mod'
-        cache-dependency-path: 'backend/go.sum'
+        go-version-file: 'mobius-server/go.mod'
+        cache-dependency-path: 'mobius-server/go.sum'
     
-#    - name: Run backend tests
-#      run: |
-#        go mod download
-#        go test -v ./...
-#    
-#    # Lint and Security
-#    - name: Run backend linting
-#      run: |
-#        go vet ./...
-#        go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+    - name: Run server tests
+      run: |
+        cd mobius-server
+        go mod download
+        go test -v ./...
+    
+    - name: Run CLI tests
+      run: |
+        cd mobius-cli
+        go mod download
+        go test -v ./...
+    
+    - name: Run client tests
+      run: |
+        cd mobius-client
+        go mod download
+        go test -v ./...
 
   # Build Docker Images
   build:
@@ -44,6 +51,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        component: [server, cli, client, cocoon]
     
     steps:
     - uses: actions/checkout@v4
@@ -58,11 +68,11 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Extract metadata
+    - name: Extract metadata for ${{ matrix.component }}
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/notawar/mobius-${{ matrix.component }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
@@ -70,10 +80,10 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=sha
     
-    - name: Build and push Docker image
+    - name: Build and push ${{ matrix.component }} Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: mobius-${{ matrix.component }}
         platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
@@ -96,65 +106,31 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version-file: 'backend/go.mod'
-        cache-dependency-path: 'backend/go.sum'
+        go-version-file: 'mobius-server/go.mod'
 
-    - name: Build release binaries
+    - name: Build server release binaries
       run: |
-        # Build for multiple platforms
-        cd backend
-        GOOS=linux GOARCH=amd64 go build -o mobius-linux-amd64 ./cmd/mobius
-        GOOS=linux GOARCH=arm64 go build -o mobius-linux-arm64 ./cmd/mobius
-        GOOS=darwin GOARCH=amd64 go build -o mobius-darwin-amd64 ./cmd/mobius
-        GOOS=darwin GOARCH=arm64 go build -o mobius-darwin-arm64 ./cmd/mobius
-        GOOS=windows GOARCH=amd64 go build -o mobius-windows-amd64.exe ./cmd/mobius
-    
-    - name: Upload Linux AMD64 binary
-      uses: actions/upload-release-asset@v1
+        cd mobius-server
+        GOOS=linux GOARCH=amd64 go build -o mobius-server-linux-amd64 ./cmd/mobius
+        GOOS=linux GOARCH=arm64 go build -o mobius-server-linux-arm64 ./cmd/mobius
+        GOOS=darwin GOARCH=amd64 go build -o mobius-server-darwin-amd64 ./cmd/mobius
+        GOOS=darwin GOARCH=arm64 go build -o mobius-server-darwin-arm64 ./cmd/mobius
+        GOOS=windows GOARCH=amd64 go build -o mobius-server-windows-amd64.exe ./cmd/mobius
+
+    - name: Build CLI release binaries
+      run: |
+        cd mobius-cli
+        GOOS=linux GOARCH=amd64 go build -o mobiuscli-linux-amd64 ./cmd/mobiuscli
+        GOOS=linux GOARCH=arm64 go build -o mobiuscli-linux-arm64 ./cmd/mobiuscli
+        GOOS=darwin GOARCH=amd64 go build -o mobiuscli-darwin-amd64 ./cmd/mobiuscli
+        GOOS=darwin GOARCH=arm64 go build -o mobiuscli-darwin-arm64 ./cmd/mobiuscli
+        GOOS=windows GOARCH=amd64 go build -o mobiuscli-windows-amd64.exe ./cmd/mobiuscli
+
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          mobius-server/mobius-server-*
+          mobius-cli/mobiuscli-*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./backend/mobius-linux-amd64
-        asset_name: mobius-linux-amd64
-        asset_content_type: application/octet-stream
-    
-    - name: Upload Linux ARM64 binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./backend/mobius-linux-arm64
-        asset_name: mobius-linux-arm64
-        asset_content_type: application/octet-stream
-    
-    - name: Upload macOS AMD64 binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./backend/mobius-darwin-amd64
-        asset_name: mobius-darwin-amd64
-        asset_content_type: application/octet-stream
-    
-    - name: Upload macOS ARM64 binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./backend/mobius-darwin-arm64
-        asset_name: mobius-darwin-arm64
-        asset_content_type: application/octet-stream
-    
-    - name: Upload Windows AMD64 binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./backend/mobius-windows-amd64.exe
-        asset_name: mobius-windows-amd64.exe
-        asset_content_type: application/octet-stream

@@ -33,12 +33,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
         with:
-          go-version-file: "backend/go.mod"
+          go-version-file: "mobius-server/go.mod"
 
       - name: Get last 5 minor releases
         id: get_latest_releases
         run: |
-          echo "MOBIUS_LATEST_RELEASES=$(cd backend && go run ./tools/github-releases --last-minor-releases 5)" >> $GITHUB_OUTPUT
+          echo "MOBIUS_LATEST_RELEASES=$(cd mobius-server && go run ./tools/github-releases --last-minor-releases 5)" >> $GITHUB_OUTPUT
 
       - name: Pull container images
         run: |

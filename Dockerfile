@@ -6,22 +6,32 @@ RUN apk add --no-cache git ca-certificates
 
 WORKDIR /app
 
-# Copy go mod files
-COPY backend/go.mod backend/go.sum ./
+# Copy go workspace files
+COPY go.work go.work.sum ./
+
+# Copy module files
+COPY mobius-server/go.mod mobius-server/go.sum ./mobius-server/
+COPY mobius-shared/go.mod ./mobius-shared/
 
 # Download dependencies
+WORKDIR /app/mobius-server
 RUN go mod download
 
-# Copy backend source code
-COPY backend/ ./
+# Back to app directory
+WORKDIR /app
+
+# Copy source code
+COPY mobius-server/ ./mobius-server/
+COPY mobius-shared/ ./mobius-shared/
 
 # Create minimal assets directory for bindata
-RUN mkdir -p assets && echo "/* Empty CSS */" > assets/bundle.css
+RUN mkdir -p mobius-server/assets && echo "/* Empty CSS */" > mobius-server/assets/bundle.css
 
 # Generate embedded assets and build the application
+WORKDIR /app/mobius-server
 RUN go run github.com/kevinburke/go-bindata/go-bindata -pkg=bindata -tags full \
-    -o=internal/server/bindata/generated.go \
-    assets/... internal/server/mail/templates
+    -o=server/bindata/generated.go \
+    assets/... server/mail/templates
 
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius ./cmd/mobius
 

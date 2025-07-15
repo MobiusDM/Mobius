@@ -1,3 +1,9 @@
 go 1.24.5
 
-use ./backend
+use (
+	./mobius-cli
+	./mobius-client
+	./mobius-cocoon
+	./mobius-server
+	./shared
+)
