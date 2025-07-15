@@ -20,7 +20,7 @@ disable_autologin() {
 disable_autologin
 
 # Loop through all users in /etc/passwd
-awk -F':' '{ if ($3 >= 1000 && $3 < 60000) print $1 }' /etc/passwd | while read user
+awk -F':' '{ if ($3 >= 1000 && $3 < 60000) print $1 }' /etc/passwd | while read -r user
 do
     if [ "$user" != "root" ]; then
         echo "Logging out $user"

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Please don't delete. This script is used in tests (tools/tuf/test/migration/migration_test.sh), workflors (.github/workflows/), and in the guide here: https://mobiusmdm.com/guides/how-to-uninstall-mobiusdaemon
 
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "Please run as root"
     exit 1
 fi

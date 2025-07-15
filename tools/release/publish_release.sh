@@ -160,14 +160,14 @@ while getopts "acdfhgkmno:pqrs:t:uv:w" opt; do
         k) skip_deploy_dogfood=true ;;
         m) minor=true ;;
         n) announce_only=true ;;
-        o) open_api_key=$OPTARG ;;
+        o) open_api_key="$OPTARG" ;;
         p) print_info=true ;;
         q) quiet=true ;;
         r) release_notes=true ;;
-        s) start_version=$OPTARG ;;
-        t) target_date=$OPTARG ;;
+        s) start_version="$OPTARG" ;;
+        t) target_date="$OPTARG" ;;
         u) publish_release=true ;;
-        v) target_version=$OPTARG ;;
+        v) target_version="$OPTARG" ;;
         ?) usage; exit 1 ;;
     esac
 done
@@ -183,18 +183,17 @@ shift $((OPTIND -1))
 # Replace `sleep 5` with your command
 # sleep 5 & show_spinner 5
 show_spinner() {
-    local pid=$!
     local delay=0.1
     local spinstr='/-\|'
     local elapsedTime=0
     local maxTime=$1
 
     printf "Processing "
-    while [ $elapsedTime -lt $maxTime ]; do
+    while [ "$elapsedTime" -lt "$maxTime" ]; do
         local temp=${spinstr#?}
         printf "%c" "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
+        local spinstr="$temp${spinstr%"$temp"}"
+        sleep "$delay"
         printf "\b"
         elapsedTime=$((elapsedTime+1))
     done
@@ -226,14 +225,14 @@ ask() {
     ask_prompt=$1
     if [ "$force" = "false" ]; then
         read -r -p "$ask_prompt" response
-            case "$response" in
-                    [yY][eE][sS]|[yY])
-                            echo
-                            ;;
-                    *)
-                            exit 1
-                            ;;
-            esac
+        case "$response" in
+            [yY][eE][sS]|[yY])
+                echo
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
     fi
 }
 
@@ -263,15 +262,13 @@ validate_and_format_date() {
     local correct_format="%b %d, %Y" # e.g., Jan 01, 2024
 
     # Try to convert input_date to the correct format
-    formatted_date=$(date -d "$input_date" +"$correct_format" 2>/dev/null)
-
-    if [ $? -ne 0 ]; then
+    if ! formatted_date=$(date -d "$input_date" +"$correct_format" 2>/dev/null); then
         # date conversion failed
         echo "Error: Incorrect date format. Expected format example: $correct_format (e.g., Jan 01, 2024)" >&2
         exit 1
     else
         # Check if the formatted date matches the expected date format
-        if ! date -d "$formatted_date" +"$correct_format" &>/dev/null; then
+    if ! date -d "$formatted_date" +"$correct_format" &>/dev/null; then
             # This means the formatted date does not match our correct format
             echo "Error: Incorrect date format after conversion. Expected format example: $correct_format (e.g., Jan 01, 2024)" >&2
             exit 1
@@ -308,19 +305,21 @@ build_changelog() {
     if [ "$dry_run" = "false" ]; then
         make changelog
 
-        git diff CHANGELOG.md | $GREP_CMD '^+' | sed 's/^+//g' | $GREP_CMD -v CHANGELOG.md > new_changelog
-        output=$(cat new_changelog | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
+        git diff CHANGELOG.md | "$GREP_CMD" '^+' | sed 's/^+//g' | "$GREP_CMD" -v CHANGELOG.md > new_changelog
+        output=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' new_changelog)
 
         git checkout CHANGELOG.md
         if [[ "$target_date" == "" ]]; then
-            tartget_date=$(date +"%b %d, %Y")
+            target_date=$(date +"%b %d, %Y")
         fi
-        echo "## Mobius $target_milestone ($tartget_date)" > temp_changelog
-        echo "" >> temp_changelog
-        echo "### Bug fixes" >> temp_changelog
-        echo "" >> temp_changelog
-        echo -e "${output}" >> temp_changelog
-        echo "" >> temp_changelog
+        {
+            echo "## Mobius $target_milestone ($target_date)"
+            echo ""
+            echo "### Bug fixes"
+            echo ""
+            echo -e "${output}"
+            echo ""
+        } > temp_changelog
         cp CHANGELOG.md old_changelog
         cat temp_changelog
         echo
@@ -339,30 +338,32 @@ changelog_and_versions() {
     branch_for_changelog=$1
     source_branch=$2
 
-    local_exists=$(git branch | $GREP_CMD $branch_for_changelog)
+    local_exists=$(git branch | "$GREP_CMD" "$branch_for_changelog")
     if [ "$dry_run" = "false" ]; then
-        if [[ $local_exists != "" ]]; then
+        if [[ "$local_exists" != "" ]]; then
             # Clear previous
-            git branch -D $branch_for_changelog
+            git branch -D "$branch_for_changelog"
         fi
-        git checkout -b $branch_for_changelog
+        git checkout -b "$branch_for_changelog"
         cp /tmp/CHANGELOG.md .
         git add CHANGELOG.md
-        escaped_start_version=$(echo "$start_milestone" | sed 's/\./\\./g')
+        escaped_start_version=${start_milestone//./\\.}
         version_files=$(ack -l --ignore-dir=tools/release --ignore-dir=orbit --ignore-dir=server/service --ignore-file=is:CHANGELOG.md "$escaped_start_version")
         unameOut="$(uname -s)"
         case "${unameOut}" in
             Linux*)     echo "$version_files" | xargs sed -i "s/$escaped_start_version/$target_milestone/g";
-                   sed -i -E 's/(version: v[0-9]+\.[0-9]+\.)([0-9]+)/echo "\1$((\2+1))"/e' charts/mobius/Chart.yaml;;
+                   # shellcheck disable=SC2016
+                   awk -i inplace '/^version: v[0-9]+\.[0-9]+\./ {match($0, /^(version: v[0-9]+\.[0-9]+\.)([0-9]+)/, arr); print arr[1] (arr[2]+1); next} 1' charts/mobius/Chart.yaml;;
             Darwin*)    echo "$version_files" | xargs sed -i '' "s/$escaped_start_version/$target_milestone/g";
-                   sed -i '' -E 's/(version: v[0-9]+\.[0-9]+\.)([0-9]+)/echo "\1$((\2+1))"/e' charts/mobius/Chart.yaml;;
+                   # shellcheck disable=SC2016
+                   awk -i inplace '/^version: v[0-9]+\.[0-9]+\./ {match($0, /^(version: v[0-9]+\.[0-9]+\.)([0-9]+)/, arr); print arr[1] (arr[2]+1); next} 1' charts/mobius/Chart.yaml;;
             *)          echo "unknown distro to parse version"
         esac
         git add terraform charts infrastructure tools
-        git commit -m "Adding changes for Mobius v$target_milestone"
-        git push origin $branch_for_changelog -f
-        gh pr create -f -B $source_branch
-        gh workflow run goreleaser-snapshot-mobius.yaml --ref $source_branch # Manually trigger workflow run
+        git commit -m "Adding changes for Mobius v${target_milestone}"
+        git push origin "$branch_for_changelog" -f
+        gh pr create -f -B "$source_branch"
+        gh workflow run goreleaser-snapshot-mobius.yaml --ref "$source_branch" # Manually trigger workflow run
     else
         echo "DRYRUN: Would have created Changelog / verison pr from $branch_for_changelog to $source_branch"
     fi
@@ -373,7 +374,7 @@ create_qa_issue() {
         # Check for QA issue
         found=$(gh issue list --search "Release QA: $target_milestone in:title" --json number | jq length)
         if [[ "$found" == "0" ]]; then
-            cat .github/ISSUE_TEMPLATE/release-qa.md | awk 'BEGIN {count=0} /^---$/ {count++} count==2 && /^---$/ {getline; count++} count > 2 {print}' > temp_qa_issue_file
+            awk 'BEGIN {count=0} /^---$/ {count++} count==2 && /^---$/ {getline; count++} count > 2 {print}' .github/ISSUE_TEMPLATE/release-qa.md > temp_qa_issue_file
             gh issue create --title "Release QA: $target_milestone" -F temp_qa_issue_file \
                 --assignee "pezhub"  --label "#g-mdm" --label ":release" \
                 --assignee "jmwatts" --label "#g-software" \
@@ -393,17 +394,17 @@ print_announce_info() {
         echo "For announcing in #help-engineering"
         echo "===================================================="
         echo "Release $target_milestone QA ticket and docker publish"
-        echo "QA ticket for Release $target_milestone " $qa_ticket
-        echo "Docker Deploy status " $docker_deploy
+        echo "QA ticket for Release $target_milestone " "$qa_ticket"
+        echo "Docker Deploy status " "$docker_deploy"
         echo "List of tickets pulled into release https://github.com/notawar/mobius/milestone/$target_milestone_number"
         echo 
         slack_hook_url=https://hooks.slack.com/services
         app_id=T019PP37ALW
-        announce_text="Release $target_milestone QA ticket and docker publish\nQA ticket for Release $target_milestone $qa_ticket\nDocker Deploy status $docker_deploy\nList of tickets pulled into release https://github.com/notawar/mobius/milestone/$target_milestone_number"
+        announce_text="Release $target_milestone QA ticket and docker publish\nQA ticket for Release $target_milestone $qa_ticket\nDocker Deploy status $docker_deploy\nList of tickets pulled into release https://github.com/notawar/mobius/milestone/${target_milestone_number}"
         if [ "$quiet" = "false" ]; then
             curl -X POST -H 'Content-type: application/json' \
                 --data "{\"text\":\"$announce_text\"}" \
-                $slack_hook_url/$app_id/$SLACK_HELP_ENG_TOKEN
+                "$slack_hook_url/$app_id/$SLACK_HELP_ENG_TOKEN"
         fi
     else
         echo "DRYRUN: Would have printed announce in #help-engineering text w/ qa ticket, deploy to docker link, and milestone issue list link"
@@ -433,17 +434,17 @@ general_announce_info() {
         announce_text=":cloud: :rocket: The latest version of Mobius is $target_milestone.\nMore info: https://github.com/notawar/mobius/releases/tag/$next_tag\nRelease article: $article_url\nLinkedIn post: $linkedin_post_url"
     fi
 
-    echo -e $announce_text
+    echo -e "$announce_text"
 
     if [ "$quiet" = "false" ]; then
         if [ "$dry_run" = "false" ]; then
             curl -X POST -H 'Content-type: application/json' \
                 --data "{\"text\":\"$announce_text\"}" \
-                $slack_hook_url/$app_id/$SLACK_GENERAL_TOKEN
+                "$slack_hook_url/$app_id/$SLACK_GENERAL_TOKEN"
 
-            curl -X POST -H 'Content    -type: application/json' \
+            curl -X POST -H 'Content-type: application/json' \
                 --data "{\"text\":\"$announce_text\nDogfood Deployed $dogfood_deploy\"}" \
-                $slack_hook_url/$app_id/$SLACK_HELP_INFRA_TOKEN
+                "$slack_hook_url/$app_id/$SLACK_HELP_INFRA_TOKEN"
         fi
     fi
 }
@@ -454,31 +455,35 @@ update_release_notes() {
             echo "cannot find changelog to populate release notes"
             exit 1
         fi
-        cat temp_changelog | tail -n +3 > release_notes
-        echo "" >> release_notes
-        echo "### Upgrading" >> release_notes
-        echo "" >> release_notes
-        echo "Please visit our [update guide](https://mobiusmdm.com/docs/deploying/upgrading-mobius) for upgrade instructions." >> release_notes
-        echo "" >> release_notes
-        echo "### Documentation" >> release_notes
-        echo "" >> release_notes
-        echo "Documentation for Mobius is available at [mobiusmdm.com/docs](https://mobiusmdm.com/docs)." >> release_notes
-        echo "" >> release_notes
-        echo "### Binary Checksum" >> release_notes
-        echo "" >> release_notes
-        echo "**SHA256**" >> release_notes
-        echo "" >> release_notes
-        echo '```' >> release_notes
-        gh release download $next_tag -p checksums.txt --clobber
-        cat checksums.txt >> release_notes
-        echo '```' >> release_notes
+        tail -n +3 temp_changelog > release_notes
+        {
+            echo ""
+            echo "### Upgrading"
+            echo ""
+            echo "Please visit our [update guide](https://mobiusmdm.com/docs/deploying/upgrading-mobius) for upgrade instructions."
+            echo ""
+            echo "### Documentation"
+            echo ""
+            echo "Documentation for Mobius is available at [mobiusmdm.com/docs](https://mobiusmdm.com/docs)."
+            echo ""
+        } >> release_notes
+        {
+            echo "### Binary Checksum"
+            echo ""
+            echo "**SHA256**"
+            echo ""
+            echo '```'
+            gh release download "$next_tag" -p checksums.txt --clobber
+            cat checksums.txt
+            echo '```'
+        } >> release_notes
 
         echo
         echo "============== Release Notes ========================"
-        cat release_notes
+        < release_notes cat
         echo "============== Release Notes ========================"
 
-        gh release edit --draft -F release_notes $next_tag
+        gh release edit --draft -F release_notes "$next_tag"
     else
         echo "DRYRUN: Would have created release notes based on temp_changelog"
     fi
@@ -487,7 +492,7 @@ update_release_notes() {
 tag() {
     if [ "$dry_run" = "false" ]; then
         current_branch=$(git rev-parse --abbrev-ref HEAD)
-        found_version=$(cat CHANGELOG.md | $GREP_CMD $target_milestone)
+        found_version=$("$GREP_CMD" "$target_milestone" CHANGELOG.md)
         if [[ "$found_version" == "" ]]; then
             echo "Can't tag if CHANGELOG pr has not been merged yet"
             exit 1
@@ -498,8 +503,8 @@ tag() {
         fi
 
         # Officially tag and push
-        git tag $next_tag
-        git push origin $next_tag
+        git tag "$next_tag"
+        git push origin "$next_tag"
 
         # This lets us wait for github actions to trigger
         # we are specifically waiting for goreleaser to start
@@ -512,9 +517,9 @@ tag() {
 
     if [ "$dry_run" = "false" ]; then
         releaser_out=$(gh run list --workflow goreleaser-mobius.yaml --json databaseId,event,headBranch,url | jq "[.[]|select(.headBranch==\"$next_tag\")][0]")
-        echo "Releaser running " $(echo $releaser_out | jq -r ".url")
+        echo "Releaser running " "$(echo "$releaser_out" | jq -r ".url")"
 
-        gh run watch $(echo $releaser_out | jq -r ".databaseId")
+        gh run watch "$(echo "$releaser_out" | jq -r ".databaseId")"
     else
         echo "DRYRUN: Would found goreleaser action and waited for it to complete"
     fi
@@ -528,10 +533,10 @@ publish() {
     if [ "$dry_run" = "false" ]; then
         if [ "$announce_only" = "false" ]; then
             # TODO more checks to validate we are ready to publish
-            gh release edit --draft=false --latest $next_tag
+            gh release edit --draft=false --latest "$next_tag"
 
             if [ "$skip_deploy_dogfood" = "false" ]; then
-                gh workflow run dogfood-deploy.yml -f DOCKER_IMAGE=mobiusmdm/mobius:$next_ver
+                gh workflow run dogfood-deploy.yml -f "DOCKER_IMAGE=mobiusmdm/mobius:${next_ver}"
             fi
             show_spinner 200
             dogfood_deploy=$(gh run list --workflow=dogfood-deploy.yml --status in_progress -L 1 --json url | jq -r '.[] | .url')
@@ -547,18 +552,18 @@ publish() {
             fi
 
 
-            issues=$(gh issue list -m $target_milestone --json number | jq -r '.[] | .number')
+            issues=$(gh issue list -m "$target_milestone" --json number | jq -r '.[] | .number')
             for iss in $issues; do
-                is_story=$(gh issue view $iss --json labels | jq -r '.labels | .[] | .name' | grep story)
+                is_story=$(gh issue view "$iss" --json labels | jq -r '.labels | .[] | .name' | grep story)
                 # close all non-stories
                 if [[ "$is_story" == "" ]]; then
-                    echo "Closing #$iss"
-                    gh issue close $iss
+                    echo "Closing #${iss}"
+                    gh issue close "$iss"
                 fi
             done
 
             echo "Closing milestone"
-            gh api repos/mobiusmdm/mobius/milestones/$target_milestone_number -f state=closed
+            gh api "repos/mobiusmdm/mobius/milestones/${target_milestone_number}" -f state=closed
         fi
     else
         echo "DRYRUN: Would have published $next_tag / deployed to dogfood / closed non-stories / closed milestone / announced in slack"
@@ -605,43 +610,43 @@ if [ -z "$SLACK_HELP_ENG_TOKEN" ]; then
 fi
 
 if [[ "$target_date" != "" ]]; then
-    validate_and_format_date $target_date
+    validate_and_format_date "$target_date"
 fi
 
 # ex v4.43.0
 if [ -z "$start_version" ]; then
     if [[ "$1" == "" ]]; then
         # grab latest draft excluding test version 9.99.9
-        draft=$(gh release list | $GREP_CMD Draft | $GREP_CMD -v 9.99.9)
+        draft=$(gh release list | "$GREP_CMD" Draft | "$GREP_CMD" -v 9.99.9)
         if [[ "$draft" != "" ]]; then
-            target_version=$(echo $draft | awk '{print $1}' | cut -d '-' -f2)
-            start_version=$(gh release list | $GREP_CMD Draft -A1 | tail -n1 | awk '{print $1}' | cut -d '-' -f2)
+            target_version=$(echo "$draft" | awk '{print $1}' | cut -d '-' -f2)
+            start_version=$(gh release list | "$GREP_CMD" Draft -A1 | tail -n1 | awk '{print $1}' | cut -d '-' -f2)
         else
-            start_version=$(gh release list | $GREP_CMD Latest | awk '{print $1}' | cut -d '-' -f2)
+            start_version=$(gh release list | "$GREP_CMD" Latest | awk '{print $1}' | cut -d '-' -f2)
         fi
     else
         start_version="$1"
     fi
 fi
 
-if [[ $start_version != v* ]]; then
-    start_version=$(echo "v$start_version")
+if [[ "$start_version" != v* ]]; then
+    start_version="v$start_version"
 fi
 
 if [[ "$target_version" != "" ]]; then
-    if [[ $target_version != v* ]]; then
-        target_version=$(echo "v$target_version")
+    if [[ "$target_version" != v* ]]; then
+        target_version="v$target_version"
     fi
-    next_ver=$target_version
+    next_ver="$target_version"
 else
     if [[ "$minor" == "true" ]]; then
-        next_ver=$(echo $start_version | awk -F. '{print $1"."($2+1)".0"}')
+        next_ver=$(awk -F. -v start="$start_version" 'BEGIN {split(start,a,"."); print a[1]"."(a[2]+1)".0"}')
     else
-        next_ver=$(echo $start_version | awk -F. '{print $1"."$2"."($3+1)}')
+        next_ver=$(awk -F. -v start="$start_version" 'BEGIN {split(start,a,"."); print a[1]"."a[2]"."(a[3]+1)}')
     fi
 fi
 
-start_ver_tag=mobius-$start_version
+start_ver_tag="mobius-$start_version"
 
 if [[ "$minor" == "true" ]]; then
     echo "Minor release from $start_version to $next_ver"
@@ -669,7 +674,7 @@ update_changelog_prepare_branch="update-changelog-prepare-$target_milestone"
 # mobius-v4.48.0
 next_tag="mobius-$next_ver"
 
-if [[ "$target_milestone_number" == "" && "$announce_only" == "false" && $dry_run == false ]]; then
+if [[ "$target_milestone_number" == "" && "$announce_only" == "false" && "$dry_run" == "false" ]]; then
     echo "Missing milestone $target_milestone, Please create one and tie tickets to the milestone to continue"
     exit 1
 fi
@@ -715,22 +720,22 @@ if [ "$cherry_pick_resolved" = "false" ]; then
     # TODO Fail if not found
     if [ "$dry_run" = "false" ]; then
         git fetch
-        git checkout $start_ver_tag
-        git pull origin $start_ver_tag
+        git checkout "$start_ver_tag"
+        git pull origin "$start_ver_tag"
     else
-        echo "DRYRUN: Would have checked out starting at $start_ver_tag"
+        echo "DRYRUN: Would have checked out starting at ${start_ver_tag}"
     fi
 
-    local_exists=$(git branch | $GREP_CMD $target_branch)
+    local_exists=$(git branch | "$GREP_CMD" "$target_branch")
 
     if [ "$dry_run" = "false" ]; then
-        if [[ $local_exists != "" ]]; then
+        if [[ "$local_exists" != "" ]]; then
             # Clear previous
-            git branch -D $target_branch
+            git branch -D "$target_branch"
         fi
-        git checkout -b $target_branch
+        git checkout -b "$target_branch"
     else
-        echo "DRYRUN: Would have cleared / checked out new branch $target_branch"
+        echo "DRYRUN: Would have cleared / checked out new branch ${target_branch}"
     fi
 
     total_prs=()
@@ -738,15 +743,15 @@ if [ "$cherry_pick_resolved" = "false" ]; then
     issue_list=$(gh issue list --search 'milestone:"'"$target_milestone"'"' --json number | jq -r '.[] | .number')
 
     if [[ "$issue_list" == "" && "$dry_run" == "false" ]]; then
-        echo "Milestone $target_milestone has no target issues, please tie tickets to the milestone to continue"
+        echo "Milestone ${target_milestone} has no target issues, please tie tickets to the milestone to continue"
         exit 1
     fi
 
     echo "Issue list for new patch $next_ver"
-    echo $issue_list
+    echo "$issue_list"
 
     for issue in $issue_list; do
-        prs_for_issue=$(gh api repos/mobiusmdm/mobius/issues/$issue/timeline --paginate | jq -r '.[]' | $GREP_CMD "mobiusmdm/mobius/" | $GREP_CMD -oP "pulls\/\K(?:\d+)")
+        prs_for_issue=$(gh api "repos/mobiusmdm/mobius/issues/$issue/timeline" --paginate | jq -r '.[]' | "$GREP_CMD" "mobiusmdm/mobius/" | "$GREP_CMD" -oP "pulls\/\K(?:\d+)")
         echo -n "https://github.com/notawar/mobius/issues/$issue"
         if [[ "$prs_for_issue" == "" ]]; then
             echo -n " - No PRs found."
@@ -756,6 +761,7 @@ if [ "$cherry_pick_resolved" = "false" ]; then
             total_prs+=("$val")
         done
         echo
+        echo
     done
 
     ask "Check any issues that have no pull requests, no to cancel and yes to continue? [y/N] "
@@ -764,12 +770,11 @@ if [ "$cherry_pick_resolved" = "false" ]; then
 
     if [[ "$minor" == "false" || "$minor_cherry_pick" == "true" ]]; then
         echo "Continuing to cherry-pick"
-        for pr in ${total_prs[*]};
-        do
-            output=$(gh pr view $pr --json state,mergeCommit,baseRefName)
-            state=$(echo $output | jq -r .state)
-            commit=$(echo $output | jq -r .mergeCommit.oid)
-            target_pr_branch=$(echo $output | jq -r .baseRefName)
+        for pr in "${total_prs[@]}"; do
+            output=$(gh pr view "$pr" --json state,mergeCommit,baseRefName)
+            state=$(echo "$output" | jq -r .state)
+            commit=$(echo "$output" | jq -r .mergeCommit.oid)
+            target_pr_branch=$(echo "$output" | jq -r .baseRefName)
             echo -n "$pr $state $commit $target_pr_branch:"
             if [[ "$state" != "MERGED" || "$target_pr_branch" != "main" ]]; then
                 echo " WARNING - Skipping pr https://github.com/notawar/mobius/pull/$pr"
@@ -784,35 +789,32 @@ if [ "$cherry_pick_resolved" = "false" ]; then
             #echo "======================================="
         done
 
-        for commit in $commits;
-        do
+        declare -A time_map
+        for commit in $commits; do
             # echo $commit
-            timestamp=$(git log -n 1 --pretty=format:%at $commit)
-            if [ $? -ne 0 ]; then
-                echo "Failed to identify $commit, exiting"
+            if ! timestamp=$(git log -n 1 --pretty=format:%at "$commit"); then
+                echo "Failed to identify ${commit}, exiting"
                 exit 1
             fi
             # echo $timestamp
-            time_map[$timestamp]=$commit
+            time_map["$timestamp"]="$commit"
         done
 
         timestamps=""
         for key in "${!time_map[@]}"; do
             timestamps+="$key\n"
         done
-        for ts in $(echo -e $timestamps | sort); do
-            commit_hash="${time_map[$ts]}"
+        for ts in $(echo -e "$timestamps" | sort); do
+            commit_hash="${time_map["$ts"]}"
             # echo "# $ts $commit_hash"
-            if git branch --contains "$commit_hash" | $GREP_CMD -q "$(git rev-parse --abbrev-ref HEAD)"; then
+            if git branch --contains "$commit_hash" | "$GREP_CMD" -q "$(git rev-parse --abbrev-ref HEAD)"; then
                 echo "# Commit $commit_hash is on the current branch."
-                is_on_current_branch=true
             else
                 # echo "# Commit $commit_hash is not on the current branch."
                 if [[ "$failed" == "false" ]]; then
 
                     if [ "$dry_run" = "false" ]; then
-                        git cherry-pick $commit_hash
-                        if [ $? -ne 0 ]; then
+                        if ! git cherry-pick "$commit_hash"; then
                             echo "Cherry pick of $commit_hash failed. Please resolve then continue the cherry-picks manually"
                             failed=true
                         fi
@@ -822,7 +824,6 @@ if [ "$cherry_pick_resolved" = "false" ]; then
                 else
                     echo "git cherry-pick $commit_hash"
                 fi
-                is_on_current_branch=false
             fi
         done
     fi
@@ -835,7 +836,7 @@ fi
 if [[ "$failed" == "false" ]]; then
     if [ "$dry_run" = "false" ]; then
         # have to push so we can make the PR's back
-        git push origin $target_branch
+        git push origin "$target_branch"
         ask "Did git push work? [y/n]"
     fi
 
@@ -843,7 +844,7 @@ if [[ "$failed" == "false" ]]; then
     build_changelog
 
     # Create PR for changelog and version to release
-    changelog_and_versions $update_changelog_prepare_branch $target_branch
+    changelog_and_versions "$update_changelog_prepare_branch" "$target_branch"
 
     ask "Did first changelog work? [y/n]"
 

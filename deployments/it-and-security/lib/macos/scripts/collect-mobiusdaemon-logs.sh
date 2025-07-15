@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cp /var/log/orbit/orbit.stderr.log ~/Library/Logs/Mobius/mobius-desktop.log /Users/Shared
 
 echo "Successfully copied mobiusdaemon logs to the /Users/Shared folder."

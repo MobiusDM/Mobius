@@ -6,46 +6,49 @@ run(){
 
   #default values
 	output="mobiusdaemon_installers"
-	flags+="--disable-open-folder"
+	flags=("--disable-open-folder")
+	types=()
+	source=""
+	url=""
 
   #Read flags
 	while getopts s:p:u:f:d:o:x flag
 	 do
 		case "${flag}" in
-			f) #path to file containing team names. Must end with newline char.
-				source=($OPTARG);;
+			s) #source file
+				source="$OPTARG";;
 			p) #types of installers to create. Pass an individual flag for each type
-				types+=($OPTARG);;
+				types+=("$OPTARG");;
 			u) #Mobius server url
-				url=($OPTARG);;
+				url="$OPTARG";;
 			f) #Additional flags to apply to `mobiuscli package`
-				flags+=($OPTARG);;
+				flags+=("$OPTARG");;
 			d) #include Mobius Desktop
-				flags+="--desktop";;
+				flags+=("--desktop");;
 			o) #Directory for created packages
-		    output=($OPTARG);;
+		    output="$OPTARG";;
       x) #Test only
         dry_run="--dry-run";;
+      *) #Invalid option
+        echo "Invalid option: $OPTARG" >&2
+        return 1;;
 		esac
 	 done
 
 	#Verify that passed file exists
-	if !(test -f "$source")
-		then
-			echo "Source file not found"
-			return
+	if ! test -f "$source"; then
+		echo "Source file not found"
+		return 1
   fi
 
   #Set up output directory
-	if !(test -d "$output")
-		then
-				mkdir $output
+	if ! test -d "$output"; then
+		mkdir "$output"
 	fi
 
   #If no package type specified, generate all
-  if [[ (-z $types ) || ($types == "all")]]
-	 	then 
-		  types=("deb" "pkg" "msi" "rpm")
+  if [[ ${#types[@]} -eq 0 ]] || [[ "${types[0]}" == "all" ]]; then 
+	  types=("deb" "pkg" "msi" "rpm")
 	fi
 
   create_teams
@@ -60,7 +63,7 @@ create_teams(){
 
 		  create_team
 		  generate_packages
-		done < $source
+		done < "$source"
 }
 
 create_team(){
@@ -80,7 +83,7 @@ EOF
 
   # Apply the new team to mobius
 	echo "Adding $team_name team to Mobius"
-	mobiuscli apply -f config.yml $dry_run
+	mobiuscli apply -f config.yml "$dry_run"
 	rm -f config.yml 
 }
 
@@ -89,27 +92,26 @@ generate_packages(){
 	echo "Generating installers for $team_name"  
 
   #Set up directory to hold installers for this team
-  name_formatted=$(printf "$team_name" | tr '[:upper:]' '[:lower:]' | tr -s ' ' | tr ' ' '-')
-	team_dir=$output/$name_formatted
+  name_formatted=$(printf '%s' "$team_name" | tr '[:upper:]' '[:lower:]' | tr -s ' ' | tr ' ' '-')
+	team_dir="$output/$name_formatted"
   cwd=$(pwd)
   
-  if !(test -d "$team_dir")
-		then
-				mkdir "$team_dir"
+  if ! test -d "$team_dir"; then
+		mkdir "$team_dir"
 	fi
   
-  cd "$team_dir"
+  cd "$team_dir" || return 1
 
   #In the team directory, create a package for each specified type
-	for type in ${types[@]}
+	for type in "${types[@]}"
     do
-      mobiuscli package ${flags[@]} --type=$type --mobius-url=$url --enroll-secret=$secret 
-      find . -type f -name 'mobius-osquery*' -exec mv -f {} mobiusdaemon-$name_formatted.$type ';'
+      mobiuscli package "${flags[@]}" --type="$type" --mobius-url="$url" --enroll-secret="$secret" 
+      find . -type f -name 'mobius-osquery*' -exec mv -f {} "mobiusdaemon-$name_formatted.$type" ';'
     done
   
   
 
-  cd "$cwd"
+  cd "$cwd" || return 1
   
 }
 

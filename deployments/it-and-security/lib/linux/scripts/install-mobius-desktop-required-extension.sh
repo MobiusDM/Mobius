@@ -8,27 +8,27 @@ set -x
 run_uid=$(id -u)
 
 # Start detached script and exit as root (to send result back to Mobius).
-if [ $run_uid == 0 ] && [ $# -eq 0 ]; then
-	/bin/bash -c "/bin/bash $0 1 >/var/log/orbit/appindicator_script.log 2>/var/log/orbit/appindicator_script.log </dev/null &"
+if [ "$run_uid" == 0 ] && [ $# -eq 0 ]; then
+	/bin/bash -c "/bin/bash \"$0\" 1 >/var/log/orbit/appindicator_script.log 2>/var/log/orbit/appindicator_script.log </dev/null &"
 	echo "A detached script to install extension has been started (logs can be found in /var/log/orbit/appindicator_script.log)."
 	exit 0
 fi
 
 # Wait for user to be logged in to the GUI (by checking mobius-desktop process).
 mobius_desktop_pid=$(pgrep mobius-desktop)
-while [ -z $mobius_desktop_pid ]; do
+while [ -z "$mobius_desktop_pid" ]; do
 	mobius_desktop_pid=$(pgrep mobius-desktop)
 	sleep 10
 done
 
 extension_name="appindicatorsupport@rgcjonas.gmail.com"
-username=$(ps -o user= -p $mobius_desktop_pid | xargs)
-uid=$(ps -o uid= -p $mobius_desktop_pid | xargs)
+username=$(ps -o user= -p "$mobius_desktop_pid" | xargs)
+uid=$(ps -o uid= -p "$mobius_desktop_pid" | xargs)
 
 # If the extension is not installed, then prompt the user.
 if [ ! -d "/home/$username/.local/share/gnome-shell/extensions/$extension_name" ]; then
 	# Show notification to user before the prompt.
-	sudo -i -u $username -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus \
+	sudo -i -u "$username" -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$uid"/bus \
 		gdbus call --session \
 		--dest org.freedesktop.Notifications \
 		--object-path /org/freedesktop/Notifications \
@@ -39,7 +39,7 @@ if [ ! -d "/home/$username/.local/share/gnome-shell/extensions/$extension_name" 
 	sleep 10
 
 	# Prompt user for installation of extension.
-	sudo -i -u $username -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus \
+	sudo -i -u "$username" -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$uid"/bus \
 		gdbus call --session \
 		--dest org.gnome.Shell.Extensions \
 		--object-path /org/gnome/Shell/Extensions \
@@ -56,5 +56,5 @@ if [ ! -d "/home/$username/.local/share/gnome-shell/extensions/$extension_name" 
 fi
 
 # Enable the extension in case it was disabled in the past.
-sudo -i -u $username -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus \
+sudo -i -u "$username" -H DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$uid"/bus \
 	gnome-extensions enable "$extension_name"
