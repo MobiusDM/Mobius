@@ -480,7 +480,7 @@ update_release_notes() {
 
         echo
         echo "============== Release Notes ========================"
-        < release_notes cat
+        cat release_notes
         echo "============== Release Notes ========================"
 
         gh release edit --draft -F release_notes "$next_tag"
