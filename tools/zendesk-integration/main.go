@@ -15,11 +15,11 @@ import (
 	"os"
 
 	kitlog "github.com/go-kit/log"
-	"github.com/notawar/mobius/internal/server/contexts/license"
-	"github.com/notawar/mobius/internal/server/mobius"
-	"github.com/notawar/mobius/internal/server/mock"
-	"github.com/notawar/mobius/internal/server/service/externalsvc"
-	"github.com/notawar/mobius/internal/server/worker"
+	"github.com/notawar/mobius/mobius-server/server/contexts/license"
+	"github.com/notawar/mobius/mobius-server/server/mobius"
+	"github.com/notawar/mobius/mobius-server/server/mock"
+	"github.com/notawar/mobius/mobius-server/server/service/externalsvc"
+	"github.com/notawar/mobius/mobius-server/server/worker"
 )
 
 func main() {

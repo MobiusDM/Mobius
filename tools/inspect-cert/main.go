@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/notawar/mobius/internal/server/config"
+	"github.com/notawar/mobius/mobius-server/server/config"
 	"github.com/notawar/mobius/pkg/certificate"
 )
 

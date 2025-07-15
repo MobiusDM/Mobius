@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v37/github"
-	"github.com/notawar/mobius/internal/server/ptr"
+	"github.com/notawar/mobius/mobius-server/server/ptr"
 	"github.com/notawar/mobius/pkg/mobiushttp"
 	"golang.org/x/mod/semver"
 )

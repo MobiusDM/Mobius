@@ -16,9 +16,9 @@ import (
 
 	"github.com/WatchBeam/clock"
 	kitlog "github.com/go-kit/log"
-	"github.com/notawar/mobius/internal/server/config"
-	"github.com/notawar/mobius/internal/server/datastore/mysql"
-	"github.com/notawar/mobius/internal/server/mdm/nanodep/godep"
+	"github.com/notawar/mobius/mobius-server/server/config"
+	"github.com/notawar/mobius/mobius-server/server/datastore/mysql"
+	"github.com/notawar/mobius/mobius-server/server/mdm/nanodep/godep"
 	"github.com/notawar/mobius/pkg/mobiushttp"
 )
 
