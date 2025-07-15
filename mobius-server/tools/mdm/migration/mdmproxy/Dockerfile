@@ -1,4 +1,4 @@
-FROM golang:1.24.5-alpine
+FROM golang:1.24.4-alpine
 ARG TAG
 RUN apk update && apk add --no-cache git
 RUN git clone -b $TAG --depth=1 --no-tags --progress --no-recurse-submodules https://github.com/notawar/mobius.git && cd /go/mobius/tools/mdm/migration/mdmproxy && go build .

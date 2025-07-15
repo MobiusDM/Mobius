@@ -5,6 +5,8 @@ name: Build and Deploy Mobius (DISABLED)
 
 on:
   workflow_dispatch: # Manual trigger only
+  release:
+    types: [ published ]
 
 env:
   REGISTRY: ghcr.io
