@@ -124,7 +124,7 @@ echo "---------------------------------"
 modules=("mobius-server" "mobius-cli" "mobius-client" "shared")
 for module in "${modules[@]}"; do
     if [ -d "$module" ]; then
-        if (cd "$module" && go test -list . >/dev/null 2>&1); then
+        if (cd "$module" && go test -list ./... >/dev/null 2>&1); then
             log_test "Test Discovery" "PASS" "$module has discoverable tests"
         else
             log_test "Test Discovery" "FAIL" "$module test discovery failed"
