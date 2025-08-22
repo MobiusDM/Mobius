@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/NotAwar/Mobius/blob/main/README.md
+    about: Check the documentation for setup and usage information
+  - name: 💬 Discussions
+    url: https://github.com/NotAwar/Mobius/discussions
+    about: Ask questions and discuss ideas with the community
