@@ -164,7 +164,13 @@ echo "--------------------------------"
 concurrency_workflows=$(grep -l "concurrency:" .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | wc -l)
 total_workflows=$(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l)
 
-if [ "$concurrency_workflows" -ge $((total_workflows * 2 / 3)) ]; then
+# Require at least 67% of workflows to have concurrency control to ensure best practices are widely adopted.
+CONCURRENCY_THRESHOLD=2   # Numerator for threshold (2/3 = 67%)
+CONCURRENCY_THRESHOLD_DENOM=3 # Denominator for threshold
+concurrency_workflows=$(grep -l "concurrency:" .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | wc -l)
+total_workflows=$(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l)
+
+if [ "$concurrency_workflows" -ge $((total_workflows * CONCURRENCY_THRESHOLD / CONCURRENCY_THRESHOLD_DENOM)) ]; then
     log_test "Concurrency Control" "PASS" "$concurrency_workflows/$total_workflows workflows have concurrency control"
 else
     log_test "Concurrency Control" "FAIL" "Only $concurrency_workflows/$total_workflows workflows have concurrency control"
