@@ -1,25 +1,4 @@
-# Multi-stage build for Mobius Server with Svelte UI
-# Node.js stage for frontend build
-FROM node:22-alpine AS frontend-builder
-
-WORKDIR /app/frontend
-
-# Copy frontend package files
-COPY ../mobius-web/package*.json ./
-COPY ../mobius-web/vite.config.ts ./
-COPY ../mobius-web/svelte.config.js ./
-COPY ../mobius-web/tsconfig.json ./
-
-# Install frontend dependencies
-RUN npm ci --only=production
-
-# Copy frontend source code
-COPY ../mobius-web/src ./src
-COPY ../mobius-web/static ./static
-
-# Build the frontend
-RUN npm run build
-
+# Multi-stage build for Mobius Server
 # Go builder stage
 FROM golang:1.24.4-alpine AS builder
 
@@ -54,10 +33,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy the full sources
 COPY . .
 
-# Copy frontend build output to static directory
-COPY --from=frontend-builder /app/frontend/build ./mobius-server/static/
-
-# Build the server
+# Build the server (frontend static files should already be in ./static/ from CI build)
 WORKDIR /app/mobius-server
 RUN --mount=type=cache,target=/go/pkg/mod \
 	--mount=type=cache,target=/root/.cache/go-build \
