@@ -1,4 +1,4 @@
-FROM golang:1.24.5-alpine
+FROM golang:1.24.4-alpine
 RUN mkdir -p /output
 
 WORKDIR /usr/src/mobius
@@ -8,6 +8,6 @@ COPY go.work go.work.sum ./
 
 # Copy modules
 COPY mobius-server ./mobius-server
-COPY mobius-shared ./mobius-shared
+COPY shared ./shared
 
 CMD ["/bin/bash"]
