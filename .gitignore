@@ -1,5 +1,14 @@
 # binaries
 *.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.out
+mobius
+mobiuscli
+client
+cocoon
 
 # output directories
 /build
@@ -53,6 +62,7 @@ macoffice_rel_notes/
 # (e.g. with ./build/mobiuscli generate ...).
 /*.key
 /*.crt
+/*.pem
 
 # IDE
 .vscode
@@ -66,3 +76,9 @@ mobiusdaemon_tables_*
 
 # Residual files when building mobius_tables extension.
 mobius_tables_*.ext
+
+# Archives and large artifacts not tracked
+*.tar
+*.tar.gz
+*.zip
+legacy-backend-archive.tar.gz

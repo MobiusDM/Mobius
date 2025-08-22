@@ -2,27 +2,35 @@
 
 ![Mobius logo](Mobius-Logo-Text_1.png)
 
-Mobius is a proprietary platform for managing computers and mobile devices. It combines osquery-based visibility with Ansible automation to help organizations monitor and secure their devices.
+[![Build & Deploy](https://github.com/NotAwar/Mobius/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/NotAwar/Mobius/actions/workflows/build-and-deploy.yml)
+[![Unit Tests](https://github.com/NotAwar/Mobius/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/NotAwar/Mobius/actions/workflows/unit-tests.yml)
+
+Mobius is a proprietary platform for managing computers and mobile devices.
+It combines osquery-based visibility with Ansible automation to help
+organizations monitor and secure their devices.
 
 ## Repository Structure
 
-This repository has been restructured to separate the products:
+This repository is a Go workspace with separate modules per product:
 
-```
+```text
 mobius-server/          # Server-side product
 ├── cmd/mobius/         # Main server application
-├── internal/server/    # Server implementation
+├── server/             # Core server implementation
 ├── api/                # API schemas
 ├── tools/              # Server-specific tools
-└── docs/               # Server documentation
 
-mobius-cli/             # Client-side product  
+mobius-cli/             # Administrative CLI  
 ├── cmd/mobiuscli/      # CLI application
-└── docs/               # CLI documentation
 
-mobius-shared/          # Shared libraries across all modules
-├── shared/             # Common utilities, types, constants
-└── README.md
+mobius-client/          # Client / testing utilities
+├── cmd/client/
+
+mobius-cocoon/          # Future storefront service
+├── cmd/cocoon/
+
+shared/                 # Shared libraries across modules
+└── pkg/
 ```
 
 ## Products
@@ -33,7 +41,7 @@ The core backend server that provides:
 
 - **Device Management**: osquery orchestration and MDM protocols
 - **REST API**: Complete API for device management operations
-- **Web Interface**: Basic administrative interface
+- **Web Interface**: Admin GUI is a separate React app that talks to the API
 - **Security**: Vulnerability scanning and compliance monitoring
 - **Multi-tenancy**: Team-based device organization
 
@@ -80,15 +88,13 @@ The products are designed with clear separation:
 - **Shared**: Common code that both products depend on
 
 This structure enables:
+
 - Independent releases and versioning
 - Clear product boundaries
 - Focused development teams
 - Simplified deployment scenarios
 
-## License
-
-The code in this repository may not be redistributed. All source code and assets are copyrighted by Mobius Device Management.
 
 ## License
 
-Mobius itself is not open source.
+Mobius is not open source.

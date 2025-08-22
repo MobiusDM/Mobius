@@ -49,3 +49,15 @@ When a workflow is triggered via a pull request, it will cancel previous running
 pull request. This is especially useful when changes are pushed to a pull request frequently.
 Manually triggered workflows, workflows that run on a schedule, and workflows triggered by pushes to
 `main` are unaffected.
+
+## Notable workflows
+
+- golangci-lint.yml: Lints Go code across modules on push/PR.
+- unit-tests.yml: Runs unit tests per Go module (server, client, cli,
+  cocoon, shared) on push/PR.
+- build-and-deploy.yml: Main CI to test, build, and push Docker images and
+  attach release binaries.
+- trivy-scan.yml: Scans container images for vulnerabilities.
+- dependency-review.yml: PR advisory checks.
+- pr-helm.yaml / release-helm.yaml: Helm charts CI and releases.
+- tfvalidate.yml: Terraform validation.

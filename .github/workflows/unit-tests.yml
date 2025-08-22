@@ -1,0 +1,131 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.go'
+      - 'go.work'
+      - '**/go.mod'
+      - '**/go.sum'
+      - '.github/workflows/unit-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.go'
+      - 'go.work'
+      - '**/go.mod'
+      - '**/go.sum'
+      - '.github/workflows/unit-tests.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unit-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [mobius-server, mobius-cli, mobius-client, mobius-cocoon, shared]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.work'
+          cache-dependency-path: |
+            mobius-server/go.sum
+            mobius-cli/go.sum
+            mobius-client/go.sum
+            mobius-cocoon/go.sum
+            shared/go.sum
+
+      - name: Sync workspace and download deps
+        run: |
+          go work sync
+          go env
+          # Download deps for all modules to warm the cache
+          (cd mobius-server && go mod download)
+          (cd mobius-cli && go mod download)
+          (cd mobius-client && go mod download)
+          (cd mobius-cocoon && go mod download)
+          (cd shared && go mod download)
+
+      - name: Run unit tests (matrix module)
+        run: |
+          set -euo pipefail
+          cd ${{ matrix.module }}
+          go test -race -count=1 -coverprofile=../coverage-${{ matrix.module }}.out ./...
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.module }}
+          path: coverage-${{ matrix.module }}.out
+
+  coverage:
+    name: Aggregate coverage
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Go (for coverage tooling)
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage
+
+      - name: Merge coverage profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(coverage/**/coverage-*.out)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No coverage files found" >&2
+            exit 1
+          fi
+          echo "mode: set" > coverage/coverage-merged.out
+          for f in "${files[@]}"; do
+            tail -n +2 "$f" >> coverage/coverage-merged.out
+          done
+
+      - name: Generate coverage summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          go tool cover -func=coverage/coverage-merged.out | tee coverage/coverage.txt
+          total=$(go tool cover -func=coverage/coverage-merged.out | awk '/total:/ {print $3}')
+          {
+            echo "# Unit test coverage";
+            echo;
+            echo "Overall coverage: ${total}";
+            echo;
+            echo "Details:";
+            echo;
+            echo '```';
+            cat coverage/coverage.txt;
+            echo '```';
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload merged coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-merged
+          path: |
+            coverage/coverage-merged.out
+            coverage/coverage.txt

@@ -1,6 +1,7 @@
 # Mobius Server
 
-The Mobius server is the core backend that provides device management, osquery orchestration, and MDM functionality.
+The Mobius server is the core backend that provides device management,
+osquery orchestration, and MDM functionality.
 
 ## Components
 
@@ -25,7 +26,7 @@ go build -o ../build/mobius ./cmd/mobius
 The server is organized into:
 
 - `cmd/mobius/` - Main application entry point
-- `internal/server/` - Core server implementation
+- `server/` - Core server implementation (HTTP handlers, services, middleware)
 - `api/` - API schema definitions
 - `tools/` - Server-specific utilities
 
@@ -33,3 +34,14 @@ The server is organized into:
 
 - `../shared` - Shared libraries with mobius-cli
 - External dependencies as defined in go.mod
+
+## Licensing endpoints
+
+- GET /api/_version_/mobius/license/status — returns license info.
+- PUT /api/_version_/mobius/license — admin-only; OSS builds return config guidance.
+
+### CLI usage
+
+You can view license status using the CLI:
+
+- mobiuscli license status (use --json for JSON output; default is YAML)

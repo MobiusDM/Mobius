@@ -245,6 +245,10 @@ func attachMobiusAPIRoutes(r *mux.Router, svc mobius.Service, config config.Mobi
 	ue.GET("/api/_version_/mobius/spec/enroll_secret", getEnrollSecretSpecEndpoint, nil)
 	ue.GET("/api/_version_/mobius/version", versionEndpoint, nil)
 
+	// Licensing
+	ue.GET("/api/_version_/mobius/license/status", getLicenseStatusEndpoint, nil)
+	ue.PUT("/api/_version_/mobius/license", applyLicenseEndpoint, applyLicenseRequest{})
+
 	ue.POST("/api/_version_/mobius/users/roles/spec", applyUserRoleSpecsEndpoint, applyUserRoleSpecsRequest{})
 	ue.POST("/api/_version_/mobius/translate", translatorEndpoint, translatorRequest{})
 	ue.POST("/api/_version_/mobius/spec/teams", applyTeamSpecsEndpoint, applyTeamSpecsRequest{})

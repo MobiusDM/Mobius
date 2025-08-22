@@ -33,6 +33,7 @@ func CreateApp(
 	app.Commands = []*cli.Command{
 		apiCommand(),
 		applyCommand(),
+		licenseCommand(),
 		deleteCommand(),
 		setupCommand(),
 		loginCommand(),
