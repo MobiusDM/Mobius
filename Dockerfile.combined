@@ -33,7 +33,11 @@ FROM alpine:latest
 # Install ca-certificates for HTTPS requests
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+# Create non-root user for security
+RUN addgroup -g 1001 -S mobius && \
+    adduser -S -D -H -u 1001 -G mobius mobius
+
+WORKDIR /app
 
 # Copy both binaries
 COPY --from=builder /app/mobius-server/mobius .
@@ -53,6 +57,13 @@ RUN echo '#!/bin/sh' > start.sh && \
     echo '  exit 1' >> start.sh && \
     echo 'fi' >> start.sh && \
     chmod +x start.sh
+
+# Make binaries executable and owned by mobius user
+RUN chmod +x ./mobius ./mobiuscli ./start.sh && \
+    chown mobius:mobius ./mobius ./mobiuscli ./start.sh
+
+# Switch to non-root user
+USER mobius
 
 # Expose the server port
 EXPOSE 8080

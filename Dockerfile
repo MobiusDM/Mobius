@@ -11,7 +11,7 @@ COPY mobius-web/svelte.config.js ./
 COPY mobius-web/tsconfig.json ./
 
 # Install frontend dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy frontend source code
 COPY mobius-web/src ./src
@@ -71,10 +71,20 @@ FROM alpine:latest
 # Install ca-certificates for HTTPS
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+# Create non-root user for security
+RUN addgroup -g 1001 -S mobius && \
+    adduser -S -D -H -u 1001 -G mobius mobius
+
+WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/mobius-server/mobius-api ./mobius-api
+
+# Make binary executable and owned by mobius user
+RUN chmod +x ./mobius-api && chown mobius:mobius ./mobius-api
+
+# Switch to non-root user
+USER mobius
 
 # Expose port 8081 (API server default)
 EXPOSE 8081
