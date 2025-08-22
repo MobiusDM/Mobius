@@ -164,6 +164,16 @@ This structure enables:
 - Focused development teams
 - Simplified deployment scenarios
 
+## Security
+
+For security vulnerabilities, responsible disclosure procedures, and security best practices, please see our [Security Policy](SECURITY.md).
+
+Key security features:
+- JWT-based authentication with RBAC
+- HTTPS/TLS encryption for all communications  
+- Rate limiting and DDoS protection
+- Comprehensive audit logging
+- Vulnerability scanning and dependency management
 
 ## License
 
