@@ -17,6 +17,7 @@ All pull request titles must follow the Conventional Commits format:
 - `docs: update API documentation`
 - `feat(cli): add new command for device management`
 - `fix(server): handle null pointer exception`
+- `feat!: remove deprecated API endpoints` (breaking change)
 
 ### Allowed Types
 
@@ -42,6 +43,13 @@ The scope provides additional contextual information:
 - `web` - Changes to web interface
 - `api` - Changes to API endpoints
 - `deps` - Dependency updates
+
+### Breaking Changes
+For breaking changes, add an exclamation mark (`!`) after the type/scope:
+- `feat!: remove deprecated API`
+- `fix(api)!: change response format`
+
+Breaking changes should also include `BREAKING CHANGE:` in the commit body or footer explaining the change.
 
 ## Validation
 
@@ -77,6 +85,7 @@ To validate commits locally:
 - `docs: add conventional commits documentation`
 - `chore(deps): bump Go modules to latest versions`
 - `test: add integration tests for MDM endpoints`
+- `feat!: remove legacy authentication system` (breaking change)
 
 ### Bad PR Titles ❌
 - `Update server` (missing type)
