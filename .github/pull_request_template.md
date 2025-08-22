@@ -4,6 +4,11 @@ If some of the following don't apply, delete the relevant line.
 
 <!-- Note that API documentation changes are now addressed by the product design team. -->
 
+## Conventional Commits
+
+- [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., `feat: add new feature`, `fix: resolve bug`, `docs: update readme`)
+- [ ] PR title will be used for the squash commit message when merging to main
+
 - [ ] Changes file added for user-visible changes in `changes/` or `orbit/changes/`.
   See [Changes files](https://github.com/notawar/mobius/blob/main/docs/Contributing/guides/committing-changes.md#changes-files) for more information.
 - [ ] Input data is properly validated, `SELECT *` is avoided, SQL injection is prevented (using placeholders for values in statements)
