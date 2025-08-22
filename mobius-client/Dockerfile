@@ -44,8 +44,5 @@ WORKDIR /app
 COPY --from=builder /app/mobius-client/client /app/client
 USER app
 
-# Expose the client port if needed
-EXPOSE 8081
-
 # Run the client
 ENTRYPOINT ["/app/client"]
