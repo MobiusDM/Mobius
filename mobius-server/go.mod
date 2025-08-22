@@ -40,7 +40,7 @@ require (
 	github.com/google/go-github/v37 v37.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
-	github.com/gorilla/websocket v1.5.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/groob/finalizer v0.0.0-20170707115354-4c2ed49aabda
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/igm/sockjs-go/v3 v3.0.2
