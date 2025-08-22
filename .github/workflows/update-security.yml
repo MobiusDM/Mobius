@@ -66,9 +66,18 @@ jobs:
         id: security_check
         run: |
           # Check if dependencies need security updates
-          npm audit --audit-level=moderate --json > audit_result.json 2>/dev/null || echo '{"vulnerabilities": {}}' > audit_result.json
-          VULNERABILITIES=$(cat audit_result.json | jq '.vulnerabilities | length')
-          echo "npm_vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+          if [ -f package.json ]; then
+            if npm audit --audit-level=moderate --json > audit_result.json 2>audit_error.log; then
+              VULNERABILITIES=$(cat audit_result.json | jq '.vulnerabilities | length')
+              echo "npm_vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            else
+              echo "npm_vulnerabilities=error" >> $GITHUB_OUTPUT
+              echo "npm audit failed:" >&2
+              cat audit_error.log >&2
+            fi
+          else
+            echo "npm_vulnerabilities=skipped" >> $GITHUB_OUTPUT
+          fi
           
           # Check Go vulnerabilities if available
           if command -v govulncheck &> /dev/null; then
