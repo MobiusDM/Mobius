@@ -51,6 +51,7 @@ func main() {
 		ApplicationService: applicationService,
 		AuthService:        authService,
 		WSHub:              wsHub,
+		StaticDir:          "./static", // Serve Svelte frontend from static directory
 	}
 
 	// Create router

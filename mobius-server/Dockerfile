@@ -1,4 +1,26 @@
-# Multi-stage build for Mobius Server
+# Multi-stage build for Mobius Server with Svelte UI
+# Node.js stage for frontend build
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+
+# Copy frontend package files
+COPY ../mobius-web/package*.json ./
+COPY ../mobius-web/vite.config.ts ./
+COPY ../mobius-web/svelte.config.js ./
+COPY ../mobius-web/tsconfig.json ./
+
+# Install frontend dependencies
+RUN npm ci --only=production
+
+# Copy frontend source code
+COPY ../mobius-web/src ./src
+COPY ../mobius-web/static ./static
+
+# Build the frontend
+RUN npm run build
+
+# Go builder stage
 FROM golang:1.24.4-alpine AS builder
 
 # Install dependencies
@@ -28,11 +50,14 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy the full sources
 COPY . .
 
+# Copy frontend build output to static directory
+COPY --from=frontend-builder /app/frontend/build ./mobius-server/static/
+
 # Build the server
 WORKDIR /app/mobius-server
 RUN --mount=type=cache,target=/go/pkg/mod \
 	--mount=type=cache,target=/root/.cache/go-build \
-	CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags "-s -w" -o mobius ./cmd/mobius
+	CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags "-s -w" -o mobius-api ./cmd/api-server/main.go
 
 # Final stage
 FROM alpine:3.20
@@ -44,11 +69,11 @@ RUN apk --no-cache add ca-certificates && \
 WORKDIR /app
 
 # Copy the binary
-COPY --from=builder /app/mobius-server/mobius /app/mobius
+COPY --from=builder /app/mobius-server/mobius-api /app/mobius-api
 USER app
 
 # Expose the server port
-EXPOSE 8080
+EXPOSE 8081
 
 # Run the server
-ENTRYPOINT ["/app/mobius"]
+ENTRYPOINT ["/app/mobius-api"]

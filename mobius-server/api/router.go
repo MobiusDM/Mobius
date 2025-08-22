@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -115,6 +117,30 @@ func NewRouter(deps *Dependencies) *mux.Router {
 	// Legacy setup endpoint (for initial setup check)
 	legacyAPI.HandleFunc("/setup", deps.handleLegacySetup).Methods("GET", "POST")
 
+	// Serve static files (Svelte frontend)
+	// Only serve frontend if static files exist
+	staticDir := "./static"
+	if deps.StaticDir != "" {
+		staticDir = deps.StaticDir
+	}
+	
+	// Serve static assets (JS, CSS, images)
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(filepath.Join(staticDir, "assets")))))
+	r.PathPrefix("/_app/").Handler(http.StripPrefix("/_app/", http.FileServer(http.Dir(filepath.Join(staticDir, "_app")))))
+	
+	// Handle SPA routes - serve index.html for all non-API routes
+	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Don't serve index.html for API routes
+		if strings.HasPrefix(r.URL.Path, "/api/") {
+			http.NotFound(w, r)
+			return
+		}
+		
+		// Serve index.html for all other routes (SPA routing)
+		indexPath := filepath.Join(staticDir, "index.html")
+		http.ServeFile(w, r, indexPath)
+	})
+
 	return r
 }
 
@@ -131,6 +157,9 @@ type Dependencies struct {
 	
 	// WebSocket support
 	WSHub WSHub
+	
+	// Static file serving
+	StaticDir string
 }
 
 // Service interfaces
