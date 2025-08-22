@@ -17,6 +17,7 @@ on:
       - '**/go.mod'
       - '**/go.sum'
       - '.github/workflows/unit-tests.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
