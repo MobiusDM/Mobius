@@ -6,7 +6,7 @@
 *.bin
 *.out
 mobius
-mobiuscli
+/mobiuscli
 client
 cocoon
 
