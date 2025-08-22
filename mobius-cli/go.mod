@@ -7,7 +7,7 @@ require (
 	github.com/beevik/etree v1.5.1
 	github.com/briandowns/spinner v1.23.1
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1
@@ -18,8 +18,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/sethvargo/go-password v0.3.0
 	github.com/urfave/cli/v2 v2.23.5
-	golang.org/x/crypto v0.36.0
-	golang.org/x/text v0.23.0
+	golang.org/x/crypto v0.41.0
+	golang.org/x/text v0.28.0
 	gopkg.in/guregu/null.v3 v3.5.0
 )
 
@@ -159,11 +159,11 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/oauth2 v0.27.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/api v0.215.0 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect

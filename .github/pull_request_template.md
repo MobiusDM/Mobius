@@ -15,6 +15,11 @@
 - [ ] `perf`: Performance improvements
 - [ ] `revert`: Reverting previous changes
 
+## Conventional Commits
+
+- [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., `feat: add new feature`, `fix: resolve bug`, `docs: update readme`)
+- [ ] PR title will be used for the squash commit message when merging to main
+
 ## Breaking Changes
 <!-- List any breaking changes, or write "None" -->
 
