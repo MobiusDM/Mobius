@@ -4,8 +4,12 @@ import Layout from '$lib/Layout.svelte';
 
 // Mock the API client
 vi.mock('$lib/api', () => ({
-  apiClient: {
+  default: vi.fn().mockImplementation(() => ({
     isAuthenticated: () => true
+  })),
+  apiClient: {
+    isAuthenticated: () => true,
+    logout: vi.fn()
   }
 }));
 

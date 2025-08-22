@@ -140,6 +140,7 @@ jobs:
           type=sha
     
     - name: Build and push ${{ matrix.component }} Docker image
+      id: build
       uses: docker/build-push-action@v5
       with:
         context: mobius-${{ matrix.component }}
@@ -149,11 +150,10 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-
     - name: Generate SBOM (Syft)
       uses: anchore/sbom-action@v0
       with:
-        image: ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}:sha-${{ github.sha }}
+        image: ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.build.outputs.digest }}
         format: spdx-json
         output-file: sbom-${{ matrix.component }}.spdx.json
 
@@ -167,13 +167,13 @@ jobs:
       uses: sigstore/cosign-installer@v3
       with:
         cosign-release: 'v2.2.4'
-
     - name: Sign image (cosign keyless)
       env:
         COSIGN_EXPERIMENTAL: '1'
       run: |
         set -euo pipefail
-        IMAGE="${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.meta.outputs.digest }}"
+        IMAGE="${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.build.outputs.digest }}"
+        cosign sign --yes "$IMAGE"
         cosign sign --yes "$IMAGE"
 
   # Create Release

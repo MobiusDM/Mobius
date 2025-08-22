@@ -109,6 +109,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd "${GITHUB_WORKSPACE}"
+          export GO111MODULE=on
           go tool cover -func=coverage/coverage-merged.out | tee coverage/coverage.txt
           total=$(go tool cover -func=coverage/coverage-merged.out | awk '/total:/ {print $3}')
           {

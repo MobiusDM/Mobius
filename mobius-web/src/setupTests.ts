@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import './lib/test-setup';
 import { vi } from 'vitest';
 
 // Mock SvelteKit modules globally

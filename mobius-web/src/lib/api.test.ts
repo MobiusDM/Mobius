@@ -1,16 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import APIClient from '$lib/api';
+import axios from 'axios';
+import { localStorageMock } from './test-setup';
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-};
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
-// Mock fetch
-global.fetch = vi.fn();
+// Mock axios
+vi.mock('axios');
+const mockedAxios = vi.mocked(axios, true);
 
 describe('API Client', () => {
   let apiClient: APIClient;
@@ -32,9 +27,12 @@ describe('API Client', () => {
         }
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockResponse)
+      mockedAxios.post.mockResolvedValueOnce({
+        data: mockResponse,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {}
       });
 
       const result = await apiClient.login({
@@ -84,9 +82,12 @@ describe('API Client', () => {
         total: 1
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockDevices)
+      mockedAxios.get.mockResolvedValueOnce({
+        data: mockDevices,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {}
       });
 
       const result = await apiClient.getDevices({
@@ -94,12 +95,13 @@ describe('API Client', () => {
         platform: 'windows'
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/devices'),
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        '/devices',
         expect.objectContaining({
-          headers: expect.objectContaining({
-            'Authorization': 'Bearer test-token'
-          })
+          params: {
+            limit: 10,
+            platform: 'windows'
+          }
         })
       );
       expect(result).toEqual(mockDevices);
@@ -114,10 +116,11 @@ describe('API Client', () => {
       delete (window as any).location;
       window.location = { href: '' } as any;
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: false,
-        status: 401,
-        json: () => Promise.resolve({ error: 'Unauthorized' })
+      mockedAxios.get.mockRejectedValueOnce({
+        response: {
+          status: 401,
+          data: { error: 'Unauthorized' }
+        }
       });
 
       try {
