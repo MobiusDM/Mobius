@@ -42,7 +42,10 @@ echo -e "\n${BLUE}Testing Go Workspace Setup${NC}"
 echo "----------------------------"
 
 if go work sync 2>/dev/null || true; then
+if go work sync 2>/dev/null; then
     log_test "Go Workspace Sync" "PASS" "go work sync executed successfully"
+else
+    log_test "Go Workspace Sync" "FAIL" "go work sync failed"
 fi
 
 # Test 2: Build verification for all components
