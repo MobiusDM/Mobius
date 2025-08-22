@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/NotAwar/Mobius/discussions
+    about: Ask questions and discuss with the community
+  - name: 📚 Documentation
+    url: https://github.com/NotAwar/Mobius/blob/main/README.md
+    about: Check the documentation for help and guides
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/NotAwar/Mobius/security/advisories/new
+    about: Report a security vulnerability privately

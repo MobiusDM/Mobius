@@ -1,0 +1,83 @@
+# File-based labeling configuration
+# Labels based on file paths changed in PRs
+
+# Server component
+server:
+  - mobius-server/**/*
+  - '!mobius-server/**/*.md'
+
+# CLI component  
+cli:
+  - mobius-cli/**/*
+  - '!mobius-cli/**/*.md'
+
+# Client component
+client:
+  - mobius-client/**/*
+  - '!mobius-client/**/*.md'
+
+# Cocoon component
+cocoon:
+  - mobius-cocoon/**/*
+  - '!mobius-cocoon/**/*.md'
+
+# Web UI component
+web:
+  - mobius-web/**/*
+  - '!mobius-web/**/*.md'
+
+# Shared libraries
+shared:
+  - shared/**/*
+
+# Docker related
+docker:
+  - Dockerfile*
+  - docker-compose*.yml
+  - .dockerignore
+  - deployments/**/*
+
+# CI/CD
+ci:
+  - .github/workflows/**/*
+  - .github/actions/**/*
+
+# Dependencies
+dependencies:
+  - go.mod
+  - go.sum
+  - go.work*
+  - package.json
+  - package-lock.json
+  - yarn.lock
+
+# Documentation
+documentation:
+  - '**/*.md'
+  - docs/**/*
+  - README*
+  - CHANGELOG*
+  - CONTRIBUTING*
+  - LICENSE*
+  - SECURITY*
+
+# Configuration
+config:
+  - .golangci.yml
+  - .github/dependabot.yml
+  - .github/ISSUE_TEMPLATE/**/*
+  - .github/pull_request_template.md
+  - .goreleaser*.yml
+  - Makefile
+
+# Scripts
+scripts:
+  - scripts/**/*
+  - tools/**/*
+  - '**/*.sh'
+
+# Tests
+tests:
+  - '**/*_test.go'
+  - tests/**/*
+  - '**/*.test.*'
