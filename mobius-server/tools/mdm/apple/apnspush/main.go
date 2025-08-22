@@ -52,7 +52,7 @@ func main() {
 		serverPrivateKey = &truncatedServerPrivateKey
 	}
 
-	// this matches the development config in /cmd/mobius/main.go
+	// this matches the development config in /cmd/main.go
 	cfg := config.MysqlConfig{
 		Protocol:        "tcp",
 		Address:         *mysqlAddr,
