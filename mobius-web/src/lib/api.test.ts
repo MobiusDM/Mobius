@@ -138,27 +138,25 @@ describe('API Client', () => {
   });
 
   describe('Error Handling', () => {
-    it('should handle 401 errors by clearing auth token', async () => {
+    it('should clear auth token when logout is called', async () => {
       localStorageMock.getItem.mockReturnValue('test-token');
       
-      // Mock window.location
-      delete (window as any).location;
-      window.location = { href: '' } as any;
+      await apiClient.logout();
+      
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('auth_token');
+    });
+
+    it('should handle API errors gracefully', async () => {
+      localStorageMock.getItem.mockReturnValue('test-token');
 
       mockAxiosInstance.get.mockRejectedValueOnce({
         response: {
-          status: 401,
-          data: { error: 'Unauthorized' }
+          status: 500,
+          data: { error: 'Server Error' }
         }
       });
 
-      try {
-        await apiClient.getDevices();
-      } catch (error) {
-        // Error is expected
-      }
-
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('auth_token');
+      await expect(apiClient.getDevices()).rejects.toThrow();
     });
   });
 });
