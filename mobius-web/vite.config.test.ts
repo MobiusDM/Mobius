@@ -8,12 +8,16 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],
-    // Ensure tests run in browser-like environment
+    // Force browser environment
     environmentOptions: {
       jsdom: {
         resources: 'usable'
       }
     },
-    pool: 'forks'
+    pool: 'forks',
+    // Disable SSR for tests
+    alias: {
+      '$app/environment': '/src/__mocks__/app/environment.js'
+    }
   }
 });

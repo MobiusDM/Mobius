@@ -1,39 +1,38 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import APIClient from '$lib/api';
-import axios from 'axios';
 import { localStorageMock } from './test-setup';
 
-// Create complete axios mock
-const mockAxiosInstance = {
-  get: vi.fn(),
-  post: vi.fn(),
-  put: vi.fn(),
-  delete: vi.fn(),
-  interceptors: {
-    request: {
-      use: vi.fn()
-    },
-    response: {
-      use: vi.fn()
+// Mock axios first before any imports
+vi.mock('axios', () => {
+  const mockAxiosInstance = {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() }
     }
-  }
-};
+  };
+  
+  return {
+    default: {
+      create: vi.fn(() => mockAxiosInstance)
+    }
+  };
+});
 
-// Mock axios
-vi.mock('axios', () => ({
-  default: {
-    create: vi.fn(() => mockAxiosInstance)
-  }
-}));
+import APIClient from '$lib/api';
+import axios from 'axios';
 
+// Get the mocked axios instance
 const mockedAxios = vi.mocked(axios, true);
-mockedAxios.create = vi.fn(() => mockAxiosInstance as any);
+const mockAxiosInstance = mockedAxios.create() as any;
 
 describe('API Client', () => {
   let apiClient: APIClient;
 
   beforeEach(() => {
-    // Clear only the mock instance methods, not the axios.create mock
+    // Clear only the mock instance methods
     mockAxiosInstance.get.mockClear();
     mockAxiosInstance.post.mockClear();
     mockAxiosInstance.put.mockClear();
