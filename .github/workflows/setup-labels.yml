@@ -1,6 +1,6 @@
 name: Setup Repository Labels
 
-on:
+"on":
   workflow_dispatch: # Manual trigger
   push:
     paths:
