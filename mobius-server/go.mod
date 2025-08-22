@@ -31,7 +31,7 @@ require (
 	github.com/go-json-experiment/json v0.0.0-20250517221953-25912455fbc8
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1
-	github.com/go-sql-driver/mysql v1.8.1
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gocarina/gocsv v0.0.0-20220310154401-d4df709ca055
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/gomodule/oauth1 v0.2.0
@@ -44,7 +44,7 @@ require (
 	github.com/groob/finalizer v0.0.0-20170707115354-4c2ed49aabda
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/igm/sockjs-go/v3 v3.0.2
-	github.com/jmoiron/sqlx v1.3.5
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/klauspost/compress v1.18.0
 	github.com/kolide/launcher v1.0.12
 	github.com/lib/pq v1.10.9

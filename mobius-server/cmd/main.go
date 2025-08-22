@@ -31,6 +31,7 @@ func main() {
 	rootCmd.AddCommand(createServeCmd(configManager))
 	rootCmd.AddCommand(createConfigDumpCmd(configManager))
 	rootCmd.AddCommand(createVersionCmd(configManager))
+	rootCmd.AddCommand(simpleServeCmd) // Add the simple serve command
 
 	// See if the program is being piped data on stdin.
 	fi, err := os.Stdin.Stat()
