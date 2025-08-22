@@ -9,11 +9,15 @@ WORKDIR /app
 
 # Prepare cached deps
 COPY go.work go.work.sum ./
-COPY mobius-cocoon/go.mod mobius-cocoon/go.sum ./mobius-cocoon/
-COPY mobius-server/go.mod mobius-server/go.sum ./mobius-server/
-COPY mobius-cli/go.mod mobius-cli/go.sum ./mobius-cli/
-COPY mobius-client/go.mod mobius-client/go.sum ./mobius-client/
-COPY shared/go.mod shared/go.sum ./shared/
+COPY mobius-cocoon/go.mod ./mobius-cocoon/
+COPY mobius-server/go.mod ./mobius-server/
+COPY mobius-server/go.sum ./mobius-server/
+COPY mobius-cli/go.mod ./mobius-cli/
+COPY mobius-cli/go.sum ./mobius-cli/
+COPY mobius-client/go.mod ./mobius-client/
+COPY mobius-client/go.sum ./mobius-client/
+COPY shared/go.mod ./shared/
+COPY shared/go.sum ./shared/
 RUN --mount=type=cache,target=/go/pkg/mod \
 	--mount=type=cache,target=/root/.cache/go-build \
 	go work sync && \

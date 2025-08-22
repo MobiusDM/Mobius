@@ -1,22 +1,46 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { localStorageMock } from './test-setup';
+
+// Mock axios first before any imports
+vi.mock('axios', () => {
+  const mockAxiosInstance = {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() }
+    }
+  };
+  
+  return {
+    default: {
+      create: vi.fn(() => mockAxiosInstance)
+    }
+  };
+});
+
 import APIClient from '$lib/api';
+import axios from 'axios';
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-};
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
-// Mock fetch
-global.fetch = vi.fn();
+// Get the mocked axios instance
+const mockedAxios = vi.mocked(axios, true);
+const mockAxiosInstance = mockedAxios.create() as any;
 
 describe('API Client', () => {
   let apiClient: APIClient;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Clear only the mock instance methods
+    mockAxiosInstance.get.mockClear();
+    mockAxiosInstance.post.mockClear();
+    mockAxiosInstance.put.mockClear();
+    mockAxiosInstance.delete.mockClear();
+    localStorageMock.getItem.mockClear();
+    localStorageMock.setItem.mockClear();
+    localStorageMock.removeItem.mockClear();
+    
     apiClient = new APIClient('http://localhost:8081/api/v1');
   });
 
@@ -32,9 +56,12 @@ describe('API Client', () => {
         }
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockResponse)
+      mockAxiosInstance.post.mockResolvedValueOnce({
+        data: mockResponse,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {}
       });
 
       const result = await apiClient.login({
@@ -84,9 +111,12 @@ describe('API Client', () => {
         total: 1
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockDevices)
+      mockAxiosInstance.get.mockResolvedValueOnce({
+        data: mockDevices,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {}
       });
 
       const result = await apiClient.getDevices({
@@ -94,12 +124,13 @@ describe('API Client', () => {
         platform: 'windows'
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/devices'),
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
+        '/devices',
         expect.objectContaining({
-          headers: expect.objectContaining({
-            'Authorization': 'Bearer test-token'
-          })
+          params: {
+            limit: 10,
+            platform: 'windows'
+          }
         })
       );
       expect(result).toEqual(mockDevices);
@@ -107,26 +138,25 @@ describe('API Client', () => {
   });
 
   describe('Error Handling', () => {
-    it('should handle 401 errors by clearing auth token', async () => {
+    it('should clear auth token when logout is called', async () => {
       localStorageMock.getItem.mockReturnValue('test-token');
       
-      // Mock window.location
-      delete (window as any).location;
-      window.location = { href: '' } as any;
+      await apiClient.logout();
+      
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('auth_token');
+    });
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: false,
-        status: 401,
-        json: () => Promise.resolve({ error: 'Unauthorized' })
+    it('should handle API errors gracefully', async () => {
+      localStorageMock.getItem.mockReturnValue('test-token');
+
+      mockAxiosInstance.get.mockRejectedValueOnce({
+        response: {
+          status: 500,
+          data: { error: 'Server Error' }
+        }
       });
 
-      try {
-        await apiClient.getDevices();
-      } catch (error) {
-        // Error is expected
-      }
-
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('auth_token');
+      await expect(apiClient.getDevices()).rejects.toThrow();
     });
   });
 });

@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom';
+import './lib/test-setup';
 import { vi } from 'vitest';
 
 // Mock SvelteKit modules globally
 vi.mock('$app/environment', () => ({
-  browser: false,
+  browser: true,
   dev: true,
-  building: false
+  building: false,
+  version: '1.0.0'
 }));
 
 vi.mock('$app/stores', () => ({

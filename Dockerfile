@@ -31,12 +31,16 @@ WORKDIR /app
 # Copy go workspace files
 COPY go.work go.work.sum ./
 
-# Copy module files
-COPY mobius-server/go.mod mobius-server/go.sum ./mobius-server/
-COPY mobius-cli/go.mod mobius-cli/go.sum ./mobius-cli/
-COPY mobius-client/go.mod mobius-client/go.sum ./mobius-client/
+# Copy module files (copy go.sum only if it exists)
+COPY mobius-server/go.mod ./mobius-server/
+COPY mobius-server/go.sum ./mobius-server/
+COPY mobius-cli/go.mod ./mobius-cli/
+COPY mobius-cli/go.sum ./mobius-cli/
+COPY mobius-client/go.mod ./mobius-client/
+COPY mobius-client/go.sum ./mobius-client/
 COPY mobius-cocoon/go.mod ./mobius-cocoon/
-COPY shared/go.mod shared/go.sum ./shared/
+COPY shared/go.mod ./shared/
+COPY shared/go.sum ./shared/
 
 # Download dependencies
 WORKDIR /app

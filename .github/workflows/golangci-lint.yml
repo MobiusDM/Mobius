@@ -61,10 +61,8 @@ jobs:
 
       - name: Run go lint on server
         run: |
-          # Don't forget to update
-          # docs/Contributing/Testing-and-local-development.md when this
-          # version changes
-          go install github.com/golangci/golangci-lint/cmd/golangci-lint@8b37f14162043f908949f1b363d061dc9ba713c0 # v1.64.8
+          # Updated to golangci-lint v2 to support version field in config
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
           cd mobius-server && golangci-lint run
 
       - name: Run go lint on CLI

@@ -7,6 +7,17 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,ts}'],
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts']
+    setupFiles: ['./src/setupTests.ts'],
+    // Force browser environment
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable'
+      }
+    },
+    pool: 'forks',
+    // Disable SSR for tests
+    alias: {
+      '$app/environment': '/src/__mocks__/app/environment.js'
+    }
   }
 });
