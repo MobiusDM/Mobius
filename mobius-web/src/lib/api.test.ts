@@ -3,15 +3,45 @@ import APIClient from '$lib/api';
 import axios from 'axios';
 import { localStorageMock } from './test-setup';
 
+// Create complete axios mock
+const mockAxiosInstance = {
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  interceptors: {
+    request: {
+      use: vi.fn()
+    },
+    response: {
+      use: vi.fn()
+    }
+  }
+};
+
 // Mock axios
-vi.mock('axios');
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => mockAxiosInstance)
+  }
+}));
+
 const mockedAxios = vi.mocked(axios, true);
+mockedAxios.create = vi.fn(() => mockAxiosInstance as any);
 
 describe('API Client', () => {
   let apiClient: APIClient;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Clear only the mock instance methods, not the axios.create mock
+    mockAxiosInstance.get.mockClear();
+    mockAxiosInstance.post.mockClear();
+    mockAxiosInstance.put.mockClear();
+    mockAxiosInstance.delete.mockClear();
+    localStorageMock.getItem.mockClear();
+    localStorageMock.setItem.mockClear();
+    localStorageMock.removeItem.mockClear();
+    
     apiClient = new APIClient('http://localhost:8081/api/v1');
   });
 
@@ -27,7 +57,7 @@ describe('API Client', () => {
         }
       };
 
-      mockedAxios.post.mockResolvedValueOnce({
+      mockAxiosInstance.post.mockResolvedValueOnce({
         data: mockResponse,
         status: 200,
         statusText: 'OK',
@@ -82,7 +112,7 @@ describe('API Client', () => {
         total: 1
       };
 
-      mockedAxios.get.mockResolvedValueOnce({
+      mockAxiosInstance.get.mockResolvedValueOnce({
         data: mockDevices,
         status: 200,
         statusText: 'OK',
@@ -95,7 +125,7 @@ describe('API Client', () => {
         platform: 'windows'
       });
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
         '/devices',
         expect.objectContaining({
           params: {
@@ -116,7 +146,7 @@ describe('API Client', () => {
       delete (window as any).location;
       window.location = { href: '' } as any;
 
-      mockedAxios.get.mockRejectedValueOnce({
+      mockAxiosInstance.get.mockRejectedValueOnce({
         response: {
           status: 401,
           data: { error: 'Unauthorized' }

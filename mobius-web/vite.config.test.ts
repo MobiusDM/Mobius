@@ -7,6 +7,13 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,ts}'],
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts']
+    setupFiles: ['./src/setupTests.ts'],
+    // Ensure tests run in browser-like environment
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable'
+      }
+    },
+    pool: 'forks'
   }
 });

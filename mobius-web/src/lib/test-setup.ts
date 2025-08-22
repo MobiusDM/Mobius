@@ -1,6 +1,12 @@
 // Test setup for common mocks and utilities
 import { vi } from 'vitest';
 
+// Set browser environment for Svelte components
+Object.defineProperty(globalThis, 'window', {
+  value: global,
+  writable: true
+});
+
 // Mock localStorage globally
 const localStorageMock = {
   getItem: vi.fn(),

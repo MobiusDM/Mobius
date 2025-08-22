@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Layout from '$lib/Layout.svelte';
 
@@ -27,7 +27,18 @@ vi.mock('$app/navigation', () => ({
   goto: vi.fn()
 }));
 
+// Mock Svelte environment to indicate browser
+vi.mock('$app/environment', () => ({
+  browser: true,
+  dev: false,
+  building: false,
+  version: '1.0.0'
+}));
+
 describe('Layout Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   it('renders the main navigation', () => {
     render(Layout, {
       props: {}
