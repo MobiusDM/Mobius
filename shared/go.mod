@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
-	github.com/cavaliergopher/rpm v1.2.0
+	github.com/cavaliergopher/rpm v1.3.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/go-multierror v1.1.1
