@@ -41,7 +41,6 @@ log_test() {
 echo -e "\n${BLUE}Testing Go Workspace Setup${NC}"
 echo "----------------------------"
 
-if go work sync 2>/dev/null || true; then
 if go work sync 2>/dev/null; then
     log_test "Go Workspace Sync" "PASS" "go work sync executed successfully"
 else
@@ -62,6 +61,7 @@ for component in "${components[@]}"; do
     else
         build_err=$(cd "$module" && go build "./$cmd_path" 2>&1)
         log_test "Build $module" "FAIL" "$component build failed. Error output:\n$build_err"
+    fi
 done
 
 # Test 3: Check for workflow files
@@ -161,9 +161,6 @@ echo -e "\n${BLUE}Testing Workflow Best Practices${NC}"
 echo "--------------------------------"
 
 # Check for concurrency control
-concurrency_workflows=$(grep -l "concurrency:" .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | wc -l)
-total_workflows=$(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l)
-
 # Require at least 67% of workflows to have concurrency control to ensure best practices are widely adopted.
 CONCURRENCY_THRESHOLD=2   # Numerator for threshold (2/3 = 67%)
 CONCURRENCY_THRESHOLD_DENOM=3 # Denominator for threshold
