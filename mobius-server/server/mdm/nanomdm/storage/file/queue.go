@@ -38,6 +38,9 @@ func (q *queue) mkdir() error {
 }
 
 func (q *queue) enqueue(uuid string, raw []byte) error {
+	if !isSafePathComponent(uuid) {
+		return errors.New("invalid uuid: unsafe path component")
+	}
 	err := q.mkdir()
 	if err != nil {
 		return err
@@ -50,6 +53,9 @@ func (q *queue) enqueue(uuid string, raw []byte) error {
 }
 
 func (q *queue) exists(uuid string) (bool, error) {
+	if !isSafePathComponent(uuid) {
+		return false, errors.New("invalid uuid: unsafe path component")
+	}
 	if _, err := os.Stat(path.Join(q.dir(), uuid+".plist")); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return false, nil
@@ -60,6 +66,9 @@ func (q *queue) exists(uuid string) (bool, error) {
 }
 
 func (q *queue) move(uuid string, dest *queue) error {
+	if !isSafePathComponent(uuid) {
+		return errors.New("invalid uuid: unsafe path component")
+	}
 	err := dest.mkdir()
 	if err != nil {
 		return err
@@ -71,10 +80,16 @@ func (q *queue) move(uuid string, dest *queue) error {
 }
 
 func (q *queue) removeResults(uuid string) error {
+	if !isSafePathComponent(uuid) {
+		return errors.New("invalid uuid: unsafe path component")
+	}
 	return os.Remove(path.Join(q.dir(), uuid+".result.plist"))
 }
 
 func (q *queue) writeResults(uuid string, raw []byte) error {
+	if !isSafePathComponent(uuid) {
+		return errors.New("invalid uuid: unsafe path component")
+	}
 	return os.WriteFile( //nolint:gosec
 		path.Join(q.dir(), uuid+".result.plist"),
 		raw,
@@ -88,10 +103,14 @@ func (q *queue) getNext() (*mdm.Command, error) {
 		return nil, err
 	}
 	for _, entry := range entries {
-		if !strings.HasSuffix(entry.Name(), ".plist") {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".plist") {
 			continue
 		}
-		raw, err := os.ReadFile(path.Join(q.dir(), entry.Name()))
+		if !isSafePathComponent(strings.TrimSuffix(name, ".plist")) {
+			continue
+		}
+		raw, err := os.ReadFile(path.Join(q.dir(), name))
 		if err != nil {
 			return nil, err
 		}
