@@ -52,8 +52,8 @@ WORKDIR /app
 COPY --from=builder /app/mobius-server/mobius-api /app/mobius-api
 USER app
 
-# Expose the server port
-EXPOSE 8081
+# Expose port 8080 (API server default)
+EXPOSE 8080
 
 # Run the server
 ENTRYPOINT ["/app/mobius-api"]

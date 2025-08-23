@@ -3,7 +3,6 @@ description: Report a security vulnerability (use privately)
 title: "[Security]: "
 labels: ["security", "triage"]
 assignees: []
-
 body:
   - type: markdown
     attributes:

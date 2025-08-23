@@ -1,13 +1,14 @@
-name: Bug Report
-description: File a bug report to help us improve Mobius
-title: "[Bug]: "
-labels: ["bug", "triage"]
-assignees: []
 
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: '[Bug] '
+labels: ['bug', 'triage']
+assignees: []
 body:
   - type: markdown
     attributes:
       value: |
+
         Thanks for taking the time to fill out this bug report! Please provide as much detail as possible.
 
   - type: checkboxes
@@ -46,6 +47,7 @@ body:
     validations:
       required: true
 
+
   - type: textarea
     id: description
     attributes:
@@ -63,7 +65,8 @@ body:
       placeholder: |
         1. Go to '...'
         2. Click on '...'
-        3. See error
+        3. Scroll down to '...'
+        4. See error
     validations:
       required: true
 

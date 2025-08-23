@@ -1,23 +1,28 @@
-name: Conventional Commits
+name: Validate Conventional Commits
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    branches: [ main ]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
-  conventional-commits:
+  validate-pr-title:
+    name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR title
-        uses: amannn/action-semantic-pull-request@v5
+      - name: Validate PR title follows Conventional Commits
+        uses: amannn/action-semantic-pull-request@v5.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Configure which types are allowed.
-          # Default: https://github.com/commitizen/conventional-commit-types
+          # Configure allowed types based on conventional commits spec
           types: |
-            fix
             feat
+            fix
             docs
             style
             refactor
@@ -42,23 +47,51 @@ jobs:
           requireScope: false
           # Configure additional validation for the subject based on a regex.
           # This example ensures the subject doesn't start with an uppercase character.
+          # Allow an empty body
+          wip: false
+          # Allow breaking changes with ! suffix
+          headerPattern: '^(\w*)(?:\((.*)\))?!?: (.*)$'
+          # Configure custom error messages
           subjectPattern: ^(?![A-Z]).+$
-          # If `subjectPattern` is configured, you can use this property to override
-          # the default error message that is shown when the pattern doesn't match.
-          # The variables `subject` and `title` can be used within the message.
+
           subjectPatternError: |
             The subject "{subject}" found in the pull request title "{title}"
             didn't match the configured pattern. Please ensure that the subject
             doesn't start with an uppercase character.
-          # For work-in-progress PRs you can typically use draft pull requests 
-          # from Github. However, private repositories on the free plan don't have 
-          # this feature and therefore this action allows you to opt-in to using the 
-          # special "[WIP]" prefix to indicate this state. This will avoid the 
-          # validation of the PR title and the pull request checks remain pending.
-          # Note that a second check will be reported if this is enabled.
-          wip: true
           # When using "Squash and merge" on a PR with only one commit, GitHub
           # will suggest using that commit message instead of the PR title for the
           # merge commit, and it's easy to commit this by mistake. Enable this option
           # to also validate the commit message for one commit PRs.
           validateSingleCommit: true
+
+  validate-commits:
+    name: Validate Individual Commits (Advisory)
+    runs-on: ubuntu-latest
+    if: github.event.action != 'edited'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Validate individual commits
+        run: |
+          # Get commits in this PR
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
+          
+          echo "Checking commits from $BASE_SHA to $HEAD_SHA"
+          
+          # Get commit messages in this PR
+          git log --format="%H %s" $BASE_SHA..$HEAD_SHA | while read sha message; do
+            echo "Checking commit $sha: $message"
+            
+            # Basic conventional commit pattern check
+            if echo "$message" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+'; then
+              echo "✅ Commit $sha follows conventional commits format"
+            else
+              echo "⚠️  Commit $sha does NOT follow conventional commits format: $message"
+              echo "This is advisory only - PR title validation is the primary requirement"
+            fi
+          done
+
