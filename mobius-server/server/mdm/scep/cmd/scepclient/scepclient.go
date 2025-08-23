@@ -9,7 +9,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	stdlog "log"
 	"net/url"
 	"os"
@@ -204,7 +203,7 @@ func run(cfg runCfg) error {
 	}
 
 	respCert := respMsg.CertRepMessage.Certificate
-	if err := ioutil.WriteFile(cfg.certPath, pemCert(respCert.Raw), 0o666); err != nil { // nolint:gosec
+	if err := os.WriteFile(cfg.certPath, pemCert(respCert.Raw), 0o666); err != nil { // nolint:gosec
 		return err
 	}
 

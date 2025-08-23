@@ -237,7 +237,7 @@ func createKey(bits int, password []byte, depot string) (*rsa.PrivateKey, error)
 	if err != nil {
 		return nil, err
 	}
-	privPEMBlock, err := x509.EncryptPEMBlock(
+	privPEMBlock, err := x509.EncryptPEMBlock( // nolint:staticcheck // Legacy SCEP compatibility
 		rand.Reader,
 		rsaPrivateKeyPEMBlockType,
 		x509.MarshalPKCS1PrivateKey(key),

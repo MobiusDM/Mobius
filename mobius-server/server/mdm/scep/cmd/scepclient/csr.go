@@ -7,7 +7,6 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"errors"
-	"io/ioutil"
 	"os"
 
 	"github.com/notawar/mobius/mobius-server/server/mdm/scep/x509util"
@@ -72,7 +71,7 @@ func subjOrNil(input string) []string {
 
 // load PEM encoded CSR from file
 func loadCSRfromFile(path string) (*x509.CertificateRequest, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

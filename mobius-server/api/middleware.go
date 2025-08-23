@@ -11,6 +11,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// Context key types to avoid string collisions
+type contextKey string
+
+const (
+	userContextKey   contextKey = "user"
+	deviceContextKey contextKey = "device"
+)
+
 // LoggingMiddleware logs HTTP requests
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +92,7 @@ func (d *Dependencies) authMiddleware(next http.Handler) http.Handler {
 		}
 
 		// Add user to request context
-		ctx := context.WithValue(r.Context(), "user", user)
+		ctx := context.WithValue(r.Context(), userContextKey, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -111,7 +119,7 @@ func (d *Dependencies) deviceAuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		// Add device to request context
-		ctx := context.WithValue(r.Context(), "device", device)
+		ctx := context.WithValue(r.Context(), deviceContextKey, device)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

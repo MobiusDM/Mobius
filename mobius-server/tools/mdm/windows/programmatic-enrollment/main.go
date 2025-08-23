@@ -75,10 +75,16 @@ func getEnrollmentInfo() (uint32, string, error) {
 // https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-mde/5c841535-042e-489e-913c-9d783d741267
 func enrollHostToMDM(mdmDiscoveryEndpoint string, mdmUpnUser string) (bool, error) {
 	// converting go server discovery endpoint string into UTF16 windows string
-	inputDiscoveryEndpoint := syscall.StringToUTF16Ptr(mdmDiscoveryEndpoint)
+	inputDiscoveryEndpoint, err := windows.UTF16PtrFromString(mdmDiscoveryEndpoint)
+	if err != nil {
+		return false, fmt.Errorf("failed to convert discovery endpoint to UTF16: %w", err)
+	}
 
 	// converting go upn user string into UTF16 windows string
-	inputMdmUPN := syscall.StringToUTF16Ptr(mdmUpnUser)
+	inputMdmUPN, err := windows.UTF16PtrFromString(mdmUpnUser)
+	if err != nil {
+		return false, fmt.Errorf("failed to convert UPN to UTF16: %w", err)
+	}
 
 	// converting go csr string into UTF16 windows string
 	// passing empty value to force MDM OS stack to generate a CSR for us
@@ -86,7 +92,10 @@ func enrollHostToMDM(mdmDiscoveryEndpoint string, mdmUpnUser string) (bool, erro
 	// CN should be <randomGUID>|<DeviceClientId>
 	// DeviceClientId value is located at HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Provisioning\OMADM\MDMDeviceID
 	var encodedB64 string
-	inputCSRreq := syscall.StringToUTF16Ptr(encodedB64)
+	inputCSRreq, err := windows.UTF16PtrFromString(encodedB64)
+	if err != nil {
+		return false, fmt.Errorf("failed to convert CSR to UTF16: %w", err)
+	}
 
 	// RegisterDeviceWithManagement() registers a device with a MDM service
 
