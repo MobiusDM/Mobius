@@ -1,69 +1,60 @@
-name: 🔒 Security Issue
-description: Report a security vulnerability (use private reporting for sensitive issues)
-title: '[Security] '
-labels: ['security', 'triage']
+name: Security Vulnerability
+description: Report a security vulnerability (use privately)
+title: "[Security]: "
+labels: ["security", "triage"]
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        **⚠️ Important**: For sensitive security vulnerabilities, please use GitHub's private security advisory feature instead of a public issue.
+        ⚠️ **IMPORTANT**: Please do not use this public template for actual security vulnerabilities.
+        
+        For real security vulnerabilities, please use:
+        - GitHub Security Advisories (private): https://github.com/NotAwar/Mobius/security
+        - Or email: [PLACEHOLDER - ADD SECURITY EMAIL]
+        
+        This template is for security-related feature requests or discussions about security practices.
 
   - type: checkboxes
-    id: issue-type
+    id: prerequisites
     attributes:
-      label: Security Issue Type
-      description: Select the type of security issue
+      label: Prerequisites
+      description: Please confirm you have read the above warning
       options:
-        - label: Vulnerability
-        - label: Security enhancement
-        - label: Security documentation
-        - label: Other security concern
+        - label: I understand this is for security discussions, not vulnerability reports
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      description: What type of security issue is this?
+      options:
+        - Security Feature Request
+        - Security Best Practice Discussion
+        - Security Documentation
+        - Other Security Topic
+    validations:
+      required: true
 
   - type: textarea
     id: description
     attributes:
       label: Description
-      description: Provide a clear description of the security issue
-      placeholder: Describe the security issue...
+      description: Describe the security topic or feature request
+      placeholder: Describe the security-related topic...
     validations:
       required: true
 
   - type: textarea
     id: impact
     attributes:
-      label: Impact
-      description: Describe the potential impact of this security issue
-      placeholder: What could happen if this isn't addressed?
-    validations:
-      required: true
+      label: Security Impact
+      description: What is the potential security impact or benefit?
+      placeholder: Describe the security implications...
 
   - type: textarea
-    id: reproduce
-    attributes:
-      label: Steps to Reproduce (if applicable)
-      description: If this is a vulnerability, provide steps to reproduce (be careful with sensitive details)
-      placeholder: |
-        1. Step one...
-        2. Step two...
-        Note: Avoid including sensitive information in public issues
-    validations:
-      required: false
-
-  - type: textarea
-    id: mitigation
-    attributes:
-      label: Suggested Mitigation
-      description: If you have suggestions for addressing this issue
-      placeholder: How should this be fixed?
-    validations:
-      required: false
-
-  - type: textarea
-    id: context
+    id: additional
     attributes:
       label: Additional Context
-      description: Any additional context about the security issue
-      placeholder: Any additional information...
-    validations:
-      required: false
+      description: Add any other context about the security topic here

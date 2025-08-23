@@ -32,18 +32,37 @@ jobs:
             ci
             chore
             revert
-          # Require scope to be present (can be empty)
+          # Configure which scopes are allowed.
+          scopes: |
+            server
+            cli
+            client
+            cocoon
+            web
+            api
+            docker
+            deps
+            security
+          # Configure that a scope must always be provided.
           requireScope: false
+          # Configure additional validation for the subject based on a regex.
+          # This example ensures the subject doesn't start with an uppercase character.
           # Allow an empty body
           wip: false
           # Allow breaking changes with ! suffix
           headerPattern: '^(\w*)(?:\((.*)\))?!?: (.*)$'
           # Configure custom error messages
           subjectPattern: ^(?![A-Z]).+$
+
           subjectPatternError: |
             The subject "{subject}" found in the pull request title "{title}"
             didn't match the configured pattern. Please ensure that the subject
             doesn't start with an uppercase character.
+          # When using "Squash and merge" on a PR with only one commit, GitHub
+          # will suggest using that commit message instead of the PR title for the
+          # merge commit, and it's easy to commit this by mistake. Enable this option
+          # to also validate the commit message for one commit PRs.
+          validateSingleCommit: true
 
   validate-commits:
     name: Validate Individual Commits (Advisory)
@@ -51,7 +70,7 @@ jobs:
     if: github.event.action != 'edited'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
           
@@ -75,3 +94,4 @@ jobs:
               echo "This is advisory only - PR title validation is the primary requirement"
             fi
           done
+

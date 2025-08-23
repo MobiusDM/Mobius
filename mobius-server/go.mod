@@ -12,19 +12,19 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/apex/log v1.9.0
 	github.com/aws/aws-sdk-go v1.44.288
-	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.8.3
+	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.9.4
 	github.com/beevik/etree v1.5.1
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/boltdb/bolt v1.3.1
-	github.com/briandowns/spinner v1.23.1
-	github.com/cavaliergopher/rpm v1.2.0
+	github.com/briandowns/spinner v1.23.2
+	github.com/cavaliergopher/rpm v1.3.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/docker/go-units v0.5.0
 	github.com/doug-martin/goqu/v9 v9.18.0
 	github.com/e-dard/netbug v0.0.0-20151029172837-e64d308a0b20
 	github.com/facebookincubator/flog v0.0.0-20190930132826-d2511d0ce33c
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.18.0
 	github.com/getsentry/sentry-go v0.18.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/github/smimesign v0.2.0
@@ -35,7 +35,7 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20220310154401-d4df709ca055
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/gomodule/oauth1 v0.2.0
-	github.com/gomodule/redigo v1.8.9
+	github.com/gomodule/redigo v1.9.2
 	github.com/google/go-cmp v0.7.0
 	github.com/google/go-github/v37 v37.0.0
 	github.com/google/uuid v1.6.0
@@ -66,7 +66,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/russellhaering/goxmldsig v1.2.0
 	github.com/saferwall/pe v1.5.5
-	github.com/sassoftware/relic/v8 v8.0.1
+	github.com/sassoftware/relic/v8 v8.2.0
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/smallstep/pkcs7 v0.0.0-20240723090913-5e2c6a136dfa
 	github.com/smallstep/scep v0.0.0-20240214080410-892e41795b99
@@ -117,7 +117,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
 	github.com/elastic/go-sysinfo v1.11.2 // indirect
@@ -156,7 +156,7 @@ require (
 	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
