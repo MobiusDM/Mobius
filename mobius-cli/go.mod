@@ -16,7 +16,7 @@ require (
 	github.com/notawar/mobius/mobius-server v0.0.0-20250822171415-42d6f7887920
 	github.com/notawar/mobius/shared v0.0.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/sethvargo/go-password v0.3.0
+	github.com/sethvargo/go-password v0.3.1
 	github.com/urfave/cli/v2 v2.23.5
 	golang.org/x/crypto v0.41.0
 	golang.org/x/text v0.28.0
