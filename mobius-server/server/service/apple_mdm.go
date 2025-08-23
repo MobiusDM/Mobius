@@ -355,7 +355,7 @@ func newMDMAppleConfigProfileEndpoint(ctx context.Context, request interface{}, 
 		return &newMDMAppleConfigProfileResponse{Err: err}, nil
 	}
 	return &newMDMAppleConfigProfileResponse{
-		ProfileID: cp.ProfileID,
+		ProfileID: cp.ProfileID, // nolint:staticcheck // Legacy API compatibility
 	}, nil
 }
 
@@ -1617,7 +1617,7 @@ type newMDMAppleDEPKeyPairResponse struct {
 func (r newMDMAppleDEPKeyPairResponse) Error() error { return r.Err }
 
 func newMDMAppleDEPKeyPairEndpoint(ctx context.Context, request interface{}, svc mobius.Service) (mobius.Errorer, error) {
-	keyPair, err := svc.NewMDMAppleDEPKeyPair(ctx)
+	keyPair, err := svc.NewMDMAppleDEPKeyPair(ctx) // nolint:staticcheck // Legacy endpoint compatibility
 	if err != nil {
 		return newMDMAppleDEPKeyPairResponse{
 			Err: err,

@@ -196,7 +196,7 @@ func hostListOptionsFromRequest(r *http.Request) (mobius.HostListOptions, error)
 			return hopt, ctxerr.Wrap(r.Context(), badRequest(fmt.Sprintf("Invalid software_id: %s", softwareID)))
 		}
 		sid := uint(id)
-		hopt.SoftwareIDFilter = &sid
+		hopt.SoftwareIDFilter = &sid // nolint:staticcheck // Backward compatibility
 	}
 
 	softwareVersionID := r.URL.Query().Get("software_version_id")
@@ -555,7 +555,7 @@ func hostListOptionsFromRequest(r *http.Request) (mobius.HostListOptions, error)
 
 	// cannot combine software_id, software_version_id, and software_title_id
 	var softwareErrorLabel []string
-	if hopt.SoftwareIDFilter != nil {
+	if hopt.SoftwareIDFilter != nil { // nolint:staticcheck // Backward compatibility
 		softwareErrorLabel = append(softwareErrorLabel, "software_id")
 	}
 	if hopt.SoftwareVersionIDFilter != nil {

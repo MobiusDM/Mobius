@@ -778,7 +778,7 @@ func (svc *Service) ModifyAppConfig(ctx context.Context, p []byte, applyOpts mob
 		}
 	}
 
-	if (appConfig.MDM.AppleBusinessManager.Set && appConfig.MDM.AppleBusinessManager.Valid) || appConfig.MDM.DeprecatedAppleBMDefaultTeam != "" {
+	if (appConfig.MDM.AppleBusinessManager.Set && appConfig.MDM.AppleBusinessManager.Valid) || appConfig.MDM.DeprecatedAppleBMDefaultTeam != "" { // nolint:staticcheck // Backward compatibility
 		for _, tok := range abmAssignments {
 			if err := svc.ds.SaveABMToken(ctx, tok); err != nil {
 				return nil, ctxerr.Wrap(ctx, err, "saving ABM token assignments")
@@ -1597,7 +1597,7 @@ func (svc *Service) validateMDM(
 		for i, prof := range customSettings {
 			count := 0
 			for _, b := range []bool{
-				len(prof.Labels) > 0,
+				len(prof.Labels) > 0, // nolint:staticcheck // Backward compatibility  
 				len(prof.LabelsIncludeAll) > 0,
 				len(prof.LabelsIncludeAny) > 0,
 				len(prof.LabelsExcludeAny) > 0,
@@ -1610,9 +1610,9 @@ func (svc *Service) validateMDM(
 				invalid.Append(fmt.Sprintf("%s_settings.custom_settings", prefix),
 					fmt.Sprintf(`Couldn't edit %s_settings.custom_settings. For each profile, only one of "labels_exclude_any", "labels_include_all", "labels_include_any" or "labels" can be included.`, prefix))
 			}
-			if len(prof.Labels) > 0 {
-				customSettings[i].LabelsIncludeAll = customSettings[i].Labels
-				customSettings[i].Labels = nil
+			if len(prof.Labels) > 0 { // nolint:staticcheck // Backward compatibility
+				customSettings[i].LabelsIncludeAll = customSettings[i].Labels // nolint:staticcheck // Backward compatibility
+				customSettings[i].Labels = nil // nolint:staticcheck // Backward compatibility
 			}
 		}
 	}
@@ -1752,12 +1752,12 @@ func (svc *Service) validateABMAssignments(
 	invalid *mobius.InvalidArgumentError,
 	license *mobius.LicenseInfo,
 ) ([]*mobius.ABMToken, error) {
-	if mdm.DeprecatedAppleBMDefaultTeam != "" && mdm.AppleBusinessManager.Set && mdm.AppleBusinessManager.Valid {
+	if mdm.DeprecatedAppleBMDefaultTeam != "" && mdm.AppleBusinessManager.Set && mdm.AppleBusinessManager.Valid { // nolint:staticcheck // Backward compatibility
 		invalid.Append("mdm.apple_bm_default_team", mobius.AppleABMDefaultTeamDeprecatedMessage)
 		return nil, nil
 	}
 
-	if name := mdm.DeprecatedAppleBMDefaultTeam; name != "" && name != oldMdm.DeprecatedAppleBMDefaultTeam {
+	if name := mdm.DeprecatedAppleBMDefaultTeam; name != "" && name != oldMdm.DeprecatedAppleBMDefaultTeam { // nolint:staticcheck // Backward compatibility
 		if !license.IsPremium() {
 			invalid.Append("mdm.apple_bm_default_team", ErrMissingLicense.Error())
 			return nil, nil

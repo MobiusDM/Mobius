@@ -94,12 +94,12 @@ func listHostsEndpoint(ctx context.Context, request interface{}, svc mobius.Serv
 	req := request.(*listHostsRequest)
 
 	var software *mobius.Software
-	if req.Opts.SoftwareVersionIDFilter != nil || req.Opts.SoftwareIDFilter != nil {
+	if req.Opts.SoftwareVersionIDFilter != nil || req.Opts.SoftwareIDFilter != nil { // nolint:staticcheck // Backward compatibility
 		var err error
 
 		id := req.Opts.SoftwareVersionIDFilter
 		if id == nil {
-			id = req.Opts.SoftwareIDFilter
+			id = req.Opts.SoftwareIDFilter // nolint:staticcheck // Backward compatibility
 		}
 		software, err = svc.SoftwareByID(ctx, *id, req.Opts.TeamFilter, false)
 		if err != nil && !mobius.IsNotFound(err) { // ignore not found, just return nil for the software in that case

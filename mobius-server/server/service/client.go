@@ -381,7 +381,7 @@ func getProfilesContents(baseDir string, macProfiles []mobius.MDMProfileSpec, wi
 			result = append(result, mobius.MDMProfileBatchPayload{
 				Name:             name,
 				Contents:         fileContents,
-				Labels:           profile.Labels,
+				Labels:           profile.Labels, // nolint:staticcheck // Backward compatibility
 				LabelsIncludeAll: profile.LabelsIncludeAll,
 				LabelsIncludeAny: profile.LabelsIncludeAny,
 				LabelsExcludeAny: profile.LabelsExcludeAny,
@@ -1213,7 +1213,7 @@ func legacyExtractAppCfgCustomSettings(mmdm map[string]interface{}, platformKey 
 
 			// at this stage we extract and return all supported label fields, the
 			// validations are done later on in the Mobius API endpoint.
-			profSpec.Labels = extractLabelField(m, "labels")
+			profSpec.Labels = extractLabelField(m, "labels") // nolint:staticcheck // Backward compatibility
 			profSpec.LabelsIncludeAll = extractLabelField(m, "labels_include_all")
 			profSpec.LabelsIncludeAny = extractLabelField(m, "labels_include_any")
 			profSpec.LabelsExcludeAny = extractLabelField(m, "labels_exclude_any")

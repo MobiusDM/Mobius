@@ -1647,11 +1647,11 @@ func (svc *Service) BatchSetMDMProfiles(
 	for i := range profiles {
 		// from this point on (after this condition), only LabelsIncludeAll, LabelsIncludeAny or
 		// LabelsExcludeAny need to be checked.
-		if len(profiles[i].Labels) > 0 {
+		if len(profiles[i].Labels) > 0 { // nolint:staticcheck // Backward compatibility
 			// must update the struct in the slice directly, because we don't have a
 			// pointer to it (it is a slice of structs, not of pointer to structs)
-			profiles[i].LabelsIncludeAll = profiles[i].Labels
-			profiles[i].Labels = nil
+			profiles[i].LabelsIncludeAll = profiles[i].Labels // nolint:staticcheck // Backward compatibility
+			profiles[i].Labels = nil // nolint:staticcheck // Backward compatibility
 		}
 		labels = append(labels, profiles[i].LabelsIncludeAll...)
 		labels = append(labels, profiles[i].LabelsIncludeAny...)
@@ -2169,7 +2169,7 @@ func validateProfiles(profiles map[int]mobius.MDMProfileBatchPayload) error {
 			len(profile.LabelsIncludeAll) > 0,
 			len(profile.LabelsIncludeAny) > 0,
 			len(profile.LabelsExcludeAny) > 0,
-			len(profile.Labels) > 0,
+			len(profile.Labels) > 0, // nolint:staticcheck // Backward compatibility
 		} {
 			if b {
 				count++
