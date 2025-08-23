@@ -60,12 +60,8 @@ for component in "${components[@]}"; do
     if (cd "$module" && go build "./$cmd_path" 2>/dev/null); then
         log_test "Build $module" "PASS" "$component builds successfully"
     else
-    build_err=$(cd "$module" && go build "./$cmd_path" 2>&1)
-    if [ $? -eq 0 ]; then
-        log_test "Build $module" "PASS" "$component builds successfully"
-    else
+        build_err=$(cd "$module" && go build "./$cmd_path" 2>&1)
         log_test "Build $module" "FAIL" "$component build failed. Error output:\n$build_err"
-    fi
 done
 
 # Test 3: Check for workflow files
