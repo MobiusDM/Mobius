@@ -7,7 +7,7 @@ require (
 	github.com/beevik/etree v1.5.1
 	github.com/briandowns/spinner v1.23.1
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1

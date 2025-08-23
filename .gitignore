@@ -82,5 +82,12 @@ mobius_tables_*.ext
 *.tar.gz
 *.zip
 legacy-backend-archive.tar.gz
+
 mobius-server/mobius-api
 mobius-server/static/
+
+
+# Node.js dependencies for commitlint
+node_modules/
+package-lock.json
+

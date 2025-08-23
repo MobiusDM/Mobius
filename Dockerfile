@@ -44,9 +44,13 @@ COPY shared/go.sum ./shared/
 
 # Download dependencies
 WORKDIR /app
-RUN go work sync
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go work sync
 WORKDIR /app/mobius-server
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go mod download
 
 # Back to app directory
 WORKDIR /app
@@ -63,22 +67,30 @@ COPY --from=frontend-builder /app/frontend/build ./mobius-server/static/
 
 # Build the application
 WORKDIR /app/mobius-server
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius-api cmd/api-server/main.go
+# BuildKit platform variables for multi-platform builds
+ARG TARGETOS
+ARG TARGETARCH
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius-api cmd/api-server/main.go
 
 # Production stage
-FROM alpine:latest
+FROM alpine:3.20
 
-# Install ca-certificates for HTTPS
-RUN apk --no-cache add ca-certificates
+# Install ca-certificates for HTTPS and add non-root user
+RUN apk --no-cache add ca-certificates && \
+    addgroup -S app && adduser -S -G app app
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S mobius && \
     adduser -S -D -H -u 1001 -G mobius mobius
 
+
 WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/mobius-server/mobius-api ./mobius-api
+
 
 # Make binary executable and owned by mobius user
 RUN chmod +x ./mobius-api && chown mobius:mobius ./mobius-api
@@ -88,6 +100,7 @@ USER mobius
 
 # Expose port 8081 (API server default)
 EXPOSE 8081
+
 
 # Run the application
 CMD ["./mobius-api"]
