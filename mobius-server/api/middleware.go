@@ -15,8 +15,8 @@ import (
 type contextKey string
 
 const (
-	userContextKey   contextKey = "user"
-	deviceContextKey contextKey = "device"
+	userCtxKey   contextKey = "user"
+	deviceCtxKey contextKey = "device"
 )
 
 // LoggingMiddleware logs HTTP requests
