@@ -1,30 +1,44 @@
-# Checklist for submitter
+## Summary
+<!-- Provide a brief description of what this PR does and why -->
 
-If some of the following don't apply, delete the relevant line.
 
-<!-- Note that API documentation changes are now addressed by the product design team. -->
+## Type of Change
+<!-- Select the type that best describes this change -->
+- [ ] `feat`: New feature or enhancement
+- [ ] `fix`: Bug fix
+- [ ] `docs`: Documentation changes
+- [ ] `style`: Code style/formatting (no functional changes)
+- [ ] `refactor`: Code refactoring (no functional changes)
+- [ ] `test`: Adding or updating tests
+- [ ] `chore`: Maintenance tasks, dependency updates
+- [ ] `ci`: CI/CD pipeline changes
+- [ ] `perf`: Performance improvements
+- [ ] `revert`: Reverting previous changes
 
-- [ ] Changes file added for user-visible changes in `changes/` or `orbit/changes/`.
-  See [Changes files](https://github.com/notawar/mobius/blob/main/docs/Contributing/guides/committing-changes.md#changes-files) for more information.
-- [ ] Input data is properly validated, `SELECT *` is avoided, SQL injection is prevented (using placeholders for values in statements)
-- [ ] Added support on mobius's osquery simulator `cmd/osquery-perf` for new osquery data ingestion features.
-- [ ] If paths of existing endpoints are modified without backwards compatibility, checked the CLI for any necessary changes
-- [ ] If database migrations are included, checked table schema to confirm autoupdate
-- For new Mobius configuration settings
-  - [ ] Verified that the setting can be managed via GitOps, or confirmed that the setting is explicitly being excluded from GitOps.  If managing via Gitops:
-    - [ ] Verified that the setting is exported via `mobiuscli generate-gitops`
-    - [ ] Added the setting to [the GitOps documentation](https://github.com/notawar/mobius/blob/main/docs/Configuration/yaml-files.md#L485)
-    - [ ] Verified that the setting is cleared on the server if it is not supplied in a YAML file (or that it is documented as being optional)
-    - [ ] Verified that any relevant UI is disabled when GitOps mode is enabled
-- For database migrations:
-  - [ ] Checked schema for all modified table for columns that will auto-update timestamps during migration.
-  - [ ] Confirmed that updating the timestamps is acceptable, and will not cause unwanted side effects.
-  - [ ] Ensured the correct collation is explicitly set for character columns (`COLLATE utf8mb4_unicode_ci`).
-- [ ] Added/updated automated tests
-- [ ] Manual QA for all new/changed functionality
-- For Orbit and Mobius Desktop changes:
-  - [ ] Make sure mobiusdaemon is compatible with the latest released version of Mobius (see [Must rule](https://github.com/notawar/mobius/blob/main/docs/Contributing/workflows/mobiusdaemon-development-and-release-strategy.md)).
-  - [ ] Orbit runs on macOS, Linux and Windows. Check if the orbit feature/bugfix should only apply to one platform (`runtime.GOOS`).
-  - [ ] Manual QA must be performed in the three main OSs, macOS, Windows and Linux.
-  - [ ] Auto-update manual QA, from released version of component to new version (see [tools/tuf/test](../tools/tuf/test/README.md)).
-- [ ] For unreleased bug fixes in a release candidate, confirmed that the fix is not expected to adversely impact load test results or alerted the release DRI if additional load testing is needed.
+## Conventional Commits
+
+- [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., `feat: add new feature`, `fix: resolve bug`, `docs: update readme`)
+- [ ] PR title will be used for the squash commit message when merging to main
+
+## Breaking Changes
+<!-- List any breaking changes, or write "None" -->
+
+
+## Testing
+<!-- Describe how you tested these changes -->
+- [ ] Manual testing performed
+- [ ] Automated tests added/updated
+- [ ] Existing tests pass
+
+**Test Details:**
+<!-- Describe specific testing steps, commands run, or scenarios tested -->
+
+
+## Checklist
+<!-- Remove items that don't apply to your change -->
+- [ ] Code follows project conventions and style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated (if applicable)
+- [ ] No sensitive data (secrets, credentials) included
+- [ ] Commit messages follow [conventional commit format](https://www.conventionalcommits.org/)
+- [ ] Changes are backward compatible (or breaking changes documented above)
