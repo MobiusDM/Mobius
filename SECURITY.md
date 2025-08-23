@@ -85,7 +85,7 @@ This repository includes automated security scanning:
 - **OSV Scanner**: Google's Open Source Vulnerability scanner
 
 Results are automatically uploaded to GitHub Security tab for tracking and remediation.
-=======
+
 We actively support and provide security updates for the following versions of Mobius:
 
 | Version | Supported          | End of Support |
@@ -281,4 +281,4 @@ Mobius is designed to support compliance with:
 **Last Updated**: 2025-08-22
 **Security Policy Version**: 1.0.0
 
-For general questions about Mobius security, please see our [documentation](docs/) or create a [public issue](https://github.com/NotAwar/Mobius/issues/new).
+For general questions about Mobius security, please see our [documentation](docs/) or create a [public issue](https://github.com/NotAwar/Mobius/issues/new). 

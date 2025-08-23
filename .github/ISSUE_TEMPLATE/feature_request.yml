@@ -1,20 +1,42 @@
-name: ✨ Feature Request
-description: Suggest a new feature or enhancement
-title: '[Feature] '
-labels: ['enhancement', 'triage']
+
+name: Feature Request
+description: Suggest an idea for Mobius
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for suggesting a new feature! Please fill out the sections below to help us understand your request.
+      
+        Thanks for taking the time to suggest a new feature! Please provide as much detail as possible.
 
-  - type: textarea
-    id: description
+  - type: checkboxes
+    id: prerequisites
     attributes:
-      label: Feature Description
-      description: A clear and concise description of the feature you'd like to see
-      placeholder: Describe the feature you want...
+      label: Prerequisites
+      description: Please confirm you have done the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have checked the roadmap to see if this feature is already planned
+          required: false
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - Mobius Server
+        - Mobius CLI
+        - Mobius Client
+        - Mobius Cocoon
+        - Mobius Web UI
+        - API
+        - Documentation
+        - Other
+
     validations:
       required: true
 
@@ -22,8 +44,9 @@ body:
     id: problem
     attributes:
       label: Problem Statement
-      description: What problem would this feature solve?
-      placeholder: Describe the problem this feature would solve...
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: A clear and concise description of what the problem is...
+
     validations:
       required: true
 
@@ -32,33 +55,43 @@ body:
     attributes:
       label: Proposed Solution
       description: Describe the solution you'd like
-      placeholder: How would you like this to work?
+      placeholder: A clear and concise description of what you want to happen...
+
     validations:
       required: true
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternative Solutions
-      description: Describe any alternative solutions you've considered
-      placeholder: What other approaches have you thought about?
-    validations:
-      required: false
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: A clear and concise description of any alternative solutions...
 
-  - type: textarea
-    id: use-cases
+  - type: dropdown
+    id: priority
     attributes:
-      label: Use Cases
-      description: Describe specific use cases where this feature would be helpful
-      placeholder: Who would use this and how?
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would improve workflow
+        - High - Critical for adoption
+        - Critical - Blocking current usage
     validations:
-      required: false
+      required: true
+
+  - type: checkboxes
+    id: implementation
+    attributes:
+      label: Implementation
+      description: Are you willing to help implement this feature?
+      options:
+        - label: I am willing to submit a pull request for this feature
+        - label: I can help with testing
+        - label: I can help with documentation
 
   - type: textarea
-    id: context
+    id: additional
     attributes:
       label: Additional Context
-      description: Add any other context, mockups, or examples about the feature request
-      placeholder: Any additional information...
-    validations:
-      required: false
+      description: Add any other context, screenshots, or examples about the feature request here
