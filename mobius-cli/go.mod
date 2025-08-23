@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/AbGuthrie/goquery/v2 v2.0.4
-	github.com/beevik/etree v1.5.1
+	github.com/beevik/etree v1.6.0
 	github.com/briandowns/spinner v1.23.1
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/fatih/color v1.18.0
