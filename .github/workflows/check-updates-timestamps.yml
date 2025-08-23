@@ -1,3 +1,4 @@
+---
 # Checks signatures that are about to expire on https://updates.mobiusmdm.com.
 name: "TUF expiration check: updates.mobiusmdm.com"
 

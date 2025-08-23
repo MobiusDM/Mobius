@@ -1,3 +1,4 @@
+---
 name: Attest Windows binaries with GitHub's free signing
 
 on:

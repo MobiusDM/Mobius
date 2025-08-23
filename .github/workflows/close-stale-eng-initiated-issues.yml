@@ -1,3 +1,4 @@
+---
 name: Close stale eng-initiated issues
 
 # This action will mark old engineering-initiated issues as stale.
