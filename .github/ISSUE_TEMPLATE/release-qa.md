@@ -2,7 +2,7 @@
 name: Release QA
 about: Quality assurance checklist for Mobius releases
 title: 'Release QA: '
-labels: ['release', 'qa', '#g-mdm', '#g-software', '#g-orchestration']
+labels: ['release', 'qa', '#g-mdm', '#g-software', '#g-orchestration', '~engineering-initiated']
 assignees: ['pezhub', 'jmwatts', 'xpkoala']
 ---
 

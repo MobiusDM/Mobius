@@ -11,7 +11,7 @@ COPY mobius-web/svelte.config.js ./
 COPY mobius-web/tsconfig.json ./
 
 # Install frontend dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy frontend source code
 COPY mobius-web/src ./src
@@ -21,7 +21,7 @@ COPY mobius-web/static ./static
 RUN npm run build
 
 # Go builder stage
-FROM golang:1.24.4-alpine AS builder
+FROM golang:1.25.0-alpine AS builder
 
 # Install git and ca-certificates
 RUN apk add --no-cache git ca-certificates
@@ -75,29 +75,32 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius-api cmd/api-server/main.go
 
 # Production stage
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install ca-certificates for HTTPS and add non-root user
 RUN apk --no-cache add ca-certificates && \
     addgroup -S app && adduser -S -G app app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S mobius && \
+    adduser -S -D -H -u 1001 -G mobius mobius
+
 
 WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/mobius-server/mobius-api ./mobius-api
 
-# Change ownership to app user
-RUN chown app:app ./mobius-api
+
+# Make binary executable and owned by mobius user
+RUN chmod +x ./mobius-api && chown mobius:mobius ./mobius-api
 
 # Switch to non-root user
-USER app
+USER mobius
 
-# Expose port 8080 (API server default)
-EXPOSE 8080
+# Expose port 8081 (API server default)
+EXPOSE 8081
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Run the application
 CMD ["./mobius-api"]

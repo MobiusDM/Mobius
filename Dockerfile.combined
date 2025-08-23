@@ -1,5 +1,5 @@
 # Multi-stage build for Combined Mobius Server + CLI
-FROM golang:1.24.4-alpine AS builder
+FROM golang:1.25.0-alpine AS builder
 
 # Install dependencies
 RUN apk add --no-cache git ca-certificates tzdata
@@ -32,11 +32,16 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o mobiuscli ./cmd/mobiuscli
 
 # Final stage
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install ca-certificates for HTTPS requests and add non-root user
 RUN apk --no-cache add ca-certificates && \
     addgroup -S app && adduser -S -G app app
+
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S mobius && \
+    adduser -S -D -H -u 1001 -G mobius mobius
 
 WORKDIR /app
 
@@ -59,11 +64,13 @@ RUN echo '#!/bin/sh' > start.sh && \
     echo 'fi' >> start.sh && \
     chmod +x start.sh
 
-# Change ownership to app user
-RUN chown -R app:app .
+# Make binaries executable and owned by mobius user
+RUN chmod +x ./mobius ./mobiuscli ./start.sh && \
+    chown mobius:mobius ./mobius ./mobiuscli ./start.sh
 
 # Switch to non-root user
-USER app
+USER mobius
+
 
 # Expose the server port
 EXPOSE 8080
