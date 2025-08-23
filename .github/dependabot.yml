@@ -18,7 +18,6 @@
 
 version: 2
 updates:
-
   # === GitHub Actions Dependencies ===
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -303,3 +302,4 @@ updates:
       include: "scope"
     pull-request-branch-name:
       separator: "-"
+

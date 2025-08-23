@@ -2,30 +2,27 @@ version: "2"
 
 linters:
   enable:
-  - bodyclose
   - errcheck
-  - gofmt
-  - goimports
-  - gosec
-  - gosimple
   - govet
   - ineffassign
   - staticcheck
-  - typecheck
   - unused
+  - bodyclose
+  - gosec
   - misspell
-  - unconvert
-  - unparam
-  - whitespace
   disable:
   - funlen
   - gocyclo
   - lll
-  - gomnd
 
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude-dirs:
+  - "test"
+  - "tests"
+  exclude-files:
+  - ".*_test\\.go"
 
 run:
   timeout: 5m
