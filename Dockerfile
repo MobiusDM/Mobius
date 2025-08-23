@@ -21,7 +21,7 @@ COPY mobius-web/static ./static
 RUN npm run build
 
 # Go builder stage
-FROM golang:1.24.4-alpine AS builder
+FROM golang:1.25.0-alpine AS builder
 
 # Install git and ca-certificates
 RUN apk add --no-cache git ca-certificates
@@ -75,7 +75,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius-api cmd/api-server/main.go
 
 # Production stage
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install ca-certificates for HTTPS and add non-root user
 RUN apk --no-cache add ca-certificates && \

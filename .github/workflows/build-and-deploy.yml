@@ -27,7 +27,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5.0.0
     
     - name: Set up Go
       uses: actions/setup-go@v5
@@ -106,7 +106,7 @@ jobs:
         component: [server, cli, client, cocoon]
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5.0.0
 
     - name: Normalize image name to lowercase (GHCR requirement)
       id: imagename
@@ -197,7 +197,7 @@ jobs:
       packages: write
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5.0.0
     
     - name: Set up Go
       uses: actions/setup-go@v5

@@ -4,17 +4,17 @@ go 1.24.4
 
 require (
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
-	github.com/cavaliergopher/rpm v1.2.0
+	github.com/cavaliergopher/rpm v1.3.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/klauspost/compress v1.18.0
 	github.com/notawar/mobius/mobius-server v0.0.0-20250822171415-42d6f7887920
 	github.com/rs/zerolog v1.34.0
-	github.com/saferwall/pe v1.5.5
+	github.com/saferwall/pe v1.5.7
 	github.com/sassoftware/relic/v8 v8.2.0
 	github.com/shirou/gopsutil/v3 v3.24.5
-	github.com/ulikunitz/xz v0.5.12
+	github.com/ulikunitz/xz v0.5.13
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/text v0.28.0

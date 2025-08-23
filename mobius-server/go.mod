@@ -16,8 +16,8 @@ require (
 	github.com/beevik/etree v1.5.1
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/boltdb/bolt v1.3.1
-	github.com/briandowns/spinner v1.23.1
-	github.com/cavaliergopher/rpm v1.2.0
+	github.com/briandowns/spinner v1.23.2
+	github.com/cavaliergopher/rpm v1.3.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/docker/go-units v0.5.0
@@ -35,7 +35,7 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20220310154401-d4df709ca055
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/gomodule/oauth1 v0.2.0
-	github.com/gomodule/redigo v1.8.9
+	github.com/gomodule/redigo v1.9.2
 	github.com/google/go-cmp v0.7.0
 	github.com/google/go-github/v37 v37.0.0
 	github.com/google/uuid v1.6.0
@@ -66,7 +66,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/russellhaering/goxmldsig v1.2.0
 	github.com/saferwall/pe v1.5.5
-	github.com/sassoftware/relic/v8 v8.0.1
+	github.com/sassoftware/relic/v8 v8.2.0
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/smallstep/pkcs7 v0.0.0-20240723090913-5e2c6a136dfa
 	github.com/smallstep/scep v0.0.0-20240214080410-892e41795b99

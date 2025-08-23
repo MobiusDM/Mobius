@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	github.com/AbGuthrie/goquery/v2 v2.0.4
 	github.com/beevik/etree v1.6.0
-	github.com/briandowns/spinner v1.23.1
+	github.com/briandowns/spinner v1.23.2
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
@@ -15,11 +15,9 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/notawar/mobius/mobius-server v0.0.0-20250822171415-42d6f7887920
 	github.com/notawar/mobius/shared v0.0.0
-	github.com/sethvargo/go-password v0.3.1
 	github.com/olekukonko/tablewriter v1.0.9
-	github.com/sethvargo/go-password v0.3.0
-
-	github.com/urfave/cli/v2 v2.23.5
+	github.com/sethvargo/go-password v0.3.1
+	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.41.0
 	golang.org/x/text v0.28.0
 	gopkg.in/guregu/null.v3 v3.5.0
@@ -43,10 +41,10 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
 	github.com/c-bata/go-prompt v0.2.3 // indirect
-	github.com/cavaliergopher/rpm v1.2.0 // indirect
+	github.com/cavaliergopher/rpm v1.3.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
@@ -122,7 +120,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/saferwall/pe v1.5.5 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
-	github.com/sassoftware/relic/v8 v8.0.1 // indirect
+	github.com/sassoftware/relic/v8 v8.2.0 // indirect
 	github.com/secDre4mer/pkcs7 v0.0.0-20240322103146-665324a4461d // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
@@ -145,7 +143,7 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/yashtewari/glob-intersection v0.2.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.elastic.co/apm/module/apmgorilla/v2 v2.6.2 // indirect
