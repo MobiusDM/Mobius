@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/notawar/mobius/mobius-server/server/mdm/nanomdm/cryptoutil"
 	"github.com/notawar/mobius/mobius-server/server/mdm/nanomdm/mdm"
