@@ -69,39 +69,26 @@ shared/                 # Common libraries and utilities
 
 ## Key Features
 
-### ✅ Production Ready
+###  Production Ready
 - **RESTful API**: Complete endpoint coverage with OpenAPI 3.1 specification
 - **Authentication**: JWT-based auth with role-based access control (admin/operator/viewer)
 - **Security**: CORS, rate limiting, security headers, input validation
 - **Monitoring**: Health checks, Prometheus metrics, structured logging
 - **Containerization**: Optimized Docker images with security best practices
 
-### ✅ Enterprise Features
-- **License Management**: Community (free), Professional, and Enterprise tiers
+###  Enterprise Features
+- **License Management**: Professional, and Enterprise tiers
 - **Multi-Platform**: Support for Windows, macOS, Linux, iOS, and Android
 - **Policy Engine**: Create, assign, and enforce device policies
 - **Application Distribution**: Secure app packaging and deployment
 - **Device Management**: Enrollment, monitoring, and remote management
 
-### ✅ Self-Hosted
+###  Self-Hosted
 - **Data Control**: Complete ownership of device and user data
 - **Customization**: Open architecture for custom integrations
 - **Cost Effective**: No per-device licensing fees to third parties
 - **Scalable**: Microservices-ready design for enterprise deployment
-├── tools/              # Server-specific tools
 
-mobius-cli/             # Administrative CLI  
-├── cmd/mobiuscli/      # CLI application
-
-mobius-client/          # Client / testing utilities
-├── cmd/client/
-
-mobius-cocoon/          # Future storefront service
-├── cmd/cocoon/
-
-shared/                 # Shared libraries across modules
-└── pkg/
-```
 
 ## Products
 
