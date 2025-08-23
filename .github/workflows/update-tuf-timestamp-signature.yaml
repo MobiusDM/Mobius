@@ -1,3 +1,4 @@
+---
 # This workflow update the timestamp of the TUF repository at https://updates.mobiusmdm.com
 name: Update TUF timestamp signature
 

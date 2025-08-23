@@ -1,3 +1,4 @@
+---
 name: Build mobiuscli container dependencies and check vulnerabilities
 
 on:
