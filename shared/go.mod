@@ -12,7 +12,7 @@ require (
 	github.com/notawar/mobius/mobius-server v0.0.0-20250822171415-42d6f7887920
 	github.com/rs/zerolog v1.34.0
 	github.com/saferwall/pe v1.5.5
-	github.com/sassoftware/relic/v8 v8.0.1
+	github.com/sassoftware/relic/v8 v8.2.0
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/ulikunitz/xz v0.5.12
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
