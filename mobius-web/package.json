@@ -13,6 +13,9 @@
 		"test": "vitest run --config vite.config.test.ts",
 		"test:watch": "vitest --config vite.config.test.ts"
 	},
+	"overrides": {
+		"cookie": "^0.7.2"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.22.0",
