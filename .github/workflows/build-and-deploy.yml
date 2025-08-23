@@ -25,11 +25,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    
+
     steps:
-    - uses: actions/checkout@v5.0.0
-    
-    - name: Set up Go
+      - uses: actions/checkout@v5.0.0
+
+      - name: Set up Go
       uses: actions/setup-go@v5
       with:
         go-version-file: 'go.work'
@@ -40,14 +40,14 @@ jobs:
           mobius-cocoon/go.sum
           shared/go.sum
 
-    - name: Set up Node.js
+      - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'npm'
         cache-dependency-path: mobius-web/package-lock.json
-    
-    - name: Sync workspace and download dependencies
+
+      - name: Sync workspace and download dependencies
       shell: bash
       run: |
         set -euo pipefail
@@ -58,31 +58,31 @@ jobs:
         (cd mobius-cocoon && go mod download)
         (cd shared && go mod download)
 
-    - name: Install frontend dependencies
+      - name: Install frontend dependencies
       shell: bash
       run: |
         cd mobius-web
         npm ci
 
-    - name: Build frontend
+      - name: Build frontend
       shell: bash
       run: |
         cd mobius-web
         npm run build
 
-    - name: Run frontend tests
+      - name: Run frontend tests
       shell: bash
       run: |
         cd mobius-web
         npm test
-    
-    - name: Run Go tests (all modules)
+
+      - name: Run Go tests (all modules)
       shell: bash
       run: |
         set -euo pipefail
         go test -count=1 ./mobius-server/... ./mobius-cli/... ./mobius-client/... ./mobius-cocoon/... ./shared/...
 
-    - name: Build binaries sanity (server and CLI)
+      - name: Build binaries sanity (server and CLI)
       shell: bash
       run: |
         set -euo pipefail
@@ -104,32 +104,32 @@ jobs:
     strategy:
       matrix:
         component: [server, cli, client, cocoon]
-    
-    steps:
-    - uses: actions/checkout@v5.0.0
 
-    - name: Normalize image name to lowercase (GHCR requirement)
+    steps:
+      - uses: actions/checkout@v5.0.0
+
+      - name: Normalize image name to lowercase (GHCR requirement)
       id: imagename
       shell: bash
       run: |
         set -euo pipefail
         lower=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
         echo "lower=${lower}" >> "$GITHUB_OUTPUT"
-    
-    - name: Set up QEMU (for multi-arch builds)
+
+      - name: Set up QEMU (for multi-arch builds)
       uses: docker/setup-qemu-action@v3
 
-    - name: Set up Docker Buildx
+      - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    
-    - name: Log in to Container Registry
+
+      - name: Log in to Container Registry
       uses: docker/login-action@v3.5.0
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Extract metadata for ${{ matrix.component }}
+
+      - name: Extract metadata for ${{ matrix.component }}
       id: meta
       uses: docker/metadata-action@v5
       with:
@@ -140,8 +140,8 @@ jobs:
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=sha
-    
-    - name: Build and push ${{ matrix.component }} Docker image
+
+      - name: Build and push ${{ matrix.component }} Docker image
       id: build
       uses: docker/build-push-action@v5
       with:
@@ -153,24 +153,24 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Generate SBOM (Syft)
+      - name: Generate SBOM (Syft)
       uses: anchore/sbom-action@v0
       with:
         image: ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.build.outputs.digest }}
         format: spdx-json
         output-file: sbom-${{ matrix.component }}.spdx.json
 
-    - name: Upload SBOM artifact
+      - name: Upload SBOM artifact
       uses: actions/upload-artifact@v4
       with:
         name: sbom-${{ matrix.component }}
         path: sbom-${{ matrix.component }}.spdx.json
 
-    - name: Install Cosign
+      - name: Install Cosign
       uses: sigstore/cosign-installer@v3
       with:
         cosign-release: 'v2.2.4'
-    - name: Sign image (cosign keyless)
+      - name: Sign image (cosign keyless)
       env:
         COSIGN_EXPERIMENTAL: '1'
       run: |
@@ -195,34 +195,34 @@ jobs:
     permissions:
       contents: write
       packages: write
-    
-    steps:
-    - uses: actions/checkout@v5.0.0
-    
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: 'go.work'
 
-    - name: Set up Node.js
+    steps:
+      - uses: actions/checkout@v5.0.0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.work'
+
+      - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'npm'
         cache-dependency-path: mobius-web/package-lock.json
 
-    - name: Build frontend
+      - name: Build frontend
       run: |
         cd mobius-web
         npm ci
         npm run build
 
-    - name: Copy frontend to server
+      - name: Copy frontend to server
       run: |
         mkdir -p mobius-server/static
         cp -r mobius-web/build/* mobius-server/static/
 
-    - name: Build server release binaries
+      - name: Build server release binaries
       run: |
         cd mobius-server
         GOOS=linux GOARCH=amd64 go build -o mobius-api-linux-amd64 ./cmd/api-server
@@ -231,7 +231,7 @@ jobs:
         GOOS=darwin GOARCH=arm64 go build -o mobius-api-darwin-arm64 ./cmd/api-server
         GOOS=windows GOARCH=amd64 go build -o mobius-api-windows-amd64.exe ./cmd/api-server
 
-    - name: Build CLI release binaries
+      - name: Build CLI release binaries
       run: |
         cd mobius-cli
         GOOS=linux GOARCH=amd64 go build -o mobiuscli-linux-amd64 ./cmd/mobiuscli
@@ -240,7 +240,7 @@ jobs:
         GOOS=darwin GOARCH=arm64 go build -o mobiuscli-darwin-arm64 ./cmd/mobiuscli
         GOOS=windows GOARCH=amd64 go build -o mobiuscli-windows-amd64.exe ./cmd/mobiuscli
 
-    - name: Upload release assets
+      - name: Upload release assets
       uses: softprops/action-gh-release@v1
       with:
         files: |

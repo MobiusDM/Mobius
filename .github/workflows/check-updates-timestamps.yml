@@ -16,7 +16,7 @@ concurrency:
 
 defaults:
   run:
-    # fail-fast using bash -eo pipefail. See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#exit-codes-and-error-action-preference
+    # fail-fast using bash -eo pipefail. See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions  # exit-codes-and-error-action-preference
     shell: bash
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
- 
+
 
       - name: Check remote timestamp.json file
         id: check_timestamp

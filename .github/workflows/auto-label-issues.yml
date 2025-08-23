@@ -12,9 +12,9 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-    - name: Label issues based on content
-      uses: actions/github-script@v7
-      with:
+      - name: Label issues based on content
+        uses: actions/github-script@v7
+        with:
         script: |
           const { owner, repo, number } = context.issue;
           const issue = await github.rest.issues.get({
@@ -22,11 +22,11 @@ jobs:
             repo,
             issue_number: number
           });
-          
+
           const title = issue.data.title.toLowerCase();
           const body = (issue.data.body || '').toLowerCase();
           const labels = [];
-          
+
           // Check title for common patterns
           if (title.includes('[bug]') || title.includes('bug')) {
             labels.push('bug');
@@ -43,7 +43,7 @@ jobs:
           if (title.includes('release qa')) {
             labels.push('release', 'qa', '~engineering-initiated');
           }
-          
+
           // Check body content for additional context
           if (body.includes('steps to reproduce')) {
             labels.push('bug');
@@ -57,12 +57,12 @@ jobs:
           if (body.includes('documentation issue')) {
             labels.push('documentation');
           }
-          
+
           // Add priority labels based on keywords
           if (title.includes('urgent') || title.includes('critical') || body.includes('urgent') || body.includes('critical')) {
             labels.push('priority/high');
           }
-          
+
           // Check for platform-specific issues
           if (body.includes('macos') || body.includes('mac os')) {
             labels.push('platform/macos');
@@ -79,7 +79,7 @@ jobs:
           if (body.includes('android')) {
             labels.push('platform/android');
           }
-          
+
           // Apply labels if any were identified
           if (labels.length > 0) {
             await github.rest.issues.addLabels({
@@ -90,20 +90,20 @@ jobs:
             });
           }
 
-    - name: Add triage label to new issues
-      uses: actions/github-script@v7
-      if: github.event.action == 'opened'
-      with:
+      - name: Add triage label to new issues
+        uses: actions/github-script@v7
+        if: github.event.action == 'opened'
+        with:
         script: |
           const { owner, repo, number } = context.issue;
-          
+
           // Check if issue already has labels from template
           const issue = await github.rest.issues.get({
             owner,
             repo,
             issue_number: number
           });
-          
+
           // Only add triage if no other labels are present
           if (issue.data.labels.length === 0) {
             await github.rest.issues.addLabels({

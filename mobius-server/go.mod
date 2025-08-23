@@ -13,7 +13,7 @@ require (
 	github.com/apex/log v1.9.0
 	github.com/aws/aws-sdk-go v1.44.288
 	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.9.4
-	github.com/beevik/etree v1.5.1
+	github.com/beevik/etree v1.6.0
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/boltdb/bolt v1.3.1
 	github.com/briandowns/spinner v1.23.2
@@ -110,7 +110,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.7.0 // indirect
 	cloud.google.com/go/iam v1.2.2 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/BurntSushi/toml v1.3.2 // indirect
+	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
