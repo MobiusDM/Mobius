@@ -544,7 +544,7 @@ func waitStartup() error {
 	retryStrategy := backoff.NewExponentialBackOff()
 	retryStrategy.MaxInterval = 1 * time.Second
 
-	client := mobiushttp.NewClient(mobiushttp.WithTLSClientConfig(&tls.Config{InsecureSkipVerify: true}))
+	client := mobiushttp.NewClient()
 
 	if err := backoff.Retry(
 		func() error {
