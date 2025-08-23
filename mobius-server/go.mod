@@ -12,12 +12,12 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/apex/log v1.9.0
 	github.com/aws/aws-sdk-go v1.44.288
-	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.8.3
+	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.9.4
 	github.com/beevik/etree v1.5.1
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/boltdb/bolt v1.3.1
 	github.com/briandowns/spinner v1.23.2
-	github.com/cavaliergopher/rpm v1.2.0
+	github.com/cavaliergopher/rpm v1.3.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/docker/go-units v0.5.0
