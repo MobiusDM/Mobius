@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	github.com/AbGuthrie/goquery/v2 v2.0.4
 	github.com/beevik/etree v1.6.0
-	github.com/briandowns/spinner v1.23.1
+	github.com/briandowns/spinner v1.23.2
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
@@ -15,9 +15,8 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/notawar/mobius/mobius-server v0.0.0-20250822171415-42d6f7887920
 	github.com/notawar/mobius/shared v0.0.0
-	github.com/sethvargo/go-password v0.3.1
 	github.com/olekukonko/tablewriter v1.0.9
-	github.com/sethvargo/go-password v0.3.0
+	github.com/sethvargo/go-password v0.3.1
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.41.0
 	golang.org/x/text v0.28.0
@@ -42,7 +41,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
 	github.com/c-bata/go-prompt v0.2.3 // indirect
-	github.com/cavaliergopher/rpm v1.2.0 // indirect
+	github.com/cavaliergopher/rpm v1.3.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
@@ -121,7 +120,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/saferwall/pe v1.5.5 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
-	github.com/sassoftware/relic/v8 v8.0.1 // indirect
+	github.com/sassoftware/relic/v8 v8.2.0 // indirect
 	github.com/secDre4mer/pkcs7 v0.0.0-20240322103146-665324a4461d // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
