@@ -65,7 +65,7 @@ require (
 	github.com/prometheus/client_golang v1.21.1
 	github.com/rs/zerolog v1.34.0
 	github.com/russellhaering/goxmldsig v1.2.0
-	github.com/saferwall/pe v1.5.5
+	github.com/saferwall/pe v1.5.7
 	github.com/sassoftware/relic/v8 v8.2.0
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/smallstep/pkcs7 v0.0.0-20240723090913-5e2c6a136dfa
@@ -75,7 +75,7 @@ require (
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
 	github.com/throttled/throttled/v2 v2.8.0
-	github.com/ulikunitz/xz v0.5.12
+	github.com/ulikunitz/xz v0.5.13
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
 	go.elastic.co/apm/module/apmgorilla/v2 v2.6.2
 	go.elastic.co/apm/module/apmhttp/v2 v2.7.1-0.20250407084155-22ab1be21948
@@ -131,7 +131,7 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	github.com/go-viper/mapstructure/v2 v2.3.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
