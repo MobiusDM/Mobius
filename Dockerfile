@@ -75,7 +75,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o mobius-api cmd/api-server/main.go
 
 # Production stage
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install ca-certificates for HTTPS and add non-root user
 RUN apk --no-cache add ca-certificates && \
