@@ -24,7 +24,7 @@ require (
 	github.com/doug-martin/goqu/v9 v9.18.0
 	github.com/e-dard/netbug v0.0.0-20151029172837-e64d308a0b20
 	github.com/facebookincubator/flog v0.0.0-20190930132826-d2511d0ce33c
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.18.0
 	github.com/getsentry/sentry-go v0.18.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/github/smimesign v0.2.0
