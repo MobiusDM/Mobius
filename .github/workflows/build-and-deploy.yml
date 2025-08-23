@@ -58,7 +58,7 @@ jobs:
           (cd mobius-client && go mod download)
           (cd mobius-cocoon && go mod download)
           (cd shared && go mod download)
-  
+
       - name: Install frontend dependencies
         shell: bash
         run: |
@@ -81,7 +81,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          go test -count=1 ./mobius-server/... ./mobius-cli/... ./mobius-client/... ./mobius-cocoon/... ./shared/...
+          go test -count=1 ./mobius-server/... ./mobius-cli/... \
+            ./mobius-client/... ./mobius-cocoon/... ./shared/...
 
       - name: Build binaries sanity (server and CLI)
         shell: bash
@@ -89,7 +90,8 @@ jobs:
           set -euo pipefail
           # Copy frontend build to server
           mkdir -p mobius-server/static
-          cp -r mobius-web/build/* mobius-server/static/ || echo "No frontend build to copy"
+          cp -r mobius-web/build/* mobius-server/static/ || \
+            echo "No frontend build to copy"
           (cd mobius-server && go build ./cmd/api-server)
           (cd mobius-cli && go build ./cmd/mobiuscli)
 
@@ -134,7 +136,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}
+          images: >-
+            ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -157,7 +160,8 @@ jobs:
       - name: Generate SBOM (Syft)
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.build.outputs.digest }}
+          image: >-
+            ${{ env.REGISTRY }}/${{ steps.imagename.outputs.lower }}-${{ matrix.component }}@${{ steps.build.outputs.digest }}
           format: spdx-json
           output-file: sbom-${{ matrix.component }}.spdx.json
 
