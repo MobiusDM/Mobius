@@ -1,6 +1,6 @@
 # Multi-stage build for Mobius with Svelte UI
 # Node.js stage for frontend build
-FROM node:22-alpine AS frontend-builder
+FROM node:24-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 
