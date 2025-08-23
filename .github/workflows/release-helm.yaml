@@ -24,11 +24,9 @@ jobs:
       contents: write  # to push helm charts
     runs-on: ubuntu-22.04
     steps:
-
-
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260
-      with:
+        with:
         token: ${{ secrets.GITHUB_TOKEN }}
         charts_dir: charts
         target_dir: charts
