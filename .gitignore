@@ -6,7 +6,7 @@
 *.bin
 *.out
 mobius
-/mobiuscli
+mobiuscli
 client
 cocoon
 
@@ -84,6 +84,7 @@ mobius_tables_*.ext
 legacy-backend-archive.tar.gz
 
 mobius-server/mobius-api
+mobius-server/api-server
 mobius-server/static/
 
 
