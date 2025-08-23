@@ -12,7 +12,7 @@ require (
 	github.com/andygrunwald/go-jira v1.16.0
 	github.com/apex/log v1.9.0
 	github.com/aws/aws-sdk-go v1.44.288
-	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.8.3
+	github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign v1.9.4
 	github.com/beevik/etree v1.5.1
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/boltdb/bolt v1.3.1
