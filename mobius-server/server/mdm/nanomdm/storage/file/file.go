@@ -55,7 +55,21 @@ type enrollment struct {
 	fs *FileStorage
 }
 
+// isSafePathComponent checks that the input is a safe single path component.
+func isSafePathComponent(s string) bool {
+	if s == "" ||
+		strings.Contains(s, "/") ||
+		strings.Contains(s, "\\") ||
+		strings.Contains(s, "..") {
+		return false
+	}
+	return true
+}
+
 func (s *FileStorage) newEnrollment(id string) *enrollment {
+	if !isSafePathComponent(id) {
+		return nil
+	}
 	return &enrollment{fs: s, id: id}
 }
 
