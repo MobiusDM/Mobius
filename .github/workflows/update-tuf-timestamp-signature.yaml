@@ -8,7 +8,7 @@ on:
 
 defaults:
   run:
-    # fail-fast using bash -eo pipefail. See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#exit-codes-and-error-action-preference
+    # fail-fast using bash -eo pipefail. See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions  # exit-codes-and-error-action-preference
     shell: bash
 
 permissions:
@@ -18,7 +18,7 @@ jobs:
   updates-update-timestamp:
     runs-on: ubuntu-latest
     steps:
- 
+
 
       - name: Install mobiuscli
         run: npm install -g mobiuscli

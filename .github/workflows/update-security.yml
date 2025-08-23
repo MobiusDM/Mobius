@@ -27,7 +27,7 @@ jobs:
   update-security-md:
     name: Update SECURITY.md
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5.0.0
@@ -78,7 +78,7 @@ jobs:
           else
             echo "npm_vulnerabilities=skipped" >> $GITHUB_OUTPUT
           fi
-          
+
           # Check Go vulnerabilities if available
           if command -v govulncheck &> /dev/null; then
             govulncheck ./... > govuln_result.txt 2>&1 || true
@@ -92,12 +92,12 @@ jobs:
         run: |
           # Update the last updated date
           sed -i "s/\*\*Last Updated\*\*:.*/\*\*Last Updated\*\*: ${{ steps.date.outputs.current_date }}/" SECURITY.md
-          
+
           # Update security policy version (increment patch version)
           CURRENT_VERSION=$(grep "Security Policy Version" SECURITY.md | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "1.0.0")
           NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           sed -i "s/\*\*Security Policy Version\*\*:.*/\*\*Security Policy Version\*\*: $NEW_VERSION/" SECURITY.md
-          
+
           # Update supported versions table with latest release
           LATEST_VERSION="${{ steps.version.outputs.latest_version }}"
           if [[ "$LATEST_VERSION" != "1.0.0" ]]; then
@@ -111,28 +111,28 @@ jobs:
         run: |
           # Check that required sections exist
           REQUIRED_SECTIONS=(
-            "## Supported Versions"
-            "## Reporting a Vulnerability" 
-            "## Security Features"
-            "## Security Best Practices"
-            "## Vulnerability Management"
-            "## Security Contacts"
+            "  # # Supported Versions"
+            "  # # Reporting a Vulnerability"
+            "  # # Security Features"
+            "  # # Security Best Practices"
+            "  # # Vulnerability Management"
+            "  # # Security Contacts"
           )
-          
+
           for section in "${REQUIRED_SECTIONS[@]}"; do
             if ! grep -q "$section" SECURITY.md; then
               echo "❌ Missing required section: $section"
               exit 1
             fi
           done
-          
+
           echo "✅ All required sections found in SECURITY.md"
-          
+
           # Check for placeholder content that needs updating
           if grep -q "security@mobius.local" SECURITY.md; then
             echo "⚠️  Warning: Update security email contact"
           fi
-          
+
           # Validate markdown format
           if command -v markdownlint &> /dev/null; then
             markdownlint SECURITY.md || echo "⚠️  Markdown formatting issues detected"
@@ -152,22 +152,22 @@ jobs:
         run: |
           cat > security_summary.md << EOF
           ## Security Documentation Update Summary
-          
+
           **Date**: ${{ steps.date.outputs.current_date }}
           **Latest Version**: ${{ steps.version.outputs.latest_version }}
-          
-          ### Security Status
+
+          #  # # Security Status
           - Open Security Advisories: ${{ steps.security_count.outputs.security_advisories }}
           - NPM Vulnerabilities: ${{ steps.security_check.outputs.npm_vulnerabilities }}
           - Go Vulnerabilities: ${{ steps.security_check.outputs.go_vulnerabilities }}
-          
-          ### Changes Made
+
+          #  # # Changes Made
           - Updated last modified timestamp
           - Incremented security policy version
           - Refreshed supported versions information
-          
+
           EOF
-          
+
           echo "📋 Security summary created"
 
       - name: Commit and push changes
@@ -175,17 +175,17 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           git add SECURITY.md
           if [ -f security_summary.md ]; then
             git add security_summary.md
           fi
-          
+
           git commit -m "docs: update SECURITY.md - automated update for ${{ steps.date.outputs.current_date }}" \
                      -m "- Updated timestamps and version information" \
                      -m "- Refreshed security status and supported versions" \
                      -m "- Automated by update-security workflow"
-          
+
           git push
 
       - name: Create issue for security attention (if needed)
@@ -195,29 +195,29 @@ jobs:
           script: |
             const npmVulns = ${{ steps.security_check.outputs.npm_vulnerabilities }};
             const goVulns = ${{ steps.security_check.outputs.go_vulnerabilities }};
-            
+
             if (npmVulns > 0 || goVulns > 0) {
               const title = `🔒 Security vulnerabilities detected - ${new Date().toISOString().split('T')[0]}`;
-              const body = `## Security Alert
-              
+              const body = `  # # Security Alert
+
               Automated security scan has detected vulnerabilities that require attention:
-              
+
               - **NPM Vulnerabilities**: ${npmVulns}
               - **Go Vulnerabilities**: ${goVulns}
-              
-              ### Recommended Actions
+
+              #  # # Recommended Actions
               1. Review and update vulnerable dependencies
               2. Run security scans: \`npm audit fix\` and \`govulncheck\`
               3. Test updated dependencies
               4. Update SECURITY.md if necessary
-              
-              ### Resources
+
+              #  # # Resources
               - [NPM Audit Documentation](https://docs.npmjs.com/cli/v8/commands/npm-audit)
               - [Go Vulnerability Check](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
-              
+
               ---
               *This issue was automatically created by the update-security workflow.*`;
-              
+
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -232,7 +232,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: update-security-md
     if: always()
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5.0.0
@@ -255,26 +255,26 @@ jobs:
         run: |
           python3 << 'EOF'
           import re
-          
+
           with open('SECURITY.md', 'r') as f:
               content = f.read()
-          
+
           # Check for essential security information
           checks = [
-              (r'## Supported Versions', 'Supported versions section'),
-              (r'## Reporting a Vulnerability', 'Vulnerability reporting section'),
+              (r'  # # Supported Versions', 'Supported versions section'),
+              (r'  # # Reporting a Vulnerability', 'Vulnerability reporting section'),
               (r'security@[\w.-]+', 'Security contact email'),
-              (r'## Security Features', 'Security features documentation'),
+              (r'  # # Security Features', 'Security features documentation'),
               (r'HTTPS.*TLS', 'HTTPS/TLS security mention'),
               (r'JWT.*Authentication', 'JWT authentication mention'),
               (r'Rate Limiting', 'Rate limiting security measure'),
           ]
-          
+
           missing = []
           for pattern, description in checks:
               if not re.search(pattern, content, re.IGNORECASE):
                   missing.append(description)
-          
+
           if missing:
               print("⚠️  Missing or incomplete security information:")
               for item in missing:

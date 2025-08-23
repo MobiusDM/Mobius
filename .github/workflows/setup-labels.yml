@@ -16,10 +16,10 @@ jobs:
   setup-labels:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5.0.0
+      - name: Checkout repository
+        uses: actions/checkout@v5.0.0
 
-    - name: Setup labels
+      - name: Setup labels
       uses: actions/github-script@v7
       with:
         script: |
@@ -32,7 +32,7 @@ jobs:
             { name: 'testing', color: '1d76db', description: 'Related to testing' },
             { name: 'refactor', color: 'ededed', description: 'Code refactoring' },
             { name: 'performance', color: 'f9d0c4', description: 'Performance improvements' },
-            
+
             // Component labels
             { name: 'backend', color: '0052cc', description: 'Backend/server related changes' },
             { name: 'frontend', color: '1f77b4', description: 'Frontend/UI related changes' },
@@ -41,7 +41,7 @@ jobs:
             { name: 'cocoon', color: 'ff7f0e', description: 'Cocoon component related' },
             { name: 'database', color: '17becf', description: 'Database related changes' },
             { name: 'deployment', color: '8c564b', description: 'Deployment related changes' },
-            
+
             // Process labels
             { name: 'triage', color: 'fbca04', description: 'Needs initial review and categorization' },
             { name: 'work-in-progress', color: 'fef2c0', description: 'Work in progress' },
@@ -49,25 +49,25 @@ jobs:
             { name: 'ci/cd', color: '006b75', description: 'CI/CD related changes' },
             { name: 'configuration', color: 'c5def5', description: 'Configuration related changes' },
             { name: 'dependencies', color: '0366d6', description: 'Dependency updates' },
-            
+
             // Priority labels
             { name: 'priority/high', color: 'e11d21', description: 'High priority' },
             { name: 'priority/medium', color: 'fbca04', description: 'Medium priority' },
             { name: 'priority/low', color: '009800', description: 'Low priority' },
-            
+
             // Size labels
             { name: 'size/small', color: 'c2e0c6', description: 'Small changes (1-5 files)' },
             { name: 'size/medium', color: 'fff2c7', description: 'Medium changes (6-15 files)' },
             { name: 'size/large', color: 'ffeaa7', description: 'Large changes (16-50 files)' },
             { name: 'size/extra-large', color: 'fd79a8', description: 'Extra large changes (50+ files)' },
-            
+
             // Platform labels
             { name: 'platform/macos', color: '000000', description: 'macOS specific' },
             { name: 'platform/windows', color: '0078d4', description: 'Windows specific' },
             { name: 'platform/linux', color: 'ffa500', description: 'Linux specific' },
             { name: 'platform/ios', color: '999999', description: 'iOS specific' },
             { name: 'platform/android', color: '3ddc84', description: 'Android specific' },
-            
+
             // Workflow labels
             { name: 'release', color: '006b75', description: 'Release related' },
             { name: 'qa', color: '7057ff', description: 'Quality assurance' },

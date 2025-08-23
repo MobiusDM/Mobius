@@ -73,19 +73,19 @@ jobs:
         uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
-          
+
       - name: Validate individual commits
         run: |
           # Get commits in this PR
           BASE_SHA=${{ github.event.pull_request.base.sha }}
           HEAD_SHA=${{ github.event.pull_request.head.sha }}
-          
+
           echo "Checking commits from $BASE_SHA to $HEAD_SHA"
-          
+
           # Get commit messages in this PR
           git log --format="%H %s" $BASE_SHA..$HEAD_SHA | while read sha message; do
             echo "Checking commit $sha: $message"
-            
+
             # Basic conventional commit pattern check
             if echo "$message" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+'; then
               echo "✅ Commit $sha follows conventional commits format"
