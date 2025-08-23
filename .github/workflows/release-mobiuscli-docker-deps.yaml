@@ -1,3 +1,4 @@
+---
 # Builds and releases to production the ghcr.io/notawar/bomutils:latest and
 # ghcr.io/notawar/wix:latest Docker images, which are the docker image
 # dependencies of the mobiuscli command.

@@ -1,3 +1,4 @@
+---
 name: Build mobiusdaemon_tables osquery extension
 
 on:
