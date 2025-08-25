@@ -48,7 +48,14 @@ jobs:
       - name: List VEX files
         id: generate_vex_files
         run: |
-          echo "VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')" >> $GITHUB_OUTPUT
+          if [ -d "./security/vex/mobiuscli/" ] && [ -n "$(ls -A ./security/vex/mobiuscli/)" ]; then
+            VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')
+            echo "Found VEX files: $VEX_FILES"
+            echo "VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "No VEX files found in ./security/vex/mobiuscli/, skipping VEX validation"
+            echo "VEX_FILES=" >> $GITHUB_OUTPUT
+          fi
 
       # We use the trivy command and not the github action because it doesn't support loading VEX files yet.
       - name: Run Trivy vulnerability scanner on ghcr.io/notawar/mobiuscli
