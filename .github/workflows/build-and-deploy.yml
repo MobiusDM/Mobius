@@ -128,7 +128,7 @@ jobs:
       fail-fast: false      # Don't cancel other builds if one fails
       max-parallel: 1       # Reduce to 1 to give more resources to each build
       matrix:
-        component: [mobius-server, mobius-cli, mobius-client, mobius-cocoon]
+        component: [server, cli, client, cocoon]
     runs-on: ubuntu-latest
 
     steps:
@@ -157,11 +157,11 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Show Go build context (CLI only)
-        if: matrix.component == 'mobius-cli'
-        working-directory: ./${{ matrix.component }}
+        if: matrix.component == 'cli'
+        working-directory: ./mobius-${{ matrix.component }}
         shell: bash
         run: |
-          echo "=== Go build context for ${{ matrix.component }} ==="
+          echo "=== Go build context for mobius-${{ matrix.component }} ==="
           go version
           echo "Go cache directory: $(go env GOCACHE)"
           echo "Go module cache: $(go env GOMODCACHE)"
@@ -171,8 +171,8 @@ jobs:
           echo "=== End build context ==="
 
       - name: Pre-build Go modules cache (CLI only)
-        if: matrix.component == 'mobius-cli'
-        working-directory: ./${{ matrix.component }}
+        if: matrix.component == 'cli'
+        working-directory: ./mobius-${{ matrix.component }}
         shell: bash
         run: |
           echo "Pre-downloading Go modules..."
@@ -217,7 +217,7 @@ jobs:
           cache-to: type=gha,mode=max
           # Add verbose output for CLI builds
           build-args: |
-            ${{ matrix.component == 'mobius-cli' && 'VERBOSE=1' || '' }}
+            ${{ matrix.component == 'cli' && 'VERBOSE=1' || '' }}
       - name: Generate SBOM (Syft)
         uses: anchore/sbom-action@v0
         with:
