@@ -37,7 +37,7 @@ jobs:
           name: ${{ inputs.download_name }}
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@619dbb2e03e0189af0c55118e7d3c5e129e99726 # v2.0
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.0
         with:
           subject-path: ${{ inputs.filename }}
 
