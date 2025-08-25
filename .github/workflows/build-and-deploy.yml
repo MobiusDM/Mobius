@@ -161,27 +161,32 @@ jobs:
         working-directory: ./mobius-${{ matrix.component }}
         shell: bash
         run: |
+          set +e  # Don't exit on non-zero exit codes for this step
           echo "=== Go build context for mobius-${{ matrix.component }} ==="
           go version
           echo "Go cache directory: $(go env GOCACHE)"
           echo "Go module cache: $(go env GOMODCACHE)"
-          echo "Module dependencies:"
-          go list -m all | head -20 2>/dev/null || go list -m all | sed 20q
-          echo "Direct dependencies count: $(go list -m all | wc -l)"
+          echo "Module dependencies (first 20):"
+          go list -m all | sed 20q 2>/dev/null || echo "Could not list dependencies"
+          DEPS_COUNT=$(go list -m all 2>/dev/null | wc -l || echo "0")
+          echo "Direct dependencies count: $DEPS_COUNT"
           echo "=== End build context ==="
+          set -e  # Re-enable strict error handling
 
       - name: Pre-build Go modules cache (CLI only)
         if: matrix.component == 'cli'
         working-directory: ./mobius-${{ matrix.component }}
         shell: bash
         run: |
+          set +e  # Don't exit on non-zero exit codes for this step
           echo "Pre-downloading Go modules..."
           if command -v time >/dev/null 2>&1; then
-            time go mod download -x
+            time go mod download -x 2>/dev/null || go mod download
           else
-            go mod download -x
+            go mod download -x 2>/dev/null || go mod download
           fi
           echo "Module download complete"
+          set -e  # Re-enable strict error handling
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3.5.0
