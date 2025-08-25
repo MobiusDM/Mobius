@@ -34,7 +34,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: 'go.work'
+          cache: true
           cache-dependency-path: |
+            go.work.sum
             mobius-server/go.sum
             mobius-cli/go.sum
             mobius-client/go.sum
@@ -53,6 +55,12 @@ jobs:
         run: |
           set -euo pipefail
           go work sync
+          # Use parallel downloads on Windows to speed up module fetching
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            export GOPROXY="https://proxy.golang.org,direct"
+            export GOSUMDB="sum.golang.org"
+            export GOMAXPROCS=4
+          fi
           (cd mobius-server && go mod download)
           (cd mobius-cli && go mod download)
           (cd mobius-client && go mod download)
@@ -82,6 +90,11 @@ jobs:
         run: |
           set -euo pipefail
           echo "Running Go tests..."
+          # Windows-specific optimizations
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            export GOMAXPROCS=4
+            export GOCACHE="$(go env GOCACHE)"
+          fi
           # Test with minimal output, only show results for packages with actual tests
           go test -short -count=1 ./mobius-server/... ./mobius-cli/... \
             ./mobius-client/... ./mobius-cocoon/... ./shared/... | \
@@ -95,6 +108,11 @@ jobs:
           mkdir -p mobius-server/static
           cp -r mobius-web/build/* mobius-server/static/ || \
             echo "No frontend build to copy"
+          # Windows-specific build optimizations
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            export GOMAXPROCS=4
+            export CGO_ENABLED=0
+          fi
           (cd mobius-server && go build ./cmd/api-server)
           (cd mobius-cli && go build ./cmd/mobiuscli)
 
