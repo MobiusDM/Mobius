@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Auto-triage issue
         # v7.0.1
-        uses: actions/github-script@60a0d83039c74a4adc46de96a5d85e9bdf4c7a32
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
         with:
           script: |
             const { owner, repo, number } = context.issue;
