@@ -28,7 +28,7 @@ jobs:
 
       - name: Auto label based on branch name
         if: github.event_name == 'pull_request'
-        uses: TimonVS/pr-labeler-action@v4
+        uses: TimonVS/pr-labeler-action@v5
         with:
           configuration-path: .github/pr-labeler.yml
           repo-token: ${{ secrets.GITHUB_TOKEN }}
