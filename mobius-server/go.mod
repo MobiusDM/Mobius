@@ -60,7 +60,7 @@ require (
 	github.com/open-policy-agent/opa v1.4.2
 	github.com/oschwald/geoip2-golang v1.8.0
 	github.com/osquery/osquery-go v0.0.0-20231130195733-61ac79279aaa
-	github.com/pandatix/nvdapi v0.6.4
+	github.com/pandatix/nvdapi v0.6.5
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.21.1
 	github.com/rs/zerolog v1.34.0
