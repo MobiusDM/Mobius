@@ -29,7 +29,7 @@ jobs:
       id-token: write # for aws-actions/configure-aws-credentials
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Set up Go
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
@@ -48,7 +48,14 @@ jobs:
       - name: List VEX files
         id: generate_vex_files
         run: |
-          echo "VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')" >> $GITHUB_OUTPUT
+          if [ -d "./security/vex/mobiuscli/" ] && [ -n "$(ls -A ./security/vex/mobiuscli/)" ]; then
+            VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')
+            echo "Found VEX files: $VEX_FILES"
+            echo "VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "No VEX files found in ./security/vex/mobiuscli/, skipping VEX validation"
+            echo "VEX_FILES=" >> $GITHUB_OUTPUT
+          fi
 
       # We use the trivy command and not the github action because it doesn't support loading VEX files yet.
       - name: Run Trivy vulnerability scanner on ghcr.io/notawar/mobiuscli
@@ -72,7 +79,7 @@ jobs:
             ghcr.io/notawar/mobiuscli
 
       - name: Run Trivy vulnerability scanner on ghcr.io/notawar/wix
-        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # 0.30.0
+        uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # 0.32.0
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
           TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
@@ -85,7 +92,7 @@ jobs:
           severity: "CRITICAL"
 
       - name: Run Trivy vulnerability scanner on ghcr.io/notawar/bomutils
-        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # 0.30.0
+        uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # 0.32.0
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
           TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db

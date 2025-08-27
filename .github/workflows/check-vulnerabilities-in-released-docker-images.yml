@@ -29,7 +29,7 @@ jobs:
 
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Set up Go
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
@@ -51,9 +51,14 @@ jobs:
       - name: List mobius VEX files
         id: generate_mobius_vex_files
         run: |
-          VEX_FILES=$(ls -1 ./security/vex/mobius/ | while IFS= read -r line; do echo "./security/vex/mobius/$line"; done | tr '\n' ',' | sed 's/.$//')
-          echo $VEX_FILES
-          echo "MOBIUS_VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          if [ -d "./security/vex/mobius/" ] && [ -n "$(ls -A ./security/vex/mobius/)" ]; then
+            VEX_FILES=$(ls -1 ./security/vex/mobius/ | while IFS= read -r line; do echo "./security/vex/mobius/$line"; done | tr '\n' ',' | sed 's/.$//')
+            echo "Found VEX files: $VEX_FILES"
+            echo "MOBIUS_VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "No VEX files found in ./security/vex/mobius/, skipping VEX validation"
+            echo "MOBIUS_VEX_FILES=" >> $GITHUB_OUTPUT
+          fi
 
       # We use the trivy command and not the github action because it doesn't support loading
       # VEX files yet and looks like we can't run the action on multiple images.
@@ -82,9 +87,14 @@ jobs:
       - name: List mobiuscli VEX files
         id: generate_mobiuscli_vex_files
         run: |
-          VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')
-          echo $VEX_FILES
-          echo "MOBIUSCTL_VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          if [ -d "./security/vex/mobiuscli/" ] && [ -n "$(ls -A ./security/vex/mobiuscli/)" ]; then
+            VEX_FILES=$(ls -1 ./security/vex/mobiuscli/ | while IFS= read -r line; do echo "./security/vex/mobiuscli/$line"; done | tr '\n' ',' | sed 's/.$//')
+            echo "Found VEX files: $VEX_FILES"
+            echo "MOBIUSCTL_VEX_FILES=$VEX_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "No VEX files found in ./security/vex/mobiuscli/, skipping VEX validation"
+            echo "MOBIUSCTL_VEX_FILES=" >> $GITHUB_OUTPUT
+          fi
 
       # We use the trivy command and not the github action because it doesn't support loading VEX files yet.
       - name: Run trivy vulnerability scanner on latest released ghcr.io/notawar/mobiuscli image

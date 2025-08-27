@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Auto label based on files changed
         if: github.event_name == 'pull_request'
@@ -28,7 +28,7 @@ jobs:
 
       - name: Auto label based on branch name
         if: github.event_name == 'pull_request'
-        uses: TimonVS/pr-labeler-action@v4
+        uses: TimonVS/pr-labeler-action@v5
         with:
           configuration-path: .github/pr-labeler.yml
           repo-token: ${{ secrets.GITHUB_TOKEN }}

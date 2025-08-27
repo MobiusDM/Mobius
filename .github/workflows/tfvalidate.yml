@@ -34,10 +34,10 @@ jobs:
 
 
       - name: Clone repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Install terraform
-        uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1 # v2.0.3
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
         with:
           terraform_version: 1.9.0
       # If we want to test more of these, consider using a matrix.  With a matrix of directories, all terraform modules could be fully tested and potentially in parallel.
