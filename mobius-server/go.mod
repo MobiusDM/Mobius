@@ -78,9 +78,9 @@ require (
 	github.com/ulikunitz/xz v0.5.13
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
 	go.elastic.co/apm/module/apmgorilla/v2 v2.6.2
-	go.elastic.co/apm/module/apmhttp/v2 v2.7.1-0.20250407084155-22ab1be21948
+	go.elastic.co/apm/module/apmhttp/v2 v2.7.1
 	go.elastic.co/apm/module/apmsql/v2 v2.6.2
-	go.elastic.co/apm/v2 v2.7.0
+	go.elastic.co/apm/v2 v2.7.1
 	go.etcd.io/bbolt v1.3.10
 	go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux v0.56.0
 	go.opentelemetry.io/otel v1.37.0
@@ -180,7 +180,7 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/yashtewari/glob-intersection v0.2.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	go.elastic.co/fastjson v1.1.0 // indirect
+	go.elastic.co/fastjson v1.5.1 // indirect
 	go.mozilla.org/pkcs7 v0.0.0-20210826202110-33d05740a352 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
