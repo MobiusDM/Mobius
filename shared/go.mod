@@ -17,7 +17,7 @@ require (
 	github.com/ulikunitz/xz v0.5.13
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
 	golang.org/x/oauth2 v0.30.0
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.29.0
 )
 
 require (
